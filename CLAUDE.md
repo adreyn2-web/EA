@@ -27,7 +27,7 @@ Skills live in `.claude/skills/`. Each skill gets its own folder:
 Skills are built organically as recurring workflows emerge. Directory is currently empty.
 
 **Skills Backlog** — build these as patterns repeat:
-- `finance-tracker` — budgeting, debt payoff tracking, manual finance management
+- `finance-tracker` — budgeting, debt payoff tracking, finance automation management
 - `meal-planner` — healthy bulk meal planning and grocery prep (145 → 175 lbs goal)
 - `workout-planner` — workout variety and health routine builder
 - `trade-journal` — trade logging, performance review, pattern recognition
