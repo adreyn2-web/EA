@@ -1,0 +1,14 @@
+{
+  "name": "ea",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "plaid:link": "node projects/finance/plaid/link.js",
+    "plaid:sync": "node projects/finance/plaid/sync.js",
+    "finance:summary": "node projects/finance/summary.js"
+  },
+  "dependencies": {
+    "plaid": "^26.0.0",
+    "dotenv": "^16.0.0"
+  }
+}
