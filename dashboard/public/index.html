@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EA — Executive Assistant</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0c;
+      --surface: #141414;
+      --surface2: #1a1a1a;
+      --border: #222;
+      --border2: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #555;
+      --accent: #fff;
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #facc15;
+      --blue: #60a5fa;
+      --purple: #a78bfa;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: 'SF Mono','Fira Code','Menlo',monospace; font-size: 13px; line-height: 1.6; min-height: 100vh; }
+
+    /* ── Header ── */
+    header { padding: 20px 32px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 14px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent); }
+    header .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 6px 14px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: border-color .15s, color .15s; }
+    .btn:hover { border-color: #444; color: var(--accent); }
+    .btn:disabled { opacity: .4; cursor: default; }
+    .btn-primary { border-color: var(--accent); color: var(--accent); }
+    .btn-primary:hover { background: var(--accent); color: #000; }
+
+    /* ── Section dividers ── */
+    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; padding: 20px 32px 8px; }
+
+    /* ── Grid ── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; padding: 8px 32px 24px; }
+    .grid.trading-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 18px; }
+    .card.span2 { grid-column: span 2; }
+    .card.full { grid-column: 1 / -1; }
+    .card-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+    .placeholder { border: 1px dashed var(--border); background: transparent; opacity: .35; }
+    .coming-soon { color: var(--muted); font-size: 12px; padding: 8px 0; }
+
+    /* ── Common rows ── */
+    .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--muted); }
+    .stat-value { font-weight: 600; }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .neutral { color: var(--text); }
+
+    /* ── Progress bar ── */
+    .progress-wrap { margin: 10px 0; }
+    .progress-track { background: var(--border); border-radius: 2px; height: 5px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .4s ease; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+    /* ── Debt rows ── */
+    .debt-row { display: flex; align-items: baseline; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+    .debt-row:last-child { border-bottom: none; }
+    .debt-priority { color: var(--muted); width: 18px; flex-shrink: 0; }
+    .debt-label { flex: 1; padding: 0 8px; }
+    .debt-apr { font-size: 11px; color: var(--muted); margin-right: 10px; }
+    .debt-bal { font-weight: 600; color: var(--red); }
+    .debt-manual { font-size: 10px; color: var(--muted); margin-left: 4px; }
+
+    /* ── Spending ── */
+    .spending-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .spending-row:last-child { border-bottom: none; }
+    .spending-cat { color: var(--muted); font-size: 11px; min-width: 120px; }
+    .spending-bar-wrap { flex: 1; margin: 0 10px; }
+    .spending-bar { height: 3px; background: var(--blue); border-radius: 2px; opacity: .5; }
+    .spending-amt { color: var(--red); font-size: 12px; }
+
+    /* ── Tx rows ── */
+    .tx-row { display: grid; grid-template-columns: 76px 1fr 86px; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+    .tx-row:last-child { border-bottom: none; }
+    .tx-date { color: var(--muted); }
+    .tx-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tx-amt { text-align: right; font-weight: 600; }
+
+    /* ── Goals ── */
+    .section-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 10px 0 5px; }
+    .section-sub:first-child { margin-top: 0; }
+    .goal-row { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+    .goal-row:last-child { border-bottom: none; }
+    .goal-check { color: var(--green); flex-shrink: 0; }
+    .goal-check.open { color: var(--muted); }
+    .goal-text.done { color: var(--muted); text-decoration: line-through; }
+
+    /* ── Hint text ── */
+    .hint { font-size: 11px; color: var(--muted); line-height: 1.8; }
+    .hint code { color: var(--blue); }
+
+    /* ── Trading stat pills ── */
+    .t-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .t-stat { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 12px; }
+    .t-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .t-stat-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
+
+    /* ── Calendar ── */
+    .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .cal-nav span { font-size: 12px; font-weight: 600; }
+    .cal-nav button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 6px; }
+    .cal-nav button:hover { color: var(--accent); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-dow { font-size: 9px; color: var(--muted); text-align: center; padding: 2px 0 4px; letter-spacing: .06em; }
+    .cal-day { border-radius: 3px; padding: 4px 2px; min-height: 42px; text-align: center; font-size: 10px; cursor: default; position: relative; transition: opacity .15s; }
+    .cal-day.empty { background: transparent; }
+    .cal-day.no-trade { background: var(--surface2); color: var(--muted); }
+    .cal-day.win-day { background: rgba(74,222,128,.15); border: 1px solid rgba(74,222,128,.25); }
+    .cal-day.loss-day { background: rgba(248,113,113,.15); border: 1px solid rgba(248,113,113,.25); }
+    .cal-day.today { outline: 1px solid var(--accent); }
+    .cal-day-num { color: var(--muted); font-size: 9px; }
+    .cal-day-pnl { font-weight: 700; font-size: 10px; margin-top: 2px; }
+    .cal-day-tc { font-size: 9px; color: var(--muted); }
+
+    /* ── Equity curve ── */
+    .equity-svg { width: 100%; height: 100px; display: block; }
+
+    /* ── Setup / grade breakdown table ── */
+    .breakdown-row { display: grid; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; align-items: center; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-header { font-size: 10px; color: var(--muted); }
+    .setup-row { grid-template-columns: 1fr 44px 60px 70px; }
+    .grade-row { grid-template-columns: 28px 44px 60px 70px; }
+    .emo-row { grid-template-columns: 1fr 44px 60px 70px; }
+    .wr-bar-wrap { display: flex; align-items: center; gap: 6px; }
+    .wr-bar { height: 3px; background: var(--green); border-radius: 2px; opacity: .6; }
+
+    /* ── Trade log (recent trades) ── */
+    .trade-item { border-bottom: 1px solid var(--border); padding: 8px 0; cursor: pointer; }
+    .trade-item:last-child { border-bottom: none; }
+    .trade-item:hover .trade-summary { color: var(--accent); }
+    .trade-summary { display: grid; grid-template-columns: 72px 80px 1fr 36px 80px; gap: 8px; align-items: baseline; font-size: 12px; }
+    .trade-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 4px; font-size: 11px; }
+    .trade-detail.open { display: block; }
+    .trade-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 8px; }
+    .trade-detail-label { color: var(--muted); }
+    .trade-note-block { margin-top: 8px; }
+    .trade-note-block .note-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .trade-note-block .note-text { color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+    .grade-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+    .grade-A { color: var(--green); border: 1px solid rgba(74,222,128,.4); }
+    .grade-B { color: var(--blue); border: 1px solid rgba(96,165,250,.4); }
+    .grade-C { color: var(--yellow); border: 1px solid rgba(250,204,21,.4); }
+    .grade-D { color: #fb923c; border: 1px solid rgba(251,146,60,.4); }
+    .grade-F { color: var(--red); border: 1px solid rgba(248,113,113,.4); }
+
+    /* ── Log Trade Modal ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px; }
+    .modal-title { font-size: 13px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
+    .modal-close:hover { color: var(--accent); }
+    .form-row { display: grid; gap: 12px; margin-bottom: 12px; }
+    .form-row.cols2 { grid-template-columns: 1fr 1fr; }
+    .form-row.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .form-input { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 4px; outline: none; }
+    .form-input:focus { border-color: #444; }
+    textarea.form-input { resize: vertical; min-height: 70px; }
+    .dir-toggle { display: flex; gap: 6px; }
+    .dir-btn { flex: 1; padding: 7px; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; letter-spacing: .06em; }
+    .dir-btn.active-long { background: rgba(74,222,128,.12); border-color: rgba(74,222,128,.4); color: var(--green); }
+    .dir-btn.active-short { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
+    .grade-btns { display: flex; gap: 6px; }
+    .grade-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 12px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; }
+    .grade-btn.sel { border-color: #aaa; color: var(--accent); background: rgba(255,255,255,.06); }
+    .emo-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+    .emo-btn { padding: 5px 10px; font-family: inherit; font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; }
+    .emo-btn.sel { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,.08); }
+    .pnl-preview { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .pnl-preview-label { color: var(--muted); font-size: 11px; }
+    .pnl-preview-value { font-weight: 700; font-size: 16px; }
+    .form-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+    .status-bar { font-size: 11px; color: var(--muted); padding: 4px 32px 20px; }
+    .status-bar span { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<!-- ── Log Trade Modal ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title">
+      Log Trade
+      <button class="modal-close" onclick="closeLogModal()">×</button>
+    </div>
+
+    <div class="form-row cols2">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" type="date" id="f-date" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ticker</label>
+        <input class="form-input" type="text" id="f-ticker" placeholder="SPY" style="text-transform:uppercase" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Direction</label>
+        <div class="dir-toggle">
+          <button class="dir-btn" id="dir-long" onclick="setDir('long')">LONG</button>
+          <button class="dir-btn" id="dir-short" onclick="setDir('short')">SHORT</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row cols3">
+      <div class="form-group">
+        <label class="form-label">Entry</label>
+        <input class="form-input" type="number" id="f-entry" placeholder="0.00" step="0.01" oninput="updatePnlPreview()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Exit</label>
+        <input class="form-input" type="number" id="f-exit" placeholder="0.00" step="0.01" oninput="updatePnlPreview()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Shares / Contracts</label>
+        <input class="form-input" type="number" id="f-shares" placeholder="0" step="1" oninput="updatePnlPreview()" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Stop Loss (optional — used for R:R)</label>
+        <input class="form-input" type="number" id="f-stop" placeholder="0.00" step="0.01" />
+      </div>
+    </div>
+
+    <div class="pnl-preview">
+      <span class="pnl-preview-label">Estimated P&L</span>
+      <span class="pnl-preview-value" id="pnl-preview">—</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Setup</label>
+        <input class="form-input" type="text" id="f-setup" placeholder="e.g. breakout pullback, VWAP bounce, gap fill..." />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Pre-Trade Plan</label>
+        <textarea class="form-input" id="f-plan" placeholder="What was your thesis? What were you looking for? What was the invalidation level?"></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Notes — What happened? What did you learn?</label>
+        <textarea class="form-input" id="f-notes" style="min-height:90px" placeholder="How did the trade play out? Did you follow your plan? What would you do differently? Any patterns you noticed?"></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Grade</label>
+        <div class="grade-btns">
+          <button class="grade-btn" data-grade="A" onclick="setGrade('A')">A</button>
+          <button class="grade-btn" data-grade="B" onclick="setGrade('B')">B</button>
+          <button class="grade-btn" data-grade="C" onclick="setGrade('C')">C</button>
+          <button class="grade-btn" data-grade="D" onclick="setGrade('D')">D</button>
+          <button class="grade-btn" data-grade="F" onclick="setGrade('F')">F</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Emotional State</label>
+        <div class="emo-btns">
+          <button class="emo-btn" data-emo="Disciplined" onclick="setEmo('Disciplined')">Disciplined</button>
+          <button class="emo-btn" data-emo="Calm" onclick="setEmo('Calm')">Calm</button>
+          <button class="emo-btn" data-emo="Hesitant" onclick="setEmo('Hesitant')">Hesitant</button>
+          <button class="emo-btn" data-emo="FOMO" onclick="setEmo('FOMO')">FOMO</button>
+          <button class="emo-btn" data-emo="Revenge" onclick="setEmo('Revenge')">Revenge</button>
+          <button class="emo-btn" data-emo="Overconfident" onclick="setEmo('Overconfident')">Overconfident</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn" onclick="closeLogModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitTrade()">Log Trade</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Header ── -->
+<header>
+  <div>
+    <h1>EA — EXECUTIVE ASSISTANT</h1>
+    <div class="sub" id="sync-time">Loading...</div>
+  </div>
+  <button class="btn" id="sync-btn" onclick="syncNow()">Sync Accounts</button>
+</header>
+
+<!-- ── Finance ── -->
+<div class="section-label">Finance</div>
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Cash</div>
+    <div id="cash-content">Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Debt Payoff Progress</div>
+    <div id="debt-progress-content">Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Debts — Avalanche</div>
+    <div id="debts-content">Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Spending This Month</div>
+    <div id="spending-content">Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Apple Card</div>
+    <div id="apple-content">Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Goals — 2026</div>
+    <div id="goals-content">Loading...</div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Recent Transactions</div>
+    <div id="tx-content">Loading...</div>
+  </div>
+</div>
+
+<!-- ── Trading Journal ── -->
+<div class="section-label" style="display:flex;justify-content:space-between;align-items:center;padding-right:32px">
+  Trading Journal
+  <button class="btn btn-primary" onclick="openLogModal()">+ Log Trade</button>
+</div>
+<div class="grid trading-grid">
+
+  <!-- Key stats -->
+  <div class="card full" id="t-stats-card" style="display:none">
+    <div class="t-stats" id="t-stats-row"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+      <div class="stat-row"><span class="stat-label">Avg win</span><span class="stat-value pos" id="t-avg-win">—</span></div>
+      <div class="stat-row"><span class="stat-label">Avg loss</span><span class="stat-value neg" id="t-avg-loss">—</span></div>
+      <div class="stat-row"><span class="stat-label">Profit factor</span><span class="stat-value" id="t-pf">—</span></div>
+      <div class="stat-row"><span class="stat-label">Streak</span><span class="stat-value neutral" id="t-streak">—</span></div>
+      <div class="stat-row"><span class="stat-label">Best trade</span><span class="stat-value pos" id="t-best">—</span></div>
+      <div class="stat-row"><span class="stat-label">Worst trade</span><span class="stat-value neg" id="t-worst">—</span></div>
+    </div>
+  </div>
+
+  <!-- No trades yet -->
+  <div class="card full" id="t-empty-card">
+    <div class="hint">No trades logged yet. Click <strong>+ Log Trade</strong> above to record your first trade.</div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="card" id="t-cal-card" style="display:none">
+    <div class="card-title">
+      <span>P&L Calendar</span>
+    </div>
+    <div class="cal-nav">
+      <button onclick="calPrev()">&#8249;</button>
+      <span id="cal-month-label"></span>
+      <button onclick="calNext()">&#8250;</button>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- Equity Curve -->
+  <div class="card" id="t-equity-card" style="display:none">
+    <div class="card-title">Equity Curve</div>
+    <svg class="equity-svg" id="equity-svg" viewBox="0 0 400 100" preserveAspectRatio="none"></svg>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:6px">
+      <span id="eq-start">Trade 1</span>
+      <span id="eq-end"></span>
+    </div>
+  </div>
+
+  <!-- Setup Breakdown -->
+  <div class="card" id="t-setup-card" style="display:none">
+    <div class="card-title">Setup Breakdown</div>
+    <div class="breakdown-row setup-row breakdown-header">
+      <span>Setup</span><span>Trades</span><span>Win %</span><span>P&L</span>
+    </div>
+    <div id="setup-breakdown"></div>
+  </div>
+
+  <!-- Grade + Emotion -->
+  <div class="card" id="t-grade-card" style="display:none">
+    <div class="card-title">Execution Quality</div>
+    <div class="section-sub">By Grade</div>
+    <div class="breakdown-row grade-row breakdown-header">
+      <span>Grade</span><span>Trades</span><span>Win %</span><span>P&L</span>
+    </div>
+    <div id="grade-breakdown"></div>
+    <div class="section-sub" style="margin-top:12px">By Emotion</div>
+    <div class="breakdown-row emo-row breakdown-header">
+      <span>State</span><span>Trades</span><span>Win %</span><span>P&L</span>
+    </div>
+    <div id="emo-breakdown"></div>
+  </div>
+
+  <!-- Recent Trades -->
+  <div class="card full" id="t-trades-card" style="display:none">
+    <div class="card-title">Trade Log</div>
+    <div id="trade-log"></div>
+  </div>
+
+</div>
+
+<!-- ── Other ── -->
+<div class="section-label">Other</div>
+<div class="grid">
+  <div class="card placeholder">
+    <div class="card-title">Health</div>
+    <div class="coming-soon">— coming soon —</div>
+  </div>
+</div>
+
+<div class="status-bar" id="status-bar"></div>
+
+<script>
+  // ── State ──
+  let tradingStats = null;
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+  let selectedDir = 'long';
+  let selectedGrade = '';
+  let selectedEmo = '';
+
+  // ── Finance ──
+  async function load() {
+    const res = await fetch('/api/finance');
+    const { ok, data } = await res.json();
+    if (!ok || !data) { setStatus('No snapshot. Click "Sync Accounts".'); return; }
+    renderFinance(data);
+  }
+
+  async function syncNow() {
+    const btn = document.getElementById('sync-btn');
+    btn.disabled = true; btn.textContent = 'Syncing...';
+    setStatus('Pulling from Plaid...');
+    try {
+      const res = await fetch('/api/sync', { method: 'POST' });
+      const { ok, data, error } = await res.json();
+      if (!ok) { setStatus('Sync failed: ' + error); return; }
+      renderFinance(data); setStatus('Synced.');
+    } catch(e) { setStatus('Error: ' + e.message); }
+    finally { btn.disabled = false; btn.textContent = 'Sync Accounts'; }
+  }
+
+  function fmt(n) { return (n < 0 ? '-' : '') + '$' + Math.abs(n).toFixed(2); }
+  function fmtSign(n) { return (n >= 0 ? '+' : '') + '$' + n.toFixed(2); }
+
+  function renderFinance(d) {
+    document.getElementById('sync-time').textContent = 'Last synced: ' + new Date(d.synced_at).toLocaleString();
+
+    document.getElementById('cash-content').innerHTML = d.cashAccounts.map(a =>
+      `<div class="stat-row"><span class="stat-label">${a.label}</span><span class="stat-value ${a.balance>=0?'pos':'neg'}">${fmt(a.balance)}</span></div>`
+    ).join('') + `<div class="stat-row" style="margin-top:6px"><span class="stat-label">Total liquid</span><span class="stat-value ${d.totalCash>=0?'pos':'neg'}">${fmt(d.totalCash)}</span></div>`;
+
+    const pct = Math.max(0, Math.min(100, d.progressPct));
+    document.getElementById('debt-progress-content').innerHTML = `
+      <div class="stat-row"><span class="stat-label">Baseline</span><span class="stat-value neutral">$${d.debtBaseline.toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Current</span><span class="stat-value neg">$${d.totalDebt.toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Paid down</span><span class="stat-value ${d.paidDown>=0?'pos':'neg'}">${fmt(d.paidDown)} (${d.progressPct.toFixed(1)}%)</span></div>
+      <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-label"><span>0%</span><span>Dec 31, 2026</span><span>100%</span></div></div>
+      <div class="stat-row"><span class="stat-label">Months left</span><span class="stat-value neutral">${d.monthsLeft.toFixed(1)}</span></div>
+      <div class="stat-row"><span class="stat-label">Needed / month</span><span class="stat-value neutral">$${d.requiredMonthly.toFixed(2)}</span></div>`;
+
+    document.getElementById('debts-content').innerHTML = d.debts.map(debt =>
+      `<div class="debt-row"><span class="debt-priority">[${debt.priority}]</span><span class="debt-label">${debt.label}${debt.manual?'<span class="debt-manual">manual</span>':''}</span><span class="debt-apr">${debt.apr!=null?debt.apr+'%':'fixed'}</span><span class="debt-bal">${debt.balance!=null?'$'+debt.balance.toFixed(2):'N/A'}</span></div>`
+    ).join('') + `<div class="debt-row" style="margin-top:6px;font-weight:600"><span class="debt-priority"></span><span class="debt-label">Total</span><span class="debt-apr"></span><span class="debt-bal">$${d.totalDebt.toFixed(2)}</span></div>`;
+
+    const maxS = d.spending[0]?.total ?? 1;
+    document.getElementById('spending-content').innerHTML = d.spending.map(s =>
+      `<div class="spending-row"><span class="spending-cat">${s.category.toLowerCase().replace(/_/g,' ')}</span><div class="spending-bar-wrap"><div class="spending-bar" style="width:${(s.total/maxS*100).toFixed(1)}%"></div></div><span class="spending-amt">$${s.total.toFixed(2)}</span></div>`
+    ).join('');
+
+    document.getElementById('tx-content').innerHTML = d.recentTransactions.map(t =>
+      `<div class="tx-row"><span class="tx-date">${t.date}</span><span class="tx-name">${t.name}</span><span class="tx-amt ${t.amount>0?'neg':'pos'}">${t.amount>0?'-':'+'}$${Math.abs(t.amount).toFixed(2)}</span></div>`
+    ).join('');
+
+    setStatus('');
+  }
+
+  // ── Goals ──
+  async function loadGoals() {
+    const { ok, sections } = await fetch('/api/goals').then(r => r.json());
+    if (!ok) return;
+    let html = '';
+    for (const [sec, items] of Object.entries(sections)) {
+      html += `<div class="section-sub">${sec}</div>`;
+      html += items.map(i => `<div class="goal-row"><span class="goal-check ${i.done?'':'open'}">${i.done?'✓':'○'}</span><span class="goal-text ${i.done?'done':''}">${i.text}</span></div>`).join('');
+    }
+    document.getElementById('goals-content').innerHTML = html;
+  }
+
+  // ── Apple Card ──
+  async function loadAppleCard() {
+    const { ok, data } = await fetch('/api/apple-card').then(r => r.json());
+    const el = document.getElementById('apple-content');
+    if (!ok || !data) {
+      el.innerHTML = `<div class="stat-row"><span class="stat-label">Balance (manual)</span><span class="stat-value neg">$2,981.19</span></div>
+        <div class="hint" style="margin-top:10px">To import: iPhone → Wallet → Apple Card → Export Transactions<br>Then: <code>npm run apple:import -- ~/Downloads/AppleCard.csv 2981.19</code></div>`;
+      return;
+    }
+    el.innerHTML = `<div class="stat-row"><span class="stat-label">Balance</span><span class="stat-value neg">$${data.current_balance.toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">APR</span><span class="stat-value neutral">25.49%</span></div>
+      <div class="stat-row" style="margin-bottom:10px"><span class="stat-label">Imported</span><span class="stat-value neutral">${new Date(data.imported_at).toLocaleDateString()}</span></div>
+      ${data.transactions.slice(0,8).map(t => `<div class="tx-row"><span class="tx-date">${t.date}</span><span class="tx-name">${t.name.slice(0,45)}</span><span class="tx-amt ${t.amount>0?'neg':'pos'}">${t.amount>0?'-':'+'}$${Math.abs(t.amount).toFixed(2)}</span></div>`).join('')}`;
+  }
+
+  // ── Trading ──
+  async function loadTrading() {
+    const { stats } = await fetch('/api/trading').then(r => r.json());
+    tradingStats = stats;
+    renderTrading(stats);
+  }
+
+  function renderTrading(s) {
+    const empty = document.getElementById('t-empty-card');
+    const show = (id) => document.getElementById(id).style.display = '';
+    const hide = (id) => document.getElementById(id).style.display = 'none';
+
+    if (!s) { empty.style.display = ''; return; }
+    hide('t-empty-card');
+
+    // Stats pills
+    show('t-stats-card');
+    const pnlCls = s.total_pnl >= 0 ? 'pos' : 'neg';
+    const wrCls = s.win_rate >= 50 ? 'pos' : 'neg';
+    document.getElementById('t-stats-row').innerHTML = `
+      <div class="t-stat"><div class="t-stat-label">Win Rate</div><div class="t-stat-value ${wrCls}">${s.win_rate}%</div></div>
+      <div class="t-stat"><div class="t-stat-label">Total P&L</div><div class="t-stat-value ${pnlCls}">${fmtSign(s.total_pnl)}</div></div>
+      <div class="t-stat"><div class="t-stat-label">Trades</div><div class="t-stat-value neutral">${s.total_trades}</div></div>
+      <div class="t-stat"><div class="t-stat-label">Profit Factor</div><div class="t-stat-value ${s.profit_factor>=1?'pos':'neg'}">${s.profit_factor ?? '—'}</div></div>`;
+    document.getElementById('t-avg-win').textContent = '+$' + s.avg_win.toFixed(2);
+    document.getElementById('t-avg-loss').textContent = '-$' + Math.abs(s.avg_loss).toFixed(2);
+    document.getElementById('t-pf').textContent = s.profit_factor != null ? s.profit_factor + 'x' : '—';
+    document.getElementById('t-pf').className = 'stat-value ' + (s.profit_factor >= 1 ? 'pos' : 'neg');
+    const streakLabel = s.streak.count > 1 ? `${s.streak.count} ${s.streak.type}s` : s.streak.type;
+    document.getElementById('t-streak').textContent = streakLabel;
+    document.getElementById('t-best').textContent = `+$${s.best_trade.pnl.toFixed(2)} ${s.best_trade.ticker}`;
+    document.getElementById('t-worst').textContent = `$${s.worst_trade.pnl.toFixed(2)} ${s.worst_trade.ticker}`;
+
+    // Calendar
+    show('t-cal-card');
+    renderCalendar();
+
+    // Equity curve
+    show('t-equity-card');
+    renderEquityCurve(s.equity_curve);
+
+    // Setup breakdown
+    if (s.setup_breakdown.length) {
+      show('t-setup-card');
+      document.getElementById('setup-breakdown').innerHTML = s.setup_breakdown.map(r =>
+        `<div class="breakdown-row setup-row">
+          <span>${r.setup}</span><span>${r.trades}</span>
+          <span class="${r.win_rate>=50?'pos':'neg'}">${r.win_rate}%</span>
+          <span class="${r.pnl>=0?'pos':'neg'}">${fmtSign(r.pnl)}</span>
+        </div>`).join('');
+    }
+
+    // Grade + emotion
+    const gd = s.grade_breakdown; const ed = s.emotion_breakdown;
+    if (Object.keys(gd).length || Object.keys(ed).length) {
+      show('t-grade-card');
+      document.getElementById('grade-breakdown').innerHTML = ['A','B','C','D','F'].filter(g => gd[g]).map(g =>
+        `<div class="breakdown-row grade-row">
+          <span class="grade-badge grade-${g}">${g}</span><span>${gd[g].trades}</span>
+          <span class="${(gd[g].wins/gd[g].trades*100)>=50?'pos':'neg'}">${(gd[g].wins/gd[g].trades*100).toFixed(0)}%</span>
+          <span class="${gd[g].pnl>=0?'pos':'neg'}">${fmtSign(parseFloat(gd[g].pnl.toFixed(2)))}</span>
+        </div>`).join('');
+      document.getElementById('emo-breakdown').innerHTML = Object.entries(ed).map(([emo, d]) =>
+        `<div class="breakdown-row emo-row">
+          <span>${emo}</span><span>${d.trades}</span>
+          <span class="${(d.wins/d.trades*100)>=50?'pos':'neg'}">${(d.wins/d.trades*100).toFixed(0)}%</span>
+          <span class="${d.pnl>=0?'pos':'neg'}">${fmtSign(parseFloat(d.pnl.toFixed(2)))}</span>
+        </div>`).join('');
+    }
+
+    // Trade log
+    show('t-trades-card');
+    document.getElementById('trade-log').innerHTML = s.recent.map(t => {
+      const pnlCls = t.pnl >= 0 ? 'pos' : 'neg';
+      const gradeHtml = t.grade ? `<span class="grade-badge grade-${t.grade}">${t.grade}</span>` : '';
+      return `<div class="trade-item" onclick="toggleTrade(${t.id})">
+        <div class="trade-summary">
+          <span class="tx-date">${t.date}</span>
+          <span style="font-weight:600">${t.ticker} <span style="color:${t.direction==='long'?'var(--green)':'var(--red)'};font-size:11px">${t.direction.toUpperCase()}</span></span>
+          <span style="color:var(--muted);font-size:11px">${t.setup || '—'}</span>
+          <span>${gradeHtml}</span>
+          <span class="tx-amt ${pnlCls}">${fmtSign(t.pnl)}</span>
+        </div>
+        <div class="trade-detail" id="td-${t.id}">
+          <div class="trade-detail-grid">
+            <div><span class="trade-detail-label">Entry: </span>$${t.entry}</div>
+            <div><span class="trade-detail-label">Exit: </span>$${t.exit}</div>
+            <div><span class="trade-detail-label">Shares: </span>${t.shares}</div>
+            <div><span class="trade-detail-label">P&L %: </span><span class="${pnlCls}">${t.pnl_pct >= 0 ? '+' : ''}${t.pnl_pct}%</span></div>
+            ${t.actual_rr ? `<div><span class="trade-detail-label">R:R: </span>${t.actual_rr}R</div>` : ''}
+            ${t.emotion ? `<div><span class="trade-detail-label">State: </span>${t.emotion}</div>` : ''}
+          </div>
+          ${t.plan ? `<div class="trade-note-block"><div class="note-label">Pre-Trade Plan</div><div class="note-text">${t.plan}</div></div>` : ''}
+          ${t.notes ? `<div class="trade-note-block"><div class="note-label">Notes</div><div class="note-text">${t.notes}</div></div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleTrade(id) {
+    const el = document.getElementById('td-' + id);
+    if (el) el.classList.toggle('open');
+  }
+
+  // ── Calendar ──
+  function renderCalendar() {
+    if (!tradingStats) return;
+    const daily = tradingStats.daily_pnl;
+    const today = new Date();
+    const label = new Date(calYear, calMonth, 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+    document.getElementById('cal-month-label').textContent = label;
+
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const dows = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join('');
+    for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayData = daily[dateStr];
+      const isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===d;
+      let cls = 'cal-day no-trade';
+      let inner = `<div class="cal-day-num">${d}</div>`;
+      if (dayData) {
+        cls = 'cal-day ' + (dayData.pnl >= 0 ? 'win-day' : 'loss-day');
+        inner += `<div class="cal-day-pnl ${dayData.pnl>=0?'pos':'neg'}">${dayData.pnl>=0?'+':''}$${Math.abs(dayData.pnl).toFixed(0)}</div>`;
+        inner += `<div class="cal-day-tc">${dayData.trades}t</div>`;
+      }
+      if (isToday) cls += ' today';
+      html += `<div class="${cls}">${inner}</div>`;
+    }
+    document.getElementById('cal-grid').innerHTML = html;
+  }
+
+  function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); }
+  function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); }
+
+  // ── Equity Curve ──
+  function renderEquityCurve(curve) {
+    if (!curve || curve.length < 2) return;
+    const svg = document.getElementById('equity-svg');
+    const W = 400, H = 100, pad = 4;
+    const vals = curve.map(p => p.cumulative);
+    const min = Math.min(...vals, 0);
+    const max = Math.max(...vals, 0);
+    const range = max - min || 1;
+    const zero = H - pad - ((0 - min) / range) * (H - pad*2);
+
+    const pts = curve.map((p, i) => {
+      const x = pad + (i / (curve.length-1)) * (W - pad*2);
+      const y = H - pad - ((p.cumulative - min) / range) * (H - pad*2);
+      return `${x},${y}`;
+    });
+
+    const color = vals[vals.length-1] >= 0 ? '#4ade80' : '#f87171';
+    svg.innerHTML = `
+      <line x1="${pad}" y1="${zero}" x2="${W-pad}" y2="${zero}" stroke="#222" stroke-width="1"/>
+      <polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>`;
+
+    document.getElementById('eq-start').textContent = curve[0].date;
+    document.getElementById('eq-end').textContent = `${fmtSign(vals[vals.length-1])} cumulative`;
+  }
+
+  // ── Log Trade Modal ──
+  function openLogModal() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('f-date').value = today;
+    document.getElementById('f-ticker').value = '';
+    document.getElementById('f-entry').value = '';
+    document.getElementById('f-exit').value = '';
+    document.getElementById('f-shares').value = '';
+    document.getElementById('f-stop').value = '';
+    document.getElementById('f-setup').value = '';
+    document.getElementById('f-plan').value = '';
+    document.getElementById('f-notes').value = '';
+    document.getElementById('pnl-preview').textContent = '—';
+    document.getElementById('pnl-preview').className = 'pnl-preview-value';
+    setDir('long'); setGrade(''); setEmo('');
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeLogModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function closeModal(e) { if (e.target.id === 'modal-overlay') closeLogModal(); }
+
+  function setDir(d) {
+    selectedDir = d;
+    document.getElementById('dir-long').className = 'dir-btn' + (d==='long' ? ' active-long' : '');
+    document.getElementById('dir-short').className = 'dir-btn' + (d==='short' ? ' active-short' : '');
+    updatePnlPreview();
+  }
+
+  function setGrade(g) {
+    selectedGrade = g;
+    document.querySelectorAll('.grade-btn').forEach(b => b.classList.toggle('sel', b.dataset.grade === g));
+  }
+
+  function setEmo(e) {
+    selectedEmo = e;
+    document.querySelectorAll('.emo-btn').forEach(b => b.classList.toggle('sel', b.dataset.emo === e));
+  }
+
+  function updatePnlPreview() {
+    const entry = parseFloat(document.getElementById('f-entry').value);
+    const exit = parseFloat(document.getElementById('f-exit').value);
+    const shares = parseFloat(document.getElementById('f-shares').value);
+    const el = document.getElementById('pnl-preview');
+    if (isNaN(entry) || isNaN(exit) || isNaN(shares)) { el.textContent = '—'; el.className = 'pnl-preview-value'; return; }
+    const pnl = (selectedDir === 'long' ? exit - entry : entry - exit) * shares;
+    el.textContent = fmtSign(parseFloat(pnl.toFixed(2)));
+    el.className = 'pnl-preview-value ' + (pnl >= 0 ? 'pos' : 'neg');
+  }
+
+  async function submitTrade() {
+    const ticker = document.getElementById('f-ticker').value.trim();
+    const entry = document.getElementById('f-entry').value;
+    const exit = document.getElementById('f-exit').value;
+    const shares = document.getElementById('f-shares').value;
+    if (!ticker || !entry || !exit || !shares) { setStatus('Fill in ticker, entry, exit, and shares.'); return; }
+
+    const payload = {
+      date: document.getElementById('f-date').value,
+      ticker, direction: selectedDir, entry, exit, shares,
+      stop: document.getElementById('f-stop').value || null,
+      setup: document.getElementById('f-setup').value.trim(),
+      plan: document.getElementById('f-plan').value.trim(),
+      notes: document.getElementById('f-notes').value.trim(),
+      grade: selectedGrade,
+      emotion: selectedEmo,
+    };
+
+    try {
+      const res = await fetch('/api/trade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const { ok, trade, stats, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      closeLogModal();
+      tradingStats = stats;
+      renderTrading(stats);
+      renderCalendar();
+      setStatus(`Trade logged: ${trade.ticker} ${trade.outcome.toUpperCase()} ${trade.pnl >= 0 ? '+' : ''}$${trade.pnl.toFixed(2)}`);
+    } catch(e) { setStatus('Submit error: ' + e.message); }
+  }
+
+  function setStatus(msg) { document.getElementById('status-bar').innerHTML = msg ? `<span>${msg}</span>` : ''; }
+
+  // ── Init ──
+  load();
+  loadGoals();
+  loadAppleCard();
+  loadTrading();
+</script>
+</body>
+</html>

@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "dashboard": "node dashboard/server.js",
+    "apple:import": "node projects/finance/apple-card/import.js",
+    "trade:log": "node projects/trading-bot/journal/log.js",
     "plaid:link": "node projects/finance/plaid/link.js",
     "plaid:sync": "node projects/finance/plaid/sync.js",
     "finance:summary": "node projects/finance/summary.js"
   },
   "dependencies": {
-    "plaid": "^26.0.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "express": "^5.2.1",
+    "plaid": "^26.0.0"
   }
 }

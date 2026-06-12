@@ -92,12 +92,18 @@ const server = http.createServer(async (req, res) => {
     let body = '';
     req.on('data', (chunk) => (body += chunk));
     req.on('end', async () => {
-      const { public_token, institution } = JSON.parse(body);
-      const exchange = await client.itemPublicTokenExchange({ public_token });
-      const { access_token, item_id } = exchange.data;
-      saveAccessToken(institution, access_token, item_id);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: `Linked: ${institution}` }));
+      try {
+        const { public_token, institution } = JSON.parse(body);
+        const exchange = await client.itemPublicTokenExchange({ public_token });
+        const { access_token, item_id } = exchange.data;
+        saveAccessToken(institution, access_token, item_id);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: `Linked: ${institution}` }));
+      } catch (err) {
+        console.error('Exchange error:', err?.response?.data || err.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Error: ' + (err?.response?.data?.error_message || err.message) }));
+      }
     });
   } else {
     res.writeHead(404);
