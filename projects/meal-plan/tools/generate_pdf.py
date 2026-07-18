@@ -127,9 +127,9 @@ def recipe_detail_section(day_data: dict, story: list):
     story.append(Paragraph("Recipe Details", H3))
     for meal in day_data.get("meals", []):
         name = meal.get("recipe_name", "")
-        batch = meal.get("batch_cook_note", "")
+        prep_note = meal.get("prep_ahead_note", "")
         story.append(Paragraph(f"<b>{meal.get('meal_type','').replace('_',' ').title()}: {name}</b>"
-                               + (f" <i>({batch})</i>" if batch else ""), BODY))
+                               + (f" <i>({prep_note})</i>" if prep_note else ""), BODY))
 
         ingredients = meal.get("ingredients", [])
         if ingredients:

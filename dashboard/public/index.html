@@ -182,6 +182,18 @@
     .grade-D { color: #c17d42; border: 1px solid rgba(193,125,66,.4); }
     .grade-F { color: var(--red); border: 1px solid rgba(181,87,60,.4); }
 
+    /* ── Inventory ── */
+    .exp-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-left: 6px; }
+    .exp-fresh { color: var(--green); border: 1px solid rgba(127,150,112,.4); }
+    .exp-expiring_soon { color: var(--yellow); border: 1px solid rgba(208,164,88,.4); }
+    .exp-expired { color: var(--red); border: 1px solid rgba(181,87,60,.4); }
+    .inv-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; gap: 8px; }
+    .inv-row:last-child { border-bottom: none; }
+    .inv-item { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .inv-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .inv-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 2px; cursor: pointer; }
+    .inv-btn:hover { border-color: var(--accent); color: var(--accent); }
+
     /* ── Log Trade Modal ── */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
@@ -530,6 +542,13 @@
   <button class="btn btn-primary" id="meal-generate-btn" onclick="generateMealPlan()">Generate This Week</button>
 </div>
 <div class="grid">
+
+  <div class="card full" id="inventory-card">
+    <div class="card-title">Fridge / Pantry Inventory</div>
+    <textarea id="inv-update-text" placeholder="e.g. used the chicken thighs, milk went bad, grabbed a dozen eggs and 2lbs ground beef" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="updateInventory()">Update Inventory</button>
+    <div id="inventory-content" style="margin-top:12px"></div>
+  </div>
 
   <div class="card" id="meal-empty-card">
     <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes 30–60 seconds.</div>
@@ -1106,7 +1125,10 @@
       return `<div class="section-sub">${label}</div>` + items.map(i =>
         `<div class="tx-row" style="grid-template-columns:1fr 100px 80px"><span class="tx-name">${i.item}</span><span class="tx-date">${i.quantity ?? ''} ${i.unit ?? ''}</span><span class="tx-amt">$${(i.estimated_cost_usd ?? 0).toFixed(2)}</span></div>`
       ).join('');
-    }).join('');
+    }).join('') + ((d.used_from_inventory || []).length
+      ? `<div class="section-sub" style="margin-top:10px">Used from inventory this week</div>` +
+        d.used_from_inventory.map(i => `<div class="hint">${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}</div>`).join('')
+      : '');
 
     document.getElementById('meal-days-content').innerHTML = (d.days || []).map((day, idx) => {
       const dt = day.daily_totals || {};
@@ -1165,6 +1187,78 @@
     }
   }
 
+  // ── Inventory ──
+  async function loadInventory() {
+    const { ok, data } = await fetch('/api/inventory').then(r => r.json());
+    if (!ok) return;
+    renderInventory(data || []);
+  }
+
+  function renderInventory(items) {
+    const groceryLabels = { proteins: 'Proteins', produce: 'Produce', dairy: 'Dairy', grains: 'Grains', pantry: 'Pantry', frozen: 'Frozen', other: 'Other' };
+    const badgeLabel = { fresh: 'fresh', expiring_soon: 'expiring soon', expired: 'expired' };
+
+    if (!items.length) {
+      document.getElementById('inventory-content').innerHTML = '<div class="hint">No items tracked yet — add some above.</div>';
+      return;
+    }
+
+    const byCategory = {};
+    for (const i of items) (byCategory[i.category] ??= []).push(i);
+
+    document.getElementById('inventory-content').innerHTML = Object.entries(groceryLabels).map(([key, label]) => {
+      const rows = byCategory[key] || [];
+      if (!rows.length) return '';
+      return `<div class="section-sub">${label}</div>` + rows.map(i => `
+        <div class="inv-row">
+          <span class="inv-item">${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}<span class="exp-badge exp-${i.status}">${badgeLabel[i.status] ?? i.status}</span></span>
+          <span class="inv-actions">
+            <button class="inv-btn" onclick="removeInventoryItem('${i.id}')">Used</button>
+            <button class="inv-btn" onclick="removeInventoryItem('${i.id}')">Toss</button>
+          </span>
+        </div>`).join('');
+    }).join('');
+  }
+
+  async function updateInventory() {
+    const input = document.getElementById('inv-update-text');
+    const text = input.value.trim();
+    if (!text) return;
+    setStatus('Updating inventory...');
+    try {
+      const res = await fetch('/api/inventory/update', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const { ok, items, changes, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      input.value = '';
+      renderInventory(items || []);
+      const added = (changes?.added || []).map(a => `${a.quantity ?? ''} ${a.unit ?? ''} ${a.item}`.trim()).join(', ');
+      const removed = (changes?.removed || []).map(r => r.item).join(', ');
+      const parts = [];
+      if (added) parts.push('Added: ' + added);
+      if (removed) parts.push('Removed: ' + removed);
+      setStatus(parts.length ? parts.join(' · ') : 'No changes detected.');
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
+  async function removeInventoryItem(id) {
+    try {
+      const res = await fetch('/api/inventory/remove', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const { ok, items, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      renderInventory(items || []);
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
   // ── Sync label ──
   function updateSyncLabel(synced_at) {
     const el = document.getElementById('sync-time');
@@ -1191,7 +1285,7 @@
     goals:       () => loadGoals(),
     income:      () => loadIncome(),
     trading:     () => loadTrading(),
-    'meal-plan': () => loadMealPlan(),
+    'meal-plan': () => { loadMealPlan(); loadInventory(); },
   };
 
   function connectSSE() {
@@ -1211,6 +1305,7 @@
   loadTrading();
   loadIncome();
   loadMealPlan();
+  loadInventory();
   connectSSE();
   setTimeout(plaidAutoSync, 5 * 60 * 1000);
 </script>

@@ -16,6 +16,7 @@ const APPLE_CARD_FILE = path.join(ROOT, 'projects/finance/data/apple_card.json')
 const INCOME_LOG_FILE = path.join(ROOT, 'income/income-log.md');
 const MEAL_PLAN_FILE = path.join(ROOT, 'projects/meal-plan/data/meal_plan.json');
 const MEAL_TRACKER_FILE = path.join(ROOT, 'projects/meal-plan/data/tracker.json');
+const INVENTORY_FILE = path.join(ROOT, 'projects/meal-plan/data/inventory.json');
 
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
   ? Buffer.from(`${process.env.DASHBOARD_USER}:${process.env.DASHBOARD_PASS}`).toString('base64')
@@ -317,6 +318,22 @@ function loadMealTracker() {
   try { return JSON.parse(readFileSync(MEAL_TRACKER_FILE, 'utf8')); } catch (_) { return []; }
 }
 
+function loadInventory() {
+  if (!existsSync(INVENTORY_FILE)) return [];
+  try { return JSON.parse(readFileSync(INVENTORY_FILE, 'utf8')); } catch (_) { return []; }
+}
+
+function classifyExpiration(expiresOn) {
+  if (!expiresOn) return 'fresh';
+  const exp = new Date(expiresOn + 'T00:00:00');
+  if (isNaN(exp)) return 'fresh';
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const daysLeft = Math.round((exp - today) / (1000 * 60 * 60 * 24));
+  if (daysLeft < 0) return 'expired';
+  if (daysLeft <= 2) return 'expiring_soon';
+  return 'fresh';
+}
+
 function buildMealPlanData() {
   if (!existsSync(MEAL_PLAN_FILE)) return null;
   let plan;
@@ -343,6 +360,7 @@ function buildMealPlanData() {
     macro_targets: plan.macro_targets,
     estimated_weekly_cost_usd: plan.estimated_weekly_cost_usd,
     grocery_list: plan.grocery_list,
+    used_from_inventory: plan.used_from_inventory || [],
     days,
     current_feedback: currentEntry,
     history,
@@ -420,6 +438,38 @@ app.post('/api/meal-plan/generate', (_req, res) => {
   }
 });
 
+app.get('/api/inventory', (_req, res) => {
+  const items = loadInventory().map((i) => ({ ...i, status: classifyExpiration(i.expires_on) }));
+  res.json({ ok: true, data: items });
+});
+
+app.post('/api/inventory/update', (req, res) => {
+  const text = (req.body.text || '').trim();
+  if (!text) return res.status(400).json({ ok: false, error: 'text is required.' });
+
+  execFile('python3', ['projects/meal-plan/tools/inventory.py', 'update', text],
+    { cwd: ROOT, timeout: 60000, maxBuffer: 2 * 1024 * 1024 },
+    (err, stdout) => {
+      if (err) return res.status(500).json({ ok: false, error: err.message });
+      let parsed;
+      try { parsed = JSON.parse(stdout); } catch (_) {
+        return res.status(500).json({ ok: false, error: 'Could not parse inventory response.' });
+      }
+      if (parsed.error) return res.status(500).json({ ok: false, error: parsed.error });
+      res.json({ ok: true, items: parsed.items, changes: parsed.changes });
+    });
+});
+
+app.post('/api/inventory/remove', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const items = loadInventory().filter((i) => i.id !== id);
+  mkdirSync(path.dirname(INVENTORY_FILE), { recursive: true });
+  writeFileSync(INVENTORY_FILE, JSON.stringify(items, null, 2));
+  res.json({ ok: true, items: items.map((i) => ({ ...i, status: classifyExpiration(i.expires_on) })) });
+});
+
 app.post('/api/meal-plan/feedback', (req, res) => {
   const { week_of, actual_cost, rating, notes } = req.body;
   if (!week_of) return res.status(400).json({ ok: false, error: 'week_of is required.' });
@@ -455,6 +505,29 @@ function runClaude(message, sessionId) {
   });
 }
 
+// Narrowly-scoped side-effect parsers the general chat also calls alongside its normal
+// read-only reply — the chat model itself never gets broader file-write tool access. Each
+// one is a deterministic, already-existing safe write path (same as the dashboard's own
+// buttons/forms use); the chat is just another entry point into the same code.
+function runPythonAction(scriptArgs) {
+  return new Promise((resolve) => {
+    execFile('python3', scriptArgs, { cwd: ROOT, timeout: 60000, maxBuffer: 2 * 1024 * 1024 },
+      (err, stdout) => {
+        if (err) return resolve(null);
+        try {
+          const parsed = JSON.parse(stdout);
+          resolve(parsed.error ? null : parsed);
+        } catch (_) { resolve(null); }
+      });
+  });
+}
+
+const runInventoryUpdate = (message) =>
+  runPythonAction(['projects/meal-plan/tools/inventory.py', 'update', message]);
+
+const runFeedbackUpdate = (message) =>
+  runPythonAction(['projects/meal-plan/tools/track.py', 'chat-update', message]);
+
 app.post('/api/chat', async (req, res) => {
   const message = (req.body.message || '').trim();
   if (!message) return res.status(400).json({ ok: false, error: 'Message is empty.' });
@@ -462,12 +535,38 @@ app.post('/api/chat', async (req, res) => {
 
   chatBusy = true;
   try {
-    const result = await runClaude(message, chatSessionId);
-    chatSessionId = result.session_id;
-    if (result.is_error) {
-      return res.status(500).json({ ok: false, error: result.result || 'Compass hit an error.' });
+    const [chatResult, inventoryResult, feedbackResult] = await Promise.all([
+      runClaude(message, chatSessionId),
+      runInventoryUpdate(message),
+      runFeedbackUpdate(message),
+    ]);
+    chatSessionId = chatResult.session_id;
+    if (chatResult.is_error) {
+      return res.status(500).json({ ok: false, error: chatResult.result || 'Compass hit an error.' });
     }
-    res.json({ ok: true, reply: result.result, cost: result.total_cost_usd });
+
+    let reply = chatResult.result;
+    const notes = [];
+
+    const changes = inventoryResult?.changes;
+    if (changes && (changes.added?.length || changes.removed?.length)) {
+      const parts = [];
+      if (changes.added.length) parts.push('added ' + changes.added.map((a) => a.item).join(', '));
+      if (changes.removed.length) parts.push('removed ' + changes.removed.map((r) => r.item).join(', '));
+      notes.push(`Inventory updated — ${parts.join('; ')}.`);
+    }
+
+    const feedback = feedbackResult?.changes;
+    if (feedback) {
+      const parts = [];
+      if (feedback.actual_cost != null) parts.push(`cost $${feedback.actual_cost}`);
+      if (feedback.rating != null) parts.push(`rating ${feedback.rating}/5`);
+      if (parts.length) notes.push(`Meal-plan feedback logged — ${parts.join(', ')}.`);
+    }
+
+    if (notes.length) reply += `\n\n(${notes.join(' ')})`;
+
+    res.json({ ok: true, reply, cost: chatResult.total_cost_usd });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   } finally {

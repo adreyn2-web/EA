@@ -14,13 +14,37 @@ Reads/writes projects/meal-plan/data/tracker.json:
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
+COMPASS_ROOT = ROOT.parent.parent
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
 TRACKER_PATH = DATA_DIR / "tracker.json"
+MEAL_PLAN_PATH = DATA_DIR / "meal_plan.json"
+
+FEEDBACK_UPDATE_PROMPT = """A home cook is chatting with a general assistant, not filling out a
+dedicated feedback form. Extract meal-plan feedback from their message, if any is present.
+
+MESSAGE:
+{text}
+
+Return ONLY this JSON, no prose, no markdown fences:
+{{"actual_cost": <number or null>, "rating": <integer 1-5 or null>, "notes": <short string or null>}}
+
+Rules:
+- Only fill a field if the message clearly states it (a dollar amount actually spent on
+  groceries this week -> actual_cost; a 1-5 satisfaction/quality rating of this week's meals ->
+  rating).
+- "notes": ONLY genuine feedback/opinion about how the meals turned out (too much prep time,
+  loved the variety, didn't like a specific recipe, etc.) — never logistics like what was
+  bought/used/thrown out (that's a separate inventory system, not feedback).
+- This message may not be about meal-plan feedback at all (e.g. a question about trading,
+  finances, groceries/inventory, or anything else unrelated to how this week's meals actually
+  went). If nothing here is genuine meal feedback, return all three fields as null.
+- Never guess a number that wasn't stated."""
 
 
 def load() -> list[dict]:
@@ -61,6 +85,67 @@ def record_feedback(week_of: str, estimated_cost: float | None = None,
     return entry
 
 
+def current_week_of() -> str | None:
+    if not MEAL_PLAN_PATH.exists():
+        return None
+    with open(MEAL_PLAN_PATH) as f:
+        return json.load(f).get("week_of")
+
+
+def _strip_fences(raw: str) -> str:
+    raw = raw.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+        raw = raw.strip()
+    return raw
+
+
+def parse_feedback_update(free_text: str, retry: bool = False) -> dict:
+    import anthropic
+    from dotenv import load_dotenv
+
+    load_dotenv(COMPASS_ROOT / ".env")
+    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+    raw = ""
+    with client.messages.stream(
+        model="claude-opus-4-8",
+        max_tokens=512,
+        system="You extract structured meal-feedback fields from chat messages. Output only valid JSON.",
+        messages=[{"role": "user", "content": FEEDBACK_UPDATE_PROMPT.format(text=free_text)}],
+    ) as stream:
+        for chunk in stream.text_stream:
+            raw += chunk
+
+    try:
+        return json.loads(_strip_fences(raw))
+    except json.JSONDecodeError:
+        if not retry:
+            return parse_feedback_update(free_text, retry=True)
+        raise
+
+
+def update_from_chat(free_text: str) -> dict:
+    week_of = current_week_of()
+    if not week_of:
+        return {"changes": None}
+
+    parsed = parse_feedback_update(free_text)
+    actual_cost = parsed.get("actual_cost")
+    rating = parsed.get("rating")
+    notes = parsed.get("notes")
+    if actual_cost is None and rating is None and not notes:
+        return {"changes": None}
+
+    record_feedback(week_of, actual_cost=actual_cost, rating=rating, notes=notes or "")
+    # Report only what THIS message actually set, not the full merged history —
+    # otherwise a message that only adds a note would misleadingly imply it also
+    # just set cost/rating if those were already recorded from a prior update.
+    return {"changes": {"week_of": week_of, "actual_cost": actual_cost, "rating": rating, "notes": notes}}
+
+
 def feedback_summary_for_prompt() -> str:
     """Summarize recent history for the meal-plan generation prompt."""
     entries = load()
@@ -90,7 +175,19 @@ def feedback_summary_for_prompt() -> str:
 def main():
     if len(sys.argv) < 2:
         print("Usage: track.py <week_of> [--actual-cost X] [--rating N] [--notes '...']")
+        print("   or: track.py chat-update '<free text>'")
         sys.exit(1)
+
+    if sys.argv[1] == "chat-update":
+        if len(sys.argv) < 3:
+            print(json.dumps({"error": "chat-update requires free text"}))
+            sys.exit(1)
+        try:
+            print(json.dumps(update_from_chat(sys.argv[2])))
+        except Exception as e:
+            print(json.dumps({"error": str(e)}))
+            sys.exit(1)
+        return
 
     week_of = sys.argv[1]
     kwargs = {}
