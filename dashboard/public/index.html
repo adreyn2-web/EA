@@ -3,50 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EA — Executive Assistant</title>
+  <title>COMPASS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0c0c0c;
-      --surface: #141414;
-      --surface2: #1a1a1a;
-      --border: #222;
-      --border2: #2a2a2a;
-      --text: #e8e8e8;
-      --muted: #555;
-      --accent: #fff;
-      --green: #4ade80;
-      --red: #f87171;
-      --yellow: #facc15;
-      --blue: #60a5fa;
-      --purple: #a78bfa;
+      --bg: #1b1714;
+      --surface: #221e19;
+      --surface2: #2b2620;
+      --border: #362f27;
+      --border2: #443a30;
+      --text: #ece3d3;
+      --muted: #8d8071;
+      --accent: #c99552;
+      --green: #7f9670;
+      --red: #b5573c;
+      --yellow: #d0a458;
+      --blue: #6f8598;
+      --purple: #8a6f7d;
+      --font-display: 'Shippori Mincho', serif;
     }
 
-    body { background: var(--bg); color: var(--text); font-family: 'SF Mono','Fira Code','Menlo',monospace; font-size: 13px; line-height: 1.6; min-height: 100vh; }
+    body {
+      background:
+        radial-gradient(rgba(236,227,211,.015) 1px, transparent 1px) 0 0/3px 3px,
+        var(--bg);
+      color: var(--text); font-family: 'SF Mono','Fira Code','Menlo',monospace; font-size: 13px; line-height: 1.6; min-height: 100vh;
+    }
 
     /* ── Header ── */
-    header { padding: 20px 32px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    header h1 { font-size: 14px; font-weight: 600; letter-spacing: 0.1em; color: var(--accent); }
-    header .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 6px 14px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: border-color .15s, color .15s; }
-    .btn:hover { border-color: #444; color: var(--accent); }
+    header { padding: 28px 36px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .wordmark { display: flex; align-items: center; gap: 12px; }
+    .enso { width: 26px; height: 26px; flex-shrink: 0; opacity: .85; }
+    header h1 { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); }
+    header .sub { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: .02em; }
+    .btn { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 7px 16px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 2px; transition: border-color .15s, color .15s; }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
     .btn:disabled { opacity: .4; cursor: default; }
     .btn-primary { border-color: var(--accent); color: var(--accent); }
-    .btn-primary:hover { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: var(--accent); color: var(--bg); }
 
     /* ── Section dividers ── */
-    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; padding: 20px 32px 8px; }
+    .section-label { font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); padding: 26px 32px 10px; }
+
+    /* ── Main tab nav ── */
+    .main-tabs { display: flex; gap: 4px; justify-content: center; padding: 30px 32px 0; border-top: 1px solid var(--border); margin-top: 10px; }
+    .main-tab { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .04em; padding: 14px 20px 10px; cursor: pointer; transition: color .15s, border-color .15s; }
+    .main-tab:hover { color: var(--text); }
+    .main-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
     /* ── Grid ── */
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; padding: 8px 32px 24px; }
     .grid.trading-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 
     /* ── Cards ── */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 18px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 20px; }
     .card.span2 { grid-column: span 2; }
     .card.full { grid-column: 1 / -1; }
-    .card-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
     .placeholder { border: 1px dashed var(--border); background: transparent; opacity: .35; }
     .coming-soon { color: var(--muted); font-size: 12px; padding: 8px 0; }
 
@@ -83,11 +102,17 @@
     .spending-amt { color: var(--red); font-size: 12px; }
 
     /* ── Tx rows ── */
-    .tx-row { display: grid; grid-template-columns: 76px 1fr 86px; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+    .tx-row { display: grid; grid-template-columns: 76px 1fr 108px 72px 86px; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; align-items: baseline; }
     .tx-row:last-child { border-bottom: none; }
+    .tx-row.pending-row { opacity: .75; }
     .tx-date { color: var(--muted); }
     .tx-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tx-acct { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tx-amt { text-align: right; font-weight: 600; }
+    .tx-bal { text-align: right; font-size: 11px; color: var(--muted); }
+    .tx-section-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 10px 0 5px; border-bottom: 1px solid var(--border2); margin-bottom: 2px; display: grid; grid-template-columns: 76px 1fr 108px 72px 86px; gap: 8px; }
+    .tx-section-label.first { padding-top: 0; }
+    .pending-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .08em; color: var(--yellow); border: 1px solid rgba(208,164,88,.3); border-radius: 3px; padding: 0 4px; margin-left: 4px; vertical-align: middle; }
 
     /* ── Goals ── */
     .section-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 10px 0 5px; }
@@ -104,7 +129,7 @@
 
     /* ── Trading stat pills ── */
     .t-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
-    .t-stat { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 12px; }
+    .t-stat { background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px; padding: 10px 12px; }
     .t-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .t-stat-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
 
@@ -118,8 +143,8 @@
     .cal-day { border-radius: 3px; padding: 4px 2px; min-height: 42px; text-align: center; font-size: 10px; cursor: default; position: relative; transition: opacity .15s; }
     .cal-day.empty { background: transparent; }
     .cal-day.no-trade { background: var(--surface2); color: var(--muted); }
-    .cal-day.win-day { background: rgba(74,222,128,.15); border: 1px solid rgba(74,222,128,.25); }
-    .cal-day.loss-day { background: rgba(248,113,113,.15); border: 1px solid rgba(248,113,113,.25); }
+    .cal-day.win-day { background: rgba(127,150,112,.15); border: 1px solid rgba(127,150,112,.25); }
+    .cal-day.loss-day { background: rgba(181,87,60,.15); border: 1px solid rgba(181,87,60,.25); }
     .cal-day.today { outline: 1px solid var(--accent); }
     .cal-day-num { color: var(--muted); font-size: 9px; }
     .cal-day-pnl { font-weight: 700; font-size: 10px; margin-top: 2px; }
@@ -143,7 +168,7 @@
     .trade-item:last-child { border-bottom: none; }
     .trade-item:hover .trade-summary { color: var(--accent); }
     .trade-summary { display: grid; grid-template-columns: 72px 80px 1fr 36px 80px; gap: 8px; align-items: baseline; font-size: 12px; }
-    .trade-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 4px; font-size: 11px; }
+    .trade-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 2px; font-size: 11px; }
     .trade-detail.open { display: block; }
     .trade-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 8px; }
     .trade-detail-label { color: var(--muted); }
@@ -151,16 +176,16 @@
     .trade-note-block .note-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
     .trade-note-block .note-text { color: var(--text); line-height: 1.7; white-space: pre-wrap; }
     .grade-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
-    .grade-A { color: var(--green); border: 1px solid rgba(74,222,128,.4); }
-    .grade-B { color: var(--blue); border: 1px solid rgba(96,165,250,.4); }
-    .grade-C { color: var(--yellow); border: 1px solid rgba(250,204,21,.4); }
-    .grade-D { color: #fb923c; border: 1px solid rgba(251,146,60,.4); }
-    .grade-F { color: var(--red); border: 1px solid rgba(248,113,113,.4); }
+    .grade-A { color: var(--green); border: 1px solid rgba(127,150,112,.4); }
+    .grade-B { color: var(--blue); border: 1px solid rgba(111,133,152,.4); }
+    .grade-C { color: var(--yellow); border: 1px solid rgba(208,164,88,.4); }
+    .grade-D { color: #c17d42; border: 1px solid rgba(193,125,66,.4); }
+    .grade-F { color: var(--red); border: 1px solid rgba(181,87,60,.4); }
 
     /* ── Log Trade Modal ── */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 3px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px; }
     .modal-title { font-size: 13px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
     .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
     .modal-close:hover { color: var(--accent); }
@@ -169,26 +194,54 @@
     .form-row.cols3 { grid-template-columns: 1fr 1fr 1fr; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .form-input { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 4px; outline: none; }
+    .form-input { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 2px; outline: none; }
     .form-input:focus { border-color: #444; }
     textarea.form-input { resize: vertical; min-height: 70px; }
     .dir-toggle { display: flex; gap: 6px; }
-    .dir-btn { flex: 1; padding: 7px; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; letter-spacing: .06em; }
-    .dir-btn.active-long { background: rgba(74,222,128,.12); border-color: rgba(74,222,128,.4); color: var(--green); }
-    .dir-btn.active-short { background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.4); color: var(--red); }
+    .dir-btn { flex: 1; padding: 7px; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; letter-spacing: .06em; }
+    .dir-btn.active-long { background: rgba(127,150,112,.12); border-color: rgba(127,150,112,.4); color: var(--green); }
+    .dir-btn.active-short { background: rgba(181,87,60,.12); border-color: rgba(181,87,60,.4); color: var(--red); }
     .grade-btns { display: flex; gap: 6px; }
-    .grade-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 12px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; }
-    .grade-btn.sel { border-color: #aaa; color: var(--accent); background: rgba(255,255,255,.06); }
+    .grade-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 12px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; }
+    .grade-btn.sel { border-color: var(--accent); color: var(--accent); background: rgba(236,227,211,.08); }
     .emo-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-    .emo-btn { padding: 5px 10px; font-family: inherit; font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; }
-    .emo-btn.sel { border-color: var(--blue); color: var(--blue); background: rgba(96,165,250,.08); }
-    .pnl-preview { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .emo-btn { padding: 5px 10px; font-family: inherit; font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; }
+    .emo-btn.sel { border-color: var(--blue); color: var(--blue); background: rgba(111,133,152,.08); }
+    .pnl-preview { background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
     .pnl-preview-label { color: var(--muted); font-size: 11px; }
     .pnl-preview-value { font-weight: 700; font-size: 16px; }
     .form-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
+    /* ── Income ── */
+    .income-tabs { display: flex; gap: 6px; }
+    .income-tab { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 2px; cursor: pointer; }
+    .income-tab.active { border-color: var(--accent); color: var(--accent); }
+    .income-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .income-table th { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; text-align: left; padding: 4px 8px 4px 0; border-bottom: 1px solid var(--border); font-weight: 600; }
+    .income-table th.right, .income-table td.right { text-align: right; }
+    .income-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--border); }
+    .income-table tbody tr:last-child td { border-bottom: none; }
+    .income-bar { height: 3px; background: var(--green); border-radius: 2px; opacity: .5; }
+
+    /* ── Compass chat (hero) ── */
+    .chat-hero { max-width: 760px; margin: 12px auto 8px; padding: 0 32px; }
+    .chat-hero-label { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .chat-log { display: flex; flex-direction: column; gap: 18px; min-height: 260px; max-height: 480px; overflow-y: auto; padding: 4px 2px 8px; margin-bottom: 14px; }
+    .chat-msg { max-width: 84%; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .chat-msg.user { align-self: flex-end; background: rgba(201,149,82,.12); border: 1px solid rgba(201,149,82,.25); border-radius: 3px; padding: 10px 14px; }
+    .chat-msg.assistant { align-self: flex-start; border-left: 2px solid var(--border2); padding: 2px 0 2px 14px; }
+    .chat-msg.error { align-self: flex-start; border-left: 2px solid rgba(181,87,60,.5); padding: 2px 0 2px 14px; color: var(--red); }
+    .chat-cost { font-size: 9px; color: var(--muted); margin-top: 6px; }
+    .chat-empty { color: var(--muted); font-size: 13px; line-height: 1.7; padding: 24px 0; }
+    .chat-input-row { display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 14px; }
+    .chat-input-row input { flex: 1; background: transparent; border: none; border-bottom: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 14px; padding: 8px 4px; outline: none; }
+    .chat-input-row input:focus { border-color: var(--accent); }
+    .chat-input-row input:disabled { opacity: .5; }
+
     .status-bar { font-size: 11px; color: var(--muted); padding: 4px 32px 20px; }
     .status-bar span { color: var(--text); }
+    .sync-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-right: 5px; vertical-align: middle; transition: background .3s; }
+    .sync-dot.active { background: var(--green); }
   </style>
 </head>
 <body>
@@ -306,15 +359,42 @@
 
 <!-- ── Header ── -->
 <header>
-  <div>
-    <h1>EA — EXECUTIVE ASSISTANT</h1>
-    <div class="sub" id="sync-time">Loading...</div>
+  <div class="wordmark">
+    <svg class="enso" viewBox="0 0 100 100" fill="none">
+      <path d="M50 8 C74 8 92 27 92 51 C92 73 75 90 53 92 C33 94 15 82 9 64" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>COMPASS</h1>
+      <div class="sub"><span class="sync-dot" id="sync-dot"></span><span id="sync-time">Loading...</span></div>
+    </div>
   </div>
   <button class="btn" id="sync-btn" onclick="syncNow()">Sync Accounts</button>
 </header>
 
+<!-- ── Compass Chat (hero) ── -->
+<div class="chat-hero">
+  <div class="chat-hero-label">
+    Compass
+    <button class="btn" onclick="resetChat()">New Conversation</button>
+  </div>
+  <div class="chat-log" id="chat-log">
+    <div class="chat-empty" id="chat-empty">Ask Compass anything — it reads your real context, finances, and trading data. Read-only for now.</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chat-input" placeholder="Message Compass..." onkeydown="if(event.key==='Enter')sendChat()" />
+    <button class="btn btn-primary" id="chat-send-btn" onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+<!-- ── Main tabs ── -->
+<div class="main-tabs">
+  <button class="main-tab active" data-main-tab="finance" onclick="switchMainTab('finance')">Finance</button>
+  <button class="main-tab" data-main-tab="trading" onclick="switchMainTab('trading')">Trading</button>
+  <button class="main-tab" data-main-tab="more" onclick="switchMainTab('more')">More</button>
+</div>
+
 <!-- ── Finance ── -->
-<div class="section-label">Finance</div>
+<div class="tab-panel active" id="tab-finance">
 <div class="grid">
   <div class="card">
     <div class="card-title">Cash</div>
@@ -333,20 +413,36 @@
     <div id="spending-content">Loading...</div>
   </div>
   <div class="card">
-    <div class="card-title">Apple Card</div>
-    <div id="apple-content">Loading...</div>
-  </div>
-  <div class="card">
     <div class="card-title">Goals — 2026</div>
     <div id="goals-content">Loading...</div>
+  </div>
+  <div class="card" id="income-overview-card">
+    <div class="card-title">Income Overview</div>
+    <div id="income-overview-content">Loading...</div>
+  </div>
+  <div class="card" id="income-monthly-card">
+    <div class="card-title">Monthly Net</div>
+    <div id="income-monthly-content">Loading...</div>
+  </div>
+  <div class="card full" id="income-history-card">
+    <div class="card-title">
+      Pay History
+      <div class="income-tabs">
+        <button class="income-tab active" data-tab="casino" onclick="switchPayTab('casino')">Casino</button>
+        <button class="income-tab" data-tab="roots" onclick="switchPayTab('roots')">Roots 95</button>
+      </div>
+    </div>
+    <div id="income-history-content">Loading...</div>
   </div>
   <div class="card full">
     <div class="card-title">Recent Transactions</div>
     <div id="tx-content">Loading...</div>
   </div>
 </div>
+</div>
 
 <!-- ── Trading Journal ── -->
+<div class="tab-panel" id="tab-trading">
 <div class="section-label" style="display:flex;justify-content:space-between;align-items:center;padding-right:32px">
   Trading Journal
   <button class="btn btn-primary" onclick="openLogModal()">+ Log Trade</button>
@@ -425,14 +521,46 @@
   </div>
 
 </div>
+</div>
 
-<!-- ── Other ── -->
-<div class="section-label">Other</div>
+<!-- ── More ── -->
+<div class="tab-panel" id="tab-more">
+<div class="section-label" style="display:flex;justify-content:space-between;align-items:center;padding-right:32px">
+  Health — Meal Plan
+  <button class="btn btn-primary" id="meal-generate-btn" onclick="generateMealPlan()">Generate This Week</button>
+</div>
 <div class="grid">
-  <div class="card placeholder">
-    <div class="card-title">Health</div>
-    <div class="coming-soon">— coming soon —</div>
+
+  <div class="card" id="meal-empty-card">
+    <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes 30–60 seconds.</div>
   </div>
+
+  <div class="card" id="meal-targets-card" style="display:none">
+    <div class="card-title">Daily Targets — Week of <span id="meal-week-of"></span></div>
+    <div id="meal-targets-content"></div>
+  </div>
+
+  <div class="card" id="meal-feedback-card" style="display:none">
+    <div class="card-title">Log This Week</div>
+    <div id="meal-feedback-content"></div>
+  </div>
+
+  <div class="card" id="meal-history-card" style="display:none">
+    <div class="card-title">History</div>
+    <div id="meal-history-content"></div>
+  </div>
+
+  <div class="card full" id="meal-grocery-card" style="display:none">
+    <div class="card-title">Grocery List</div>
+    <div id="meal-grocery-content"></div>
+  </div>
+
+  <div class="card full" id="meal-days-card" style="display:none">
+    <div class="card-title">Meal Plan by Day</div>
+    <div id="meal-days-content"></div>
+  </div>
+
+</div>
 </div>
 
 <div class="status-bar" id="status-bar"></div>
@@ -445,6 +573,61 @@
   let selectedDir = 'long';
   let selectedGrade = '';
   let selectedEmo = '';
+
+  // ── Main tabs ──
+  function switchMainTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+    document.querySelectorAll('.main-tab').forEach(b => b.classList.toggle('active', b.dataset.mainTab === name));
+  }
+
+  // ── Compass chat ──
+  function appendChatMsg(role, text, cost) {
+    const empty = document.getElementById('chat-empty');
+    if (empty) empty.remove();
+    const log = document.getElementById('chat-log');
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    if (cost != null) {
+      const costEl = document.createElement('div');
+      costEl.className = 'chat-cost';
+      costEl.textContent = '$' + cost.toFixed(4);
+      div.appendChild(costEl);
+    }
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const btn = document.getElementById('chat-send-btn');
+    const message = input.value.trim();
+    if (!message) return;
+
+    appendChatMsg('user', message);
+    input.value = '';
+    input.disabled = true;
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message }) });
+      const { ok, reply, cost, error } = await res.json();
+      if (!ok) { appendChatMsg('error', error); return; }
+      appendChatMsg('assistant', reply, cost);
+    } catch (e) {
+      appendChatMsg('error', 'Error: ' + e.message);
+    } finally {
+      input.disabled = false;
+      btn.disabled = false;
+      input.focus();
+    }
+  }
+
+  async function resetChat() {
+    try { await fetch('/api/chat/reset', { method: 'POST' }); } catch (_) {}
+    const log = document.getElementById('chat-log');
+    log.innerHTML = '<div class="chat-empty" id="chat-empty">New conversation started.</div>';
+  }
 
   // ── Finance ──
   async function load() {
@@ -487,18 +670,34 @@
       <div class="stat-row"><span class="stat-label">Months left</span><span class="stat-value neutral">${d.monthsLeft.toFixed(1)}</span></div>
       <div class="stat-row"><span class="stat-label">Needed / month</span><span class="stat-value neutral">$${d.requiredMonthly.toFixed(2)}</span></div>`;
 
-    document.getElementById('debts-content').innerHTML = d.debts.map(debt =>
-      `<div class="debt-row"><span class="debt-priority">[${debt.priority}]</span><span class="debt-label">${debt.label}${debt.manual?'<span class="debt-manual">manual</span>':''}</span><span class="debt-apr">${debt.apr!=null?debt.apr+'%':'fixed'}</span><span class="debt-bal">${debt.balance!=null?'$'+debt.balance.toFixed(2):'N/A'}</span></div>`
-    ).join('') + `<div class="debt-row" style="margin-top:6px;font-weight:600"><span class="debt-priority"></span><span class="debt-label">Total</span><span class="debt-apr"></span><span class="debt-bal">$${d.totalDebt.toFixed(2)}</span></div>`;
+    document.getElementById('debts-content').innerHTML = d.debts.map(debt => {
+      const badge = debt.source === 'statement' ? '<span class="debt-manual">stmt</span>' : debt.source === 'unknown' ? '<span class="debt-manual">manual</span>' : '';
+      return `<div class="debt-row"><span class="debt-priority">[${debt.priority}]</span><span class="debt-label">${debt.label}${badge}</span><span class="debt-apr">${debt.apr!=null?debt.apr+'%':'fixed'}</span><span class="debt-bal">${debt.balance!=null?'$'+debt.balance.toFixed(2):'N/A'}</span></div>`;
+    }).join('') + `<div class="debt-row" style="margin-top:6px;font-weight:600"><span class="debt-priority"></span><span class="debt-label">Total</span><span class="debt-apr"></span><span class="debt-bal">$${d.totalDebt.toFixed(2)}</span></div>`;
 
     const maxS = d.spending[0]?.total ?? 1;
     document.getElementById('spending-content').innerHTML = d.spending.map(s =>
       `<div class="spending-row"><span class="spending-cat">${s.category.toLowerCase().replace(/_/g,' ')}</span><div class="spending-bar-wrap"><div class="spending-bar" style="width:${(s.total/maxS*100).toFixed(1)}%"></div></div><span class="spending-amt">$${s.total.toFixed(2)}</span></div>`
     ).join('');
 
-    document.getElementById('tx-content').innerHTML = d.recentTransactions.map(t =>
-      `<div class="tx-row"><span class="tx-date">${t.date}</span><span class="tx-name">${t.name}</span><span class="tx-amt ${t.amount>0?'neg':'pos'}">${t.amount>0?'-':'+'}$${Math.abs(t.amount).toFixed(2)}</span></div>`
-    ).join('');
+    const txData = d.recentTransactions;
+    const colHeaders = `<div class="tx-section-label first"><span>Date</span><span>Description</span><span>Account</span><span style="text-align:right">Amount</span><span style="text-align:right">Balance</span></div>`;
+
+    const renderTxRow = (t, cls = '') => {
+      const amtCls = t.amount > 0 ? 'neg' : 'pos';
+      const amtStr = `${t.amount > 0 ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}`;
+      const balStr = t.balance_after != null ? `$${Math.abs(t.balance_after).toFixed(2)}` : '—';
+      return `<div class="tx-row ${cls}"><span class="tx-date">${t.date}</span><span class="tx-name">${t.name}</span><span class="tx-acct">${t.account ?? ''}</span><span class="tx-amt ${amtCls}">${amtStr}</span><span class="tx-bal">${balStr}</span></div>`;
+    };
+
+    let txHtml = colHeaders;
+    if (txData.pending.length) {
+      txHtml += `<div class="tx-section-label"><span style="grid-column:1/-1;color:var(--yellow)">Pending <span style="font-size:9px">(${txData.pending.length})</span></span></div>`;
+      txHtml += txData.pending.map(t => renderTxRow(t, 'pending-row')).join('');
+      txHtml += `<div class="tx-section-label"><span style="grid-column:1/-1">Posted</span></div>`;
+    }
+    txHtml += txData.posted.map(t => renderTxRow(t)).join('');
+    document.getElementById('tx-content').innerHTML = txHtml;
 
     setStatus('');
   }
@@ -513,21 +712,6 @@
       html += items.map(i => `<div class="goal-row"><span class="goal-check ${i.done?'':'open'}">${i.done?'✓':'○'}</span><span class="goal-text ${i.done?'done':''}">${i.text}</span></div>`).join('');
     }
     document.getElementById('goals-content').innerHTML = html;
-  }
-
-  // ── Apple Card ──
-  async function loadAppleCard() {
-    const { ok, data } = await fetch('/api/apple-card').then(r => r.json());
-    const el = document.getElementById('apple-content');
-    if (!ok || !data) {
-      el.innerHTML = `<div class="stat-row"><span class="stat-label">Balance (manual)</span><span class="stat-value neg">$2,981.19</span></div>
-        <div class="hint" style="margin-top:10px">To import: iPhone → Wallet → Apple Card → Export Transactions<br>Then: <code>npm run apple:import -- ~/Downloads/AppleCard.csv 2981.19</code></div>`;
-      return;
-    }
-    el.innerHTML = `<div class="stat-row"><span class="stat-label">Balance</span><span class="stat-value neg">$${data.current_balance.toFixed(2)}</span></div>
-      <div class="stat-row"><span class="stat-label">APR</span><span class="stat-value neutral">25.49%</span></div>
-      <div class="stat-row" style="margin-bottom:10px"><span class="stat-label">Imported</span><span class="stat-value neutral">${new Date(data.imported_at).toLocaleDateString()}</span></div>
-      ${data.transactions.slice(0,8).map(t => `<div class="tx-row"><span class="tx-date">${t.date}</span><span class="tx-name">${t.name.slice(0,45)}</span><span class="tx-amt ${t.amount>0?'neg':'pos'}">${t.amount>0?'-':'+'}$${Math.abs(t.amount).toFixed(2)}</span></div>`).join('')}`;
   }
 
   // ── Trading ──
@@ -776,11 +960,259 @@
 
   function setStatus(msg) { document.getElementById('status-bar').innerHTML = msg ? `<span>${msg}</span>` : ''; }
 
+  // ── Income ──
+  let incomeData = null;
+  let payTab = 'casino';
+
+  async function loadIncome() {
+    const { ok, data } = await fetch('/api/income').then(r => r.json());
+    if (!ok || !data) {
+      ['income-overview-content', 'income-monthly-content', 'income-history-content'].forEach(id => {
+        document.getElementById(id).innerHTML = '<div class="hint">No income data found.</div>';
+      });
+      return;
+    }
+    incomeData = data;
+    renderIncomeOverview(data);
+    renderIncomeMonthly(data);
+    renderPayHistory(data);
+  }
+
+  function renderIncomeOverview(d) {
+    const t = d.totals;
+    const { casinoTips, casinoHourly, rootsTips, rootsHourly } = d.breakdown;
+    const totalTips = casinoTips + rootsTips;
+    const totalHourly = casinoHourly + rootsHourly;
+    const totalGross = totalTips + totalHourly;
+    const tipsPct = totalGross > 0 ? ((totalTips / totalGross) * 100).toFixed(0) : 0;
+
+    document.getElementById('income-overview-content').innerHTML = `
+      <div class="stat-row"><span class="stat-label">Total net (take-home)</span><span class="stat-value pos">$${(t['Grand total net (take-home)'] || 0).toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Total gross</span><span class="stat-value neutral">$${(t['Grand total gross'] || 0).toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Avg net / paycheck</span><span class="stat-value neutral">~$${Math.round(t['Avg net per paycheck'] || 0)}</span></div>
+      <div class="stat-row"><span class="stat-label">Avg net / month</span><span class="stat-value neutral">~$${Math.round(t['Avg net per month'] || 0)}</span></div>
+      <div class="stat-row" style="margin-top:6px"><span class="stat-label">Casino net</span><span class="stat-value neutral">$${(t['Casino net'] || 0).toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Roots 95 net</span><span class="stat-value neutral">$${(t['Roots 95 net'] || 0).toFixed(2)}</span></div>
+      <div class="stat-row" style="margin-top:6px"><span class="stat-label">Tips (${tipsPct}% of gross)</span><span class="stat-value neutral">$${totalTips.toFixed(2)}</span></div>
+      <div class="stat-row"><span class="stat-label">Base hourly wages</span><span class="stat-value neutral">$${totalHourly.toFixed(2)}</span></div>
+      <div class="stat-row" style="margin-top:6px"><span class="stat-label">Casino 401K match (YTD)</span><span class="stat-value pos">$${(t['Casino 401K employer match (YTD 2026)'] || 0).toFixed(2)}</span></div>`;
+  }
+
+  function renderIncomeMonthly(d) {
+    const maxNet = Math.max(...d.monthly.map(m => m.combinedNet), 1);
+    const rows = d.monthly.map(m => {
+      const barW = ((m.combinedNet / maxNet) * 100).toFixed(1);
+      return `<div class="spending-row">
+        <span class="spending-cat">${m.month}${m.partial ? ' *' : ''}</span>
+        <div class="spending-bar-wrap"><div class="income-bar" style="width:${barW}%"></div></div>
+        <span class="stat-value pos" style="font-size:12px">$${m.combinedNet.toFixed(2)}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('income-monthly-content').innerHTML = rows +
+      (d.monthly.some(m => m.partial) ? '<div style="font-size:10px;color:var(--muted);margin-top:6px">* partial month</div>' : '');
+  }
+
+  function switchPayTab(tab) {
+    payTab = tab;
+    document.querySelectorAll('.income-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    if (incomeData) renderPayHistory(incomeData);
+  }
+
+  function renderPayHistory(d) {
+    const rows = payTab === 'casino' ? d.casino : d.roots;
+    const totals = rows.reduce((acc, r) => {
+      acc.gross += r.gross; acc.net += r.net; acc.tips += r.tips; acc.hours += r.hours; return acc;
+    }, { gross: 0, net: 0, tips: 0, hours: 0 });
+
+    const tpct = (r) => r.gross > 0 ? ((r.tips / r.gross) * 100).toFixed(0) + '%' : '—';
+    const totalTpct = totals.gross > 0 ? ((totals.tips / totals.gross) * 100).toFixed(0) + '%' : '—';
+
+    const bodyRows = rows.map(r => `<tr>
+      <td>${r.payDate}</td>
+      <td style="color:var(--muted)">${r.period}</td>
+      <td class="right">$${r.gross.toFixed(2)}</td>
+      <td class="right pos">$${r.net.toFixed(2)}</td>
+      <td class="right" style="color:var(--muted)">$${r.tips.toFixed(2)}</td>
+      <td class="right" style="color:var(--muted)">${r.hours.toFixed(2)}</td>
+      <td class="right" style="color:var(--muted)">${tpct(r)}</td>
+    </tr>`).join('');
+
+    document.getElementById('income-history-content').innerHTML = `
+      <table class="income-table">
+        <thead><tr>
+          <th>Pay Date</th><th>Period</th><th class="right">Gross</th><th class="right">Net</th>
+          <th class="right">Tips</th><th class="right">Hours</th><th class="right">Tips %</th>
+        </tr></thead>
+        <tbody>
+          ${bodyRows}
+          <tr style="font-weight:600">
+            <td colspan="2" style="color:var(--muted)">Total</td>
+            <td class="right">$${totals.gross.toFixed(2)}</td>
+            <td class="right pos">$${totals.net.toFixed(2)}</td>
+            <td class="right" style="color:var(--muted)">$${totals.tips.toFixed(2)}</td>
+            <td class="right" style="color:var(--muted)">${totals.hours.toFixed(2)}</td>
+            <td class="right" style="color:var(--muted)">${totalTpct}</td>
+          </tr>
+        </tbody>
+      </table>`;
+  }
+
+  // ── Meal Plan ──
+  let mealPlanData = null;
+
+  async function loadMealPlan() {
+    const { ok, data } = await fetch('/api/meal-plan').then(r => r.json());
+    if (!ok || !data) {
+      document.getElementById('meal-empty-card').style.display = '';
+      ['meal-targets-card', 'meal-feedback-card', 'meal-history-card', 'meal-grocery-card', 'meal-days-card']
+        .forEach(id => document.getElementById(id).style.display = 'none');
+      return;
+    }
+    mealPlanData = data;
+    renderMealPlan(data);
+  }
+
+  function renderMealPlan(d) {
+    document.getElementById('meal-empty-card').style.display = 'none';
+    ['meal-targets-card', 'meal-feedback-card', 'meal-history-card', 'meal-grocery-card', 'meal-days-card']
+      .forEach(id => document.getElementById(id).style.display = '');
+
+    document.getElementById('meal-week-of').textContent = d.week_of;
+
+    const t = d.macro_targets || {};
+    document.getElementById('meal-targets-content').innerHTML = `
+      <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value neutral">${t.calories ?? '—'}</span></div>
+      <div class="stat-row"><span class="stat-label">Protein</span><span class="stat-value pos">${t.protein_g ?? '—'}g</span></div>
+      <div class="stat-row"><span class="stat-label">Carbs</span><span class="stat-value neutral">${t.carbs_g ?? '—'}g</span></div>
+      <div class="stat-row"><span class="stat-label">Fat</span><span class="stat-value neutral">${t.fat_g ?? '—'}g</span></div>
+      <div class="stat-row" style="margin-top:6px"><span class="stat-label">Est. weekly cost</span><span class="stat-value neutral">$${(d.estimated_weekly_cost_usd ?? 0).toFixed(2)}</span></div>`;
+
+    const fb = d.current_feedback || {};
+    document.getElementById('meal-feedback-content').innerHTML = `
+      <div class="stat-row"><span class="stat-label">Actual cost</span><input id="meal-fb-cost" type="number" step="0.01" placeholder="$" value="${fb.actual_cost ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:2px"></div>
+      <div class="stat-row"><span class="stat-label">Rating (1–5)</span><input id="meal-fb-rating" type="number" min="1" max="5" placeholder="—" value="${fb.rating ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:2px"></div>
+      <textarea id="meal-fb-notes" placeholder="Notes for next week..." style="width:100%;margin-top:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px">${fb.notes ?? ''}</textarea>
+      <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="submitMealFeedback()">Save Feedback</button>`;
+
+    document.getElementById('meal-history-content').innerHTML = (d.history || []).length
+      ? d.history.map(h => `<div class="stat-row"><span class="stat-label">${h.week_of}</span><span class="stat-value neutral">${h.rating != null ? h.rating + '/5' : '—'}${h.actual_cost != null ? ' · $' + h.actual_cost.toFixed(2) : ''}</span></div>`).join('')
+      : '<div class="hint">No history yet.</div>';
+
+    const groceryLabels = { proteins: 'Proteins', produce: 'Produce', dairy: 'Dairy', grains: 'Grains', pantry: 'Pantry', frozen: 'Frozen', other: 'Other' };
+    const grocery = d.grocery_list || {};
+    document.getElementById('meal-grocery-content').innerHTML = Object.entries(groceryLabels).map(([key, label]) => {
+      const items = grocery[key] || [];
+      if (!items.length) return '';
+      return `<div class="section-sub">${label}</div>` + items.map(i =>
+        `<div class="tx-row" style="grid-template-columns:1fr 100px 80px"><span class="tx-name">${i.item}</span><span class="tx-date">${i.quantity ?? ''} ${i.unit ?? ''}</span><span class="tx-amt">$${(i.estimated_cost_usd ?? 0).toFixed(2)}</span></div>`
+      ).join('');
+    }).join('');
+
+    document.getElementById('meal-days-content').innerHTML = (d.days || []).map((day, idx) => {
+      const dt = day.daily_totals || {};
+      const meals = (day.meals || []).map(m =>
+        `<div><span class="trade-detail-label">${(m.meal_type || '').replace('_', ' ')}: </span>${m.recipe_name} <span style="color:var(--muted)">(${m.macros?.protein_g ?? 0}g protein, ${m.macros?.calories ?? 0} kcal, $${(m.estimated_cost_usd ?? 0).toFixed(2)}, ${m.prep_time_minutes ?? 0}m)</span></div>`
+      ).join('');
+      return `<div class="trade-item" onclick="toggleMealDay(${idx})">
+        <div class="trade-summary">
+          <span>${day.day}</span>
+          <span style="color:var(--muted)">${dt.protein_g ?? 0}g protein</span>
+          <span style="color:var(--muted)">${dt.calories ?? 0} kcal</span>
+          <span></span>
+          <span style="text-align:right">$${(dt.estimated_cost_usd ?? 0).toFixed(2)}</span>
+        </div>
+        <div class="trade-detail" id="meal-day-${idx}">${meals}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleMealDay(idx) {
+    document.getElementById('meal-day-' + idx).classList.toggle('open');
+  }
+
+  async function generateMealPlan() {
+    const btn = document.getElementById('meal-generate-btn');
+    btn.disabled = true; btn.textContent = 'Generating...';
+    setStatus('Generating this week\'s meal plan (30–60s)...');
+    try {
+      const res = await fetch('/api/meal-plan/generate', { method: 'POST' });
+      const { ok, data, error } = await res.json();
+      if (!ok) { setStatus('Meal plan generation failed: ' + error); return; }
+      mealPlanData = data;
+      renderMealPlan(data);
+      setStatus('Meal plan generated.');
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Generate This Week';
+    }
+  }
+
+  async function submitMealFeedback() {
+    if (!mealPlanData) return;
+    const actual_cost = document.getElementById('meal-fb-cost').value;
+    const rating = document.getElementById('meal-fb-rating').value;
+    const notes = document.getElementById('meal-fb-notes').value;
+    try {
+      const res = await fetch('/api/meal-plan/feedback', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ week_of: mealPlanData.week_of, actual_cost, rating, notes }),
+      });
+      const { ok, error } = await res.json();
+      setStatus(ok ? 'Feedback saved.' : 'Error: ' + error);
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
+  // ── Sync label ──
+  function updateSyncLabel(synced_at) {
+    const el = document.getElementById('sync-time');
+    const dot = document.getElementById('sync-dot');
+    el.textContent = synced_at ? 'Last synced: ' + new Date(synced_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Live';
+    dot.className = 'sync-dot active';
+  }
+
+  const _origRenderFinance = renderFinance;
+  renderFinance = function(d) {
+    _origRenderFinance(d);
+    updateSyncLabel(d.synced_at);
+  };
+
+  // ── Plaid background sync (keeps bank data fresh every 5 min) ──
+  async function plaidAutoSync() {
+    try { await fetch('/api/sync', { method: 'POST' }); } catch (_) {}
+    setTimeout(plaidAutoSync, 5 * 60 * 1000);
+  }
+
+  // ── SSE — real-time updates when any data file changes ──
+  const _reloadMap = {
+    finance:     async () => { const { ok, data } = await fetch('/api/finance').then(r => r.json()); if (ok && data) renderFinance(data); },
+    goals:       () => loadGoals(),
+    income:      () => loadIncome(),
+    trading:     () => loadTrading(),
+    'meal-plan': () => loadMealPlan(),
+  };
+
+  function connectSSE() {
+    const es = new EventSource('/api/events');
+    es.onmessage = (e) => {
+      try {
+        const { type } = JSON.parse(e.data);
+        if (_reloadMap[type]) _reloadMap[type]();
+      } catch (_) {}
+    };
+    es.onerror = () => { es.close(); setTimeout(connectSSE, 3000); };
+  }
+
   // ── Init ──
   load();
   loadGoals();
-  loadAppleCard();
   loadTrading();
+  loadIncome();
+  loadMealPlan();
+  connectSSE();
+  setTimeout(plaidAutoSync, 5 * 60 * 1000);
 </script>
 </body>
 </html>

@@ -50,8 +50,12 @@ rl.on('line', (line) => {
   const amount = parseFloat(row['Amount (USD)']);
   if (isNaN(amount)) return;
 
+  const rawDate = row['Transaction Date'];
+  const [m, d, y] = rawDate.split('/');
+  const isoDate = y && m && d ? `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` : rawDate;
+
   transactions.push({
-    date: row['Transaction Date'],
+    date: isoDate,
     name: row['Description'] || row['Merchant'] || 'Unknown',
     merchant: row['Merchant'] || '',
     category: (row['Category'] || 'Uncategorized').toUpperCase().replace(/ /g, '_'),
@@ -61,7 +65,6 @@ rl.on('line', (line) => {
 });
 
 rl.on('close', () => {
-  // Sort newest first
   transactions.sort((a, b) => (a.date < b.date ? 1 : -1));
 
   const result = {

@@ -32,18 +32,24 @@ function loadTokens() {
 
 async function getBalances(institutionName, accessToken) {
   const res = await client.accountsBalanceGet({ access_token: accessToken });
-  return res.data.accounts.map((acct) => ({
-    institution: institutionName,
-    name: acct.name,
-    type: acct.type,
-    subtype: acct.subtype,
-    current: acct.balances.current,
-    available: acct.balances.available,
-    limit: acct.balances.limit ?? null,
-  }));
+  return res.data.accounts.map((acct) => {
+    const isDeposit = acct.type === 'depository';
+    const balance = isDeposit && acct.balances.available != null
+      ? acct.balances.available
+      : acct.balances.current;
+    return {
+      institution: institutionName,
+      name: acct.name,
+      type: acct.type,
+      subtype: acct.subtype,
+      current: balance,
+      available: acct.balances.available,
+      limit: acct.balances.limit ?? null,
+    };
+  });
 }
 
-async function getTransactions(accessToken, daysBack = 30) {
+async function getTransactions(accessToken, accounts, daysBack = 30) {
   const end = new Date();
   const start = new Date();
   start.setDate(end.getDate() - daysBack);
@@ -57,13 +63,29 @@ async function getTransactions(accessToken, daysBack = 30) {
     options: { count: 100, offset: 0 },
   });
 
-  return res.data.transactions.map((t) => ({
-    date: t.date,
-    name: t.name,
-    amount: t.amount,
-    category: t.personal_finance_category?.primary ?? t.category?.[0] ?? 'Uncategorized',
-    account_id: t.account_id,
-  }));
+  const accountMap = Object.fromEntries(accounts.map((a) => [a.account_id ?? a.name, a]));
+
+  return res.data.transactions.map((t) => {
+    const acct = res.data.accounts.find((a) => a.account_id === t.account_id);
+    let account = 'Unknown';
+    if (acct) {
+      const inst = accounts.find((a) => a.name === acct.name)?.institution ?? '';
+      const sub = acct.subtype ?? acct.type ?? '';
+      if (sub === 'checking') account = `${inst} Checking`;
+      else if (sub === 'credit card') account = `${inst} Credit`;
+      else if (sub === 'loan') account = `${inst} Loan`;
+      else account = `${inst} ${sub}`.trim();
+    }
+    return {
+      date: t.date,
+      name: t.name,
+      amount: t.amount,
+      category: t.personal_finance_category?.primary ?? t.category?.[0] ?? 'Uncategorized',
+      account_id: t.account_id,
+      account,
+      pending: t.pending ?? false,
+    };
+  });
 }
 
 async function sync() {
@@ -78,7 +100,7 @@ async function sync() {
   for (const [name, { access_token }] of institutions) {
     try {
       const accounts = await getBalances(name, access_token);
-      const transactions = await getTransactions(access_token);
+      const transactions = await getTransactions(access_token, accounts);
       allAccounts.push(...accounts);
       allTransactions.push(...transactions);
       console.log(`  ${name}: ${accounts.length} account(s), ${transactions.length} transaction(s)`);

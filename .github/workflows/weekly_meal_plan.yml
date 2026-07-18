@@ -1,0 +1,46 @@
+name: Weekly Meal Plan
+
+on:
+  schedule:
+    # 1pm UTC = 8am EST / 6am PST — adjust the hour if needed for your timezone
+    - cron: '0 13 * * 0'
+  workflow_dispatch: # allows manual trigger from GitHub UI
+
+jobs:
+  generate-and-send:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r projects/meal-plan/requirements.txt
+
+      - name: Generate meal plan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 projects/meal-plan/tools/generate_meal_plan.py
+
+      - name: Generate PDF
+        run: python3 projects/meal-plan/tools/generate_pdf.py
+
+      - name: Send email
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python3 projects/meal-plan/tools/send_email.py
+
+      - name: Commit generated data back to main
+        run: |
+          git config user.name "compass-bot"
+          git config user.email "actions@github.com"
+          git add -f projects/meal-plan/data/
+          git diff --staged --quiet || git commit -m "Weekly meal plan: $(date +%Y-%m-%d)"
+          git push

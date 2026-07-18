@@ -1,0 +1,27 @@
+{
+  "profile": {
+    "name": "Adreyn",
+    "email": "adreyn2@gmail.com",
+    "current_weight_lbs": 145,
+    "goal_weight_lbs": 175,
+    "goal_date": "2026-12-31"
+  },
+  "nutrition_targets": {
+    "calories_per_day": 3300,
+    "protein_g_per_day": 175,
+    "meals_per_day": 5,
+    "meal_structure": ["breakfast", "lunch", "dinner", "snack_1", "snack_2"]
+  },
+  "preferences": {
+    "dietary_restrictions": [],
+    "disliked_foods": [],
+    "cuisine_variety": true,
+    "max_prep_time_minutes": null,
+    "skill_level": "advanced"
+  },
+  "tracking": {
+    "budget_weekly_target": null,
+    "report_day": "Sunday",
+    "report_time": "08:00"
+  }
+}
