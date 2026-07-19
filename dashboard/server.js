@@ -1,6 +1,6 @@
 import express from 'express';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, watch } from 'fs';
-import { execSync, execFile } from 'child_process';
+import { execSync, execFile, execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { config as loadEnv } from 'dotenv';
@@ -22,6 +22,16 @@ const GROCERY_LIST_FILE = path.join(ROOT, 'projects/meal-plan/data/grocery_list.
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
   ? Buffer.from(`${process.env.DASHBOARD_USER}:${process.env.DASHBOARD_PASS}`).toString('base64')
   : null;
+
+// Session is short and sliding, not a long-lived "remember me": SESSION_MAX_AGE is how long a
+// session survives with no activity. The dashboard's own JS calls /api/session/touch every
+// minute while the tab is actually visible, re-issuing the cookie with a fresh Max-Age — so an
+// active session never interrupts you, but closing the tab / backgrounding the app / walking
+// away lets the cookie lapse, and reopening the bookmark requires the password again. It also
+// fires an instant-lock beacon on backgrounding so that's immediate rather than waiting out
+// SESSION_MAX_AGE — see /api/session/lock and dashboard/public/index.html.
+const SESSION_MAX_AGE = 5 * 60; // seconds
+const AUTH_COOKIE = `Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=${SESSION_MAX_AGE}`;
 
 function parseCookies(req) {
   const out = {};
@@ -59,7 +69,7 @@ app.get('/login', (_req, res) => res.send(LOGIN_HTML));
 app.post('/login', (req, res) => {
   const token = Buffer.from(`${req.body.user}:${req.body.pass}`).toString('base64');
   if (AUTH_TOKEN && token === AUTH_TOKEN) {
-    res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`);
+    res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${AUTH_COOKIE}`);
     return res.redirect('/');
   }
   res.redirect('/login?err=1');
@@ -78,6 +88,33 @@ if (AUTH_TOKEN) {
     res.redirect('/login');
   });
 }
+
+// Sliding-session renewal — only reachable because it's past the auth gate, so a valid cookie
+// already got us here; just re-issue it with a fresh Max-Age. Called by the dashboard's own
+// heartbeat while the tab is visible (see dashboard/public/index.html).
+app.post('/api/session/touch', (_req, res) => {
+  res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${AUTH_COOKIE}`);
+  res.json({ ok: true });
+});
+
+// Instant lock — called the moment the tab is backgrounded/closed (see dashboard/public/index.html)
+// so re-opening it requires the password again immediately, not after SESSION_MAX_AGE elapses.
+// SESSION_MAX_AGE is just the backstop for the rare case this never fires (e.g. app killed
+// before the beacon sends).
+app.post('/api/session/lock', (_req, res) => {
+  res.setHeader('Set-Cookie', 'ea_auth=; Path=/; Max-Age=0');
+  res.status(204).end();
+});
+
+// No-store on everything past the auth gate: without this, Safari's back-forward cache can
+// restore the already-rendered dashboard from memory when a tab is reopened, without ever
+// making a fresh request — so a session that was correctly locked server-side can still appear
+// logged in client-side. no-store is what tells the browser not to bfcache the page at all,
+// forcing a real request (and therefore a real auth check) every time it's reopened.
+app.use((_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -351,9 +388,12 @@ function buildMealPlanData() {
     meals: (d.meals || []).map((m) => ({
       meal_type: m.meal_type,
       recipe_name: m.recipe_name,
+      ingredients: m.ingredients || [],
+      recipe_steps: m.recipe_steps || [],
       macros: m.macros,
       estimated_cost_usd: m.estimated_cost_usd,
       prep_time_minutes: m.prep_time_minutes,
+      prep_tasks: m.prep_tasks || [],
     })),
   }));
 
@@ -437,7 +477,7 @@ app.get('/api/meal-plan', (_req, res) => {
 
 app.post('/api/meal-plan/generate', (_req, res) => {
   try {
-    execSync('npm run meal:generate', { cwd: ROOT, timeout: 150000 });
+    execFileSync('python3', ['projects/meal-plan/tools/generate_meal_plan.py'], { cwd: ROOT, timeout: 300000 });
     res.json({ ok: true, data: buildMealPlanData() });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });

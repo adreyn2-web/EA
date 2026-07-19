@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 projects/finance/data/
 projects/meal-plan/data/
+dashboard/data/
 income/
 Apple Card/
 logs/

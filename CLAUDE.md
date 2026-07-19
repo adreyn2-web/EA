@@ -31,6 +31,8 @@ Skills are built organically as recurring workflows emerge. Current skills:
 - `trade-journal` — trade logging, performance review, pattern recognition
 - `research-routine` — structured research for trading, business, and learning (uses live
   web search, not memory alone)
+- `culinary-procedure` — food-safety and prep-efficiency rules (freezer vs. fridge timing) used
+  by the meal-plan generator and any cooking/prep question
 
 ## Decision Log
 Important decisions go in `decisions/log.md`. Append-only. Never edit old entries.

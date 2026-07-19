@@ -49,12 +49,17 @@ with anything marked EXPIRED):
 
 REQUIREMENTS:
 - 7 days, each with: breakfast, lunch, dinner, snack_1, snack_2
-- Each meal must include: recipe_name, ingredients (with quantities in standard US units), macros (protein_g, carbs_g, fat_g, calories), estimated_cost_usd, prep_time_minutes
+- Each meal must include: recipe_name, ingredients (with quantities in standard US units), recipe_steps (a full, in-depth, step-by-step cooking recipe — numbered instructions detailed enough to cook from with no outside knowledge, including exact temperatures, times, and technique), macros (protein_g, carbs_g, fat_g, calories), estimated_cost_usd, prep_time_minutes
 - Vary proteins heavily: chicken, beef, salmon, tuna, eggs, Greek yogurt, cottage cheese, turkey, shrimp, pork, bison, etc.
 - Every meal must be cooked fresh at the time it is eaten. Never plan a dish to be batch-cooked once in a large quantity and reheated across multiple days — this person dislikes meal-prepped/reheated food. Prepping raw ingredients ahead of time (chopping, marinating, portioning, pre-cooking a simple base component like a pot of rice) is encouraged for speed, but the finished dish itself must be cooked fresh, per meal, right before it's eaten. Target roughly 15-25 minutes of active fresh-cook time per meal given this person's advanced skill level and busy schedule.
 - Efficiency and low waste: favor reusing the same core proteins and produce across multiple meals in the week (e.g. a protein bought for one meal should reappear later in the week in a different recipe) rather than single-use ingredients bought for only one meal — this controls grocery cost and avoids buying things that spoil unused. Use CURRENT INVENTORY items first (especially anything flagged "use this first") before adding overlapping new items to the grocery list.
 - No meal should repeat in the same week
 - Grocery list: aggregate only NEW ingredients that still need to be purchased after accounting for CURRENT INVENTORY, organized by category
+- Prep-ahead tasks (prep_tasks): for any meal that benefits from doing part of the work in advance — marinating, soaking, chopping, brining, defrosting, batch-cooking a base component (e.g. a pot of rice), or making a bread/pizza dough that needs to rise, proof, or cold-ferment — list one or more prep_tasks for that meal. Each prep_task needs a short task label, a prep_day, and detailed instructions with exact quantities/ratios and timing (e.g. "Combine 1/2 cup rolled oats, 2/3 cup unsweetened almond milk, 1 scoop vanilla protein powder, 1 tsp chia seeds in a jar; stir, cover, refrigerate."). Assign each prep_day by applying the CULINARY PREP PROCEDURE below exactly — do NOT default everything to the start of the week just because that's this person's day off.
+- prep_day values: always use a plain weekday name (Monday..Sunday). If a meal needs prep done before this 7-day span starts (e.g. a Monday meal needing prep the night before, right after this week's grocery shopping), it is correct and expected to use a weekday name that falls later in the week than the meal's own day (e.g. "Sunday" for a Monday meal) — that is understood to mean the occurrence of that weekday immediately before this week begins, not the Sunday that ends it. If a prep_task uses the freezer make-ahead-and-freeze pattern, it's fine (and expected) to have two separate prep_tasks for the same meal: one for the early make-and-freeze step, one for the day-of thaw/finish step.
+
+CULINARY PREP PROCEDURE (apply this exactly when choosing prep_day and prep_task instructions):
+{culinary_procedure}
 
 Respond ONLY with a valid JSON object matching this exact structure:
 {{
@@ -75,10 +80,13 @@ Respond ONLY with a valid JSON object matching this exact structure:
           "ingredients": [
             {{"item": "...", "quantity": "...", "unit": "..."}}
           ],
+          "recipe_steps": ["...", "..."],
           "macros": {{"protein_g": 0, "carbs_g": 0, "fat_g": 0, "calories": 0}},
           "estimated_cost_usd": 0.00,
           "prep_time_minutes": 0,
-          "prep_ahead_note": ""
+          "prep_tasks": [
+            {{"task": "...", "prep_day": "...", "instructions": "..."}}
+          ]
         }}
       ],
       "daily_totals": {{"protein_g": 0, "carbs_g": 0, "fat_g": 0, "calories": 0, "estimated_cost_usd": 0.00}}
@@ -105,6 +113,11 @@ def load_config():
 
 def load_feedback():
     return track.feedback_summary_for_prompt()
+
+
+def load_culinary_procedure():
+    path = COMPASS_ROOT / ".claude" / "skills" / "culinary-procedure" / "SKILL.md"
+    return path.read_text()
 
 
 def load_inventory_section():
@@ -153,6 +166,7 @@ def generate_meal_plan(config: dict, feedback: str, retry: bool = False) -> dict
         skill_level=prefs["skill_level"],
         feedback=feedback,
         inventory_section=load_inventory_section(),
+        culinary_procedure=load_culinary_procedure(),
     )
 
     system = "You are a precise JSON-outputting meal planning API. Output only valid JSON, no prose, no markdown fences."

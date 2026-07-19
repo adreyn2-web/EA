@@ -193,6 +193,11 @@
     .inv-actions { display: flex; gap: 4px; flex-shrink: 0; }
     .inv-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 2px; cursor: pointer; }
     .inv-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .meal-secondary summary { cursor: pointer; list-style: none; }
+    .meal-secondary summary::-webkit-details-marker { display: none; }
+    .meal-secondary summary::before { content: '▸ '; color: var(--muted); }
+    .meal-secondary[open] summary::before { content: '▾ '; }
+    .meal-secondary[open] summary { margin-bottom: 16px; }
 
     /* ── Log Trade Modal ── */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
@@ -559,22 +564,7 @@
   </div>
 
   <div class="card" id="meal-empty-card">
-    <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes 30–60 seconds.</div>
-  </div>
-
-  <div class="card" id="meal-targets-card" style="display:none">
-    <div class="card-title">Daily Targets — Week of <span id="meal-week-of"></span></div>
-    <div id="meal-targets-content"></div>
-  </div>
-
-  <div class="card" id="meal-feedback-card" style="display:none">
-    <div class="card-title">Log This Week</div>
-    <div id="meal-feedback-content"></div>
-  </div>
-
-  <div class="card" id="meal-history-card" style="display:none">
-    <div class="card-title">History</div>
-    <div id="meal-history-content"></div>
+    <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes a few minutes with full recipes.</div>
   </div>
 
   <div class="card full" id="meal-grocery-card" style="display:none">
@@ -586,6 +576,30 @@
     <div class="card-title">Meal Plan by Day</div>
     <div id="meal-days-content"></div>
   </div>
+
+</div>
+
+<div class="grid">
+
+  <details class="card full meal-secondary" id="meal-secondary" style="display:none">
+    <summary class="card-title">Daily Targets, Weekly Log &amp; History</summary>
+    <div class="grid" style="padding:0">
+      <div class="card" id="meal-targets-card">
+        <div class="card-title">Daily Targets — Week of <span id="meal-week-of"></span></div>
+        <div id="meal-targets-content"></div>
+      </div>
+
+      <div class="card" id="meal-feedback-card">
+        <div class="card-title">Log This Week</div>
+        <div id="meal-feedback-content"></div>
+      </div>
+
+      <div class="card" id="meal-history-card">
+        <div class="card-title">History</div>
+        <div id="meal-history-content"></div>
+      </div>
+    </div>
+  </details>
 
 </div>
 </div>
@@ -1091,7 +1105,7 @@
     const { ok, data } = await fetch('/api/meal-plan').then(r => r.json());
     if (!ok || !data) {
       document.getElementById('meal-empty-card').style.display = '';
-      ['meal-targets-card', 'meal-feedback-card', 'meal-history-card', 'meal-grocery-card', 'meal-days-card']
+      ['meal-secondary', 'meal-grocery-card', 'meal-days-card']
         .forEach(id => document.getElementById(id).style.display = 'none');
       return;
     }
@@ -1101,7 +1115,7 @@
 
   function renderMealPlan(d) {
     document.getElementById('meal-empty-card').style.display = 'none';
-    ['meal-targets-card', 'meal-feedback-card', 'meal-history-card', 'meal-grocery-card', 'meal-days-card']
+    ['meal-secondary', 'meal-grocery-card', 'meal-days-card']
       .forEach(id => document.getElementById(id).style.display = '');
 
     document.getElementById('meal-week-of').textContent = d.week_of;
@@ -1138,32 +1152,71 @@
         d.used_from_inventory.map(i => `<div class="hint">${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}</div>`).join('')
       : '');
 
-    document.getElementById('meal-days-content').innerHTML = (d.days || []).map((day, idx) => {
-      const dt = day.daily_totals || {};
-      const meals = (day.meals || []).map(m =>
-        `<div><span class="trade-detail-label">${(m.meal_type || '').replace('_', ' ')}: </span>${m.recipe_name} <span style="color:var(--muted)">(${m.macros?.protein_g ?? 0}g protein, ${m.macros?.calories ?? 0} kcal, $${(m.estimated_cost_usd ?? 0).toFixed(2)}, ${m.prep_time_minutes ?? 0}m)</span></div>`
-      ).join('');
-      return `<div class="trade-item" onclick="toggleMealDay(${idx})">
-        <div class="trade-summary">
-          <span>${day.day}</span>
-          <span style="color:var(--muted)">${dt.protein_g ?? 0}g protein</span>
-          <span style="color:var(--muted)">${dt.calories ?? 0} kcal</span>
-          <span></span>
-          <span style="text-align:right">$${(dt.estimated_cost_usd ?? 0).toFixed(2)}</span>
-        </div>
-        <div class="trade-detail" id="meal-day-${idx}">${meals}</div>
-      </div>`;
-    }).join('');
+    renderMealDays(d.days || []);
   }
 
-  function toggleMealDay(idx) {
-    document.getElementById('meal-day-' + idx).classList.toggle('open');
+  const MEAL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  // A prep_day that falls chronologically *after* the meal's own day (e.g. "Sunday" prep for a
+  // Monday meal) can only mean the previous week's occurrence of that weekday — infer this from
+  // position rather than trusting the model to use a special disambiguating label every time.
+  function mealPrepSortKey(prepDay, forDay) {
+    const forIdx = MEAL_WEEK_DAYS.indexOf(forDay);
+    const idx = MEAL_WEEK_DAYS.indexOf(prepDay);
+    if (idx === -1) return forIdx;
+    return idx > forIdx ? idx - 7 : idx;
+  }
+  function mealPrepDayLabel(sortKey) {
+    if (sortKey < 0) return MEAL_WEEK_DAYS[sortKey + 7] + ' (before this week)';
+    return MEAL_WEEK_DAYS[sortKey] ?? 'Unscheduled';
+  }
+
+  function renderMealDays(days) {
+    const prepItems = [];
+    days.forEach(day => (day.meals || []).forEach(m => {
+      (m.prep_tasks || []).forEach(p => {
+        const sortKey = mealPrepSortKey(p.prep_day, day.day);
+        prepItems.push({ sortKey, task: p.task, instructions: p.instructions, for_day: day.day, meal_type: m.meal_type, recipe_name: m.recipe_name });
+      });
+    }));
+    prepItems.sort((a, b) => a.sortKey - b.sortKey);
+
+    let prepHtml = '';
+    if (prepItems.length) {
+      prepHtml += `<div class="card-title" style="margin-bottom:8px">Prep-Ahead Checklist</div>`;
+      let lastKey = null;
+      prepItems.forEach(p => {
+        if (p.sortKey !== lastKey) { prepHtml += `<div class="section-sub">${mealPrepDayLabel(p.sortKey)}</div>`; lastKey = p.sortKey; }
+        prepHtml += `<div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div><strong>${p.task}</strong> <span style="color:var(--muted)">— for ${p.for_day} ${(p.meal_type || '').replace('_', ' ')} (${p.recipe_name})</span></div>
+          <div class="hint">${p.instructions}</div>
+        </div>`;
+      });
+    }
+
+    const daysHtml = days.map(day => {
+      const mealsHtml = (day.meals || []).map(m => {
+        const ingredients = (m.ingredients || []).map(i => `${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}`).join(', ');
+        const steps = (m.recipe_steps || []).map(s => `<li>${s}</li>`).join('');
+        const preps = (m.prep_tasks || []).map(p => `<div class="hint">Needs prep: ${p.task} — do on ${mealPrepDayLabel(mealPrepSortKey(p.prep_day, day.day))}</div>`).join('');
+        return `
+          <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+            <div><strong>${(m.meal_type || '').replace('_', ' ')}</strong>: ${m.recipe_name}</div>
+            ${ingredients ? `<div class="hint">Ingredients: ${ingredients}</div>` : ''}
+            ${steps ? `<ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:var(--text)">${steps}</ol>` : ''}
+            ${preps}
+          </div>`;
+      }).join('');
+      return `<div class="section-sub">${day.day}</div>${mealsHtml}`;
+    }).join('');
+
+    document.getElementById('meal-days-content').innerHTML = prepHtml + daysHtml;
   }
 
   async function generateMealPlan() {
     const btn = document.getElementById('meal-generate-btn');
     btn.disabled = true; btn.textContent = 'Generating...';
-    setStatus('Generating this week\'s meal plan (30–60s)...');
+    setStatus('Generating this week\'s meal plan (1–4 minutes, full recipes take longer)...');
     try {
       const res = await fetch('/api/meal-plan/generate', { method: 'POST' });
       const { ok, data, error } = await res.json();
@@ -1371,6 +1424,30 @@
     };
     es.onerror = () => { es.close(); setTimeout(connectSSE, 3000); };
   }
+
+  // ── Session lock — instant, not on a timer. The moment the tab is backgrounded, the phone is
+  // locked, or the tab closes, we tell the server to drop the session immediately (sendBeacon,
+  // not fetch, since it's designed to reliably fire during page teardown). Reopening the
+  // bookmark after that finds no valid session and requires Face ID again right away. While the
+  // tab stays visible/foreground, a heartbeat keeps the session alive so active use is never
+  // interrupted.
+  function lockSession() {
+    navigator.sendBeacon('/api/session/lock');
+  }
+  function sessionHeartbeat() {
+    if (document.visibilityState === 'visible') fetch('/api/session/touch', { method: 'POST' }).catch(() => {});
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') lockSession();
+    else sessionHeartbeat();
+  });
+  window.addEventListener('pagehide', lockSession);
+  setInterval(sessionHeartbeat, 60 * 1000);
+
+  // Backstop: if Safari somehow restores this page from its back-forward cache anyway (bypassing
+  // the server's Cache-Control: no-store), force a hard reload so the auth check actually runs
+  // instead of showing already-authenticated content from memory.
+  window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
 
   // ── Init ──
   load();

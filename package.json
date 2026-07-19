@@ -4,13 +4,13 @@
   "type": "module",
   "scripts": {
     "dashboard": "node dashboard/server.js",
-    "tunnel": "ngrok http 4000",
+    "tunnel": "ngrok http --url=https://grazing-faceless-unflawed.ngrok-free.app 4000",
     "apple:import": "node projects/finance/apple-card/import.js",
     "trade:log": "node projects/trading-bot/journal/log.js",
     "plaid:link": "node projects/finance/plaid/link.js",
     "plaid:sync": "node projects/finance/plaid/sync.js",
     "finance:summary": "node projects/finance/summary.js",
-    "meal:generate": "python3 projects/meal-plan/tools/generate_meal_plan.py && python3 projects/meal-plan/tools/generate_pdf.py && python3 projects/meal-plan/tools/send_email.py"
+    "meal:generate": "python3 projects/meal-plan/tools/generate_meal_plan.py"
   },
   "dependencies": {
     "dotenv": "^16.0.0",
