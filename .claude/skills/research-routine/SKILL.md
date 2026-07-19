@@ -18,13 +18,20 @@ Ask:
 
 **Step 2 — Run the research**
 
-Quick-hit: Answer the 3 most important questions, bullet format, done.
+This step must use live sources (WebSearch / WebFetch), not answer from memory alone. Training
+data goes stale — trading platforms, tools, pricing, and best practices change. If the topic is
+narrow enough to need real digging (multiple sources, conflicting takes, a lot of ground to
+cover), dispatch it to an Explore or general-purpose Agent instead of researching inline, so the
+raw search results don't bloat the main conversation — just the synthesized findings come back.
 
-Deep dive: Structured breakdown —
+Quick-hit: 2-3 targeted searches, answer the 3 most important questions, bullet format, done.
+
+Deep dive: Structured breakdown, backed by actual search results, not assumption —
 1. Overview (what it is, why it matters)
 2. Key concepts (the things you need to actually understand it)
 3. How it applies to Adreyn's situation specifically
 4. What to read, watch, or do next
+5. Sources — link what was actually found, so it can be checked or revisited later
 
 **Step 3 — Save to the right place**
 - Trading topic → `projects/trading-bot/research/TOPIC.md`

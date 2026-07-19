@@ -24,14 +24,13 @@ Skills live in `.claude/skills/`. Each skill gets its own folder:
 .claude/skills/skill-name/SKILL.md
 ```
 
-Skills are built organically as recurring workflows emerge. Directory is currently empty.
-
-**Skills Backlog** — build these as patterns repeat:
+Skills are built organically as recurring workflows emerge. Current skills:
 - `finance-tracker` — budgeting, debt payoff tracking, finance automation management
 - `meal-planner` — healthy bulk meal planning and grocery prep (145 → 175 lbs goal)
 - `workout-planner` — workout variety and health routine builder
 - `trade-journal` — trade logging, performance review, pattern recognition
-- `research-routine` — structured research for trading, business, and learning
+- `research-routine` — structured research for trading, business, and learning (uses live
+  web search, not memory alone)
 
 ## Decision Log
 Important decisions go in `decisions/log.md`. Append-only. Never edit old entries.
