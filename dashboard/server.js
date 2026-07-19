@@ -17,6 +17,7 @@ const INCOME_LOG_FILE = path.join(ROOT, 'income/income-log.md');
 const MEAL_PLAN_FILE = path.join(ROOT, 'projects/meal-plan/data/meal_plan.json');
 const MEAL_TRACKER_FILE = path.join(ROOT, 'projects/meal-plan/data/tracker.json');
 const INVENTORY_FILE = path.join(ROOT, 'projects/meal-plan/data/inventory.json');
+const GROCERY_LIST_FILE = path.join(ROOT, 'projects/meal-plan/data/grocery_list.json');
 
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
   ? Buffer.from(`${process.env.DASHBOARD_USER}:${process.env.DASHBOARD_PASS}`).toString('base64')
@@ -323,6 +324,11 @@ function loadInventory() {
   try { return JSON.parse(readFileSync(INVENTORY_FILE, 'utf8')); } catch (_) { return []; }
 }
 
+function loadGroceryList() {
+  if (!existsSync(GROCERY_LIST_FILE)) return [];
+  try { return JSON.parse(readFileSync(GROCERY_LIST_FILE, 'utf8')); } catch (_) { return []; }
+}
+
 function classifyExpiration(expiresOn) {
   if (!expiresOn) return 'fresh';
   const exp = new Date(expiresOn + 'T00:00:00');
@@ -470,6 +476,37 @@ app.post('/api/inventory/remove', (req, res) => {
   res.json({ ok: true, items: items.map((i) => ({ ...i, status: classifyExpiration(i.expires_on) })) });
 });
 
+app.get('/api/grocery-list', (_req, res) => {
+  res.json({ ok: true, data: loadGroceryList() });
+});
+
+app.post('/api/grocery-list/update', (req, res) => {
+  const text = (req.body.text || '').trim();
+  if (!text) return res.status(400).json({ ok: false, error: 'text is required.' });
+
+  execFile('python3', ['projects/meal-plan/tools/grocery_list.py', 'update', text],
+    { cwd: ROOT, timeout: 60000, maxBuffer: 2 * 1024 * 1024 },
+    (err, stdout) => {
+      if (err) return res.status(500).json({ ok: false, error: err.message });
+      let parsed;
+      try { parsed = JSON.parse(stdout); } catch (_) {
+        return res.status(500).json({ ok: false, error: 'Could not parse shopping list response.' });
+      }
+      if (parsed.error) return res.status(500).json({ ok: false, error: parsed.error });
+      res.json({ ok: true, items: parsed.items, changes: parsed.changes });
+    });
+});
+
+app.post('/api/grocery-list/remove', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const items = loadGroceryList().filter((i) => i.id !== id);
+  mkdirSync(path.dirname(GROCERY_LIST_FILE), { recursive: true });
+  writeFileSync(GROCERY_LIST_FILE, JSON.stringify(items, null, 2));
+  res.json({ ok: true, items });
+});
+
 app.post('/api/meal-plan/feedback', (req, res) => {
   const { week_of, actual_cost, rating, notes } = req.body;
   if (!week_of) return res.status(400).json({ ok: false, error: 'week_of is required.' });
@@ -528,6 +565,9 @@ const runInventoryUpdate = (message) =>
 const runFeedbackUpdate = (message) =>
   runPythonAction(['projects/meal-plan/tools/track.py', 'chat-update', message]);
 
+const runGroceryListUpdate = (message) =>
+  runPythonAction(['projects/meal-plan/tools/grocery_list.py', 'update', message]);
+
 app.post('/api/chat', async (req, res) => {
   const message = (req.body.message || '').trim();
   if (!message) return res.status(400).json({ ok: false, error: 'Message is empty.' });
@@ -535,10 +575,11 @@ app.post('/api/chat', async (req, res) => {
 
   chatBusy = true;
   try {
-    const [chatResult, inventoryResult, feedbackResult] = await Promise.all([
+    const [chatResult, inventoryResult, feedbackResult, groceryListResult] = await Promise.all([
       runClaude(message, chatSessionId),
       runInventoryUpdate(message),
       runFeedbackUpdate(message),
+      runGroceryListUpdate(message),
     ]);
     chatSessionId = chatResult.session_id;
     if (chatResult.is_error) {
@@ -562,6 +603,11 @@ app.post('/api/chat', async (req, res) => {
       if (feedback.actual_cost != null) parts.push(`cost $${feedback.actual_cost}`);
       if (feedback.rating != null) parts.push(`rating ${feedback.rating}/5`);
       if (parts.length) notes.push(`Meal-plan feedback logged — ${parts.join(', ')}.`);
+    }
+
+    const groceryAdded = groceryListResult?.changes?.added;
+    if (groceryAdded?.length) {
+      notes.push(`Added to shopping list — ${groceryAdded.map((a) => a.item).join(', ')}.`);
     }
 
     if (notes.length) reply += `\n\n(${notes.join(' ')})`;

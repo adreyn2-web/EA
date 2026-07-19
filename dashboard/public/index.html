@@ -550,6 +550,14 @@
     <div id="inventory-content" style="margin-top:12px"></div>
   </div>
 
+  <div class="card full" id="shopping-list-card">
+    <div class="card-title">Shopping List — Food &amp; Household</div>
+    <div class="hint" style="margin-bottom:8px">Mention it here or in chat ("out of dish soap", "need more eggs") — it lands here once and stays until you check it off.</div>
+    <textarea id="shop-update-text" placeholder="e.g. out of dish soap, need paper towels" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="updateShoppingList()">Add to List</button>
+    <div id="shopping-list-content" style="margin-top:12px"></div>
+  </div>
+
   <div class="card" id="meal-empty-card">
     <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes 30–60 seconds.</div>
   </div>
@@ -1259,6 +1267,71 @@
     }
   }
 
+  // ── Shopping List ──
+  async function loadShoppingList() {
+    const { ok, data } = await fetch('/api/grocery-list').then(r => r.json());
+    if (!ok) return;
+    renderShoppingList(data || []);
+  }
+
+  function renderShoppingList(items) {
+    const catLabels = { food: 'Food', household: 'Household' };
+    if (!items.length) {
+      document.getElementById('shopping-list-content').innerHTML = '<div class="hint">List is empty — mention what you\'re out of above or in chat.</div>';
+      return;
+    }
+
+    const byCategory = {};
+    for (const i of items) (byCategory[i.category] ??= []).push(i);
+
+    document.getElementById('shopping-list-content').innerHTML = Object.entries(catLabels).map(([key, label]) => {
+      const rows = byCategory[key] || [];
+      if (!rows.length) return '';
+      return `<div class="section-sub">${label}</div>` + rows.map(i => `
+        <div class="inv-row">
+          <span class="inv-item">${i.item}</span>
+          <span class="inv-actions">
+            <button class="inv-btn" onclick="removeShoppingListItem('${i.id}')">Bought</button>
+          </span>
+        </div>`).join('');
+    }).join('');
+  }
+
+  async function updateShoppingList() {
+    const input = document.getElementById('shop-update-text');
+    const text = input.value.trim();
+    if (!text) return;
+    setStatus('Updating shopping list...');
+    try {
+      const res = await fetch('/api/grocery-list/update', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const { ok, items, changes, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      input.value = '';
+      renderShoppingList(items || []);
+      const added = (changes?.added || []).map(a => a.item).join(', ');
+      setStatus(added ? 'Added: ' + added : 'No new items detected.');
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
+  async function removeShoppingListItem(id) {
+    try {
+      const res = await fetch('/api/grocery-list/remove', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const { ok, items, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      renderShoppingList(items || []);
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
   // ── Sync label ──
   function updateSyncLabel(synced_at) {
     const el = document.getElementById('sync-time');
@@ -1285,7 +1358,7 @@
     goals:       () => loadGoals(),
     income:      () => loadIncome(),
     trading:     () => loadTrading(),
-    'meal-plan': () => { loadMealPlan(); loadInventory(); },
+    'meal-plan': () => { loadMealPlan(); loadInventory(); loadShoppingList(); },
   };
 
   function connectSSE() {
@@ -1306,6 +1379,7 @@
   loadIncome();
   loadMealPlan();
   loadInventory();
+  loadShoppingList();
   connectSSE();
   setTimeout(plaidAutoSync, 5 * 60 * 1000);
 </script>

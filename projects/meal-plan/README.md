@@ -24,6 +24,7 @@ get reused across multiple meals in the week to keep cost and waste down.
 | `tools/send_email.py` | Emails the PDF via Gmail SMTP (app password, no OAuth) |
 | `tools/track.py` | Reads/writes `data/tracker.json` — actual cost, rating, notes per week |
 | `tools/inventory.py` | Reads/writes `data/inventory.json` — fridge/pantry stock |
+| `tools/grocery_list.py` | Reads/writes `data/grocery_list.json` — general shopping list (food + household) |
 | `config/user_preferences.json` | Profile, macro targets, meal structure |
 
 `data/` is gitignored, same as `projects/finance/data/`.
@@ -37,6 +38,14 @@ Expiration status (`fresh` / `expiring_soon` / `expired`) is never stored — it
 live from `expires_on`, so it can't go stale. Nothing is auto-decremented from the generated
 plan's `used_from_inventory` field; removing items is always an explicit action (the free-text
 update, or a Used/Toss button in the dashboard).
+
+## Shopping List
+A separate running list from Inventory — not perishable stock with quantities/expiration, just
+"I need to buy this." Covers food AND household items (cleaner, paper towels, toiletries,
+anything bought at a store). Mention being out of or needing something — from the dashboard form
+or in general chat — and it's added once (deduped case-insensitively) and stays until checked off
+as bought. This is what to pull up before walking into a store; it's distinct from the
+auto-generated weekly recipe grocery list above, which regenerates each week from that week's plan.
 
 ## Running it
 ```
