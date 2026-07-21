@@ -15,7 +15,7 @@ Adreyn is an ambitious young man building toward financial, economic, and time f
 @context/team.md
 
 ## Tool Integrations
-No MCP servers connected yet. Current tools: online banking (manual), notes app, payroll/scheduling apps, Claude Code.
+No MCP servers connected yet. Current tools: online banking (manual), notes app, payroll/scheduling apps, Claude Code, Google Workspace via the `gws` CLI (Drive, Gmail, Calendar, Sheets, Docs, Slides, Tasks — authenticated as adreynf@perspectiveautomation.com).
 
 ## Skills
 Skills live in `.claude/skills/`. Each skill gets its own folder:
@@ -33,6 +33,10 @@ Skills are built organically as recurring workflows emerge. Current skills:
   web search, not memory alone)
 - `culinary-procedure` — food-safety and prep-efficiency rules (freezer vs. fridge timing) used
   by the meal-plan generator and any cooking/prep question
+- `gws-*` (20 skills, from `googleworkspace/cli`) — Google Workspace via the `gws` CLI: Drive,
+  Gmail, Calendar, Sheets, Docs, Slides, Tasks. Reach for these for anything involving email,
+  calendar events, docs/sheets/slides, or Drive files. Installed under `.agents/skills/`,
+  symlinked into `.claude/skills/`; tracked in `skills-lock.json` at the repo root.
 
 ## Decision Log
 Important decisions go in `decisions/log.md`. Append-only. Never edit old entries.
