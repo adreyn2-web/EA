@@ -8,6 +8,18 @@ import { loadTrades, calcStats, saveTrade } from '../projects/trading-bot/perfor
 
 loadEnv({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env') });
 
+// launchd's per-user LaunchAgents no longer honor an EnvironmentVariables PATH override on this
+// macOS version (it silently makes the whole job fail to spawn, EX_CONFIG, before ever writing a
+// log line) — so PATH has to be widened here in code instead of via the plist, or the various
+// execFile/execSync calls below (python3, node, git, claude) can't find their binaries when this
+// runs under launchd's default restricted PATH (/usr/bin:/bin:/usr/sbin:/sbin).
+process.env.PATH = [
+  '/opt/homebrew/bin',
+  '/usr/local/bin',
+  `${process.env.HOME}/.local/bin`,
+  process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin',
+].join(':');
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const SNAPSHOT_FILE = path.join(ROOT, 'projects/finance/data/snapshot.json');
@@ -18,6 +30,7 @@ const MEAL_PLAN_FILE = path.join(ROOT, 'projects/meal-plan/data/meal_plan.json')
 const MEAL_TRACKER_FILE = path.join(ROOT, 'projects/meal-plan/data/tracker.json');
 const INVENTORY_FILE = path.join(ROOT, 'projects/meal-plan/data/inventory.json');
 const GROCERY_LIST_FILE = path.join(ROOT, 'projects/meal-plan/data/grocery_list.json');
+const JOURNAL_FILE = path.join(ROOT, 'projects/journal/data/entries.json');
 
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
   ? Buffer.from(`${process.env.DASHBOARD_USER}:${process.env.DASHBOARD_PASS}`).toString('base64')
@@ -366,6 +379,11 @@ function loadGroceryList() {
   try { return JSON.parse(readFileSync(GROCERY_LIST_FILE, 'utf8')); } catch (_) { return []; }
 }
 
+function loadJournal() {
+  if (!existsSync(JOURNAL_FILE)) return [];
+  try { return JSON.parse(readFileSync(JOURNAL_FILE, 'utf8')); } catch (_) { return []; }
+}
+
 function classifyExpiration(expiresOn) {
   if (!expiresOn) return 'fresh';
   const exp = new Date(expiresOn + 'T00:00:00');
@@ -547,6 +565,28 @@ app.post('/api/grocery-list/remove', (req, res) => {
   res.json({ ok: true, items });
 });
 
+app.get('/api/journal', (_req, res) => {
+  const entries = loadJournal().slice().reverse();
+  res.json({ ok: true, entries });
+});
+
+app.post('/api/journal/add', (req, res) => {
+  const text = (req.body.text || '').trim();
+  if (!text) return res.status(400).json({ ok: false, error: 'text is required.' });
+
+  execFile('python3', ['projects/journal/tools/journal.py', 'add', text, 'dashboard'],
+    { cwd: ROOT, timeout: 15000, maxBuffer: 2 * 1024 * 1024 },
+    (err, stdout) => {
+      if (err) return res.status(500).json({ ok: false, error: err.message });
+      let parsed;
+      try { parsed = JSON.parse(stdout); } catch (_) {
+        return res.status(500).json({ ok: false, error: 'Could not parse journal response.' });
+      }
+      if (parsed.error) return res.status(500).json({ ok: false, error: parsed.error });
+      res.json({ ok: true, entry: parsed, entries: loadJournal().slice().reverse() });
+    });
+});
+
 app.post('/api/meal-plan/feedback', (req, res) => {
   const { week_of, actual_cost, rating, notes } = req.body;
   if (!week_of) return res.status(400).json({ ok: false, error: 'week_of is required.' });
@@ -683,6 +723,7 @@ watchForChanges(APPLE_CARD_FILE, 'apple-card');
 watchForChanges(INCOME_LOG_FILE, 'income');
 watchForChanges(path.join(ROOT, 'projects/trading-bot/performance'), 'trading');
 watchForChanges(path.join(ROOT, 'projects/meal-plan/data'), 'meal-plan');
+watchForChanges(path.join(ROOT, 'projects/journal/data'), 'journal');
 
 const PORT = 4000;
 app.listen(PORT, () => {

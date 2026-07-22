@@ -42,6 +42,9 @@ Skills are built organically as recurring workflows emerge. Current skills:
   via a scheduled routine.
 - `repo-finder` — finds and evaluates repos/tools for a stated need (live search, ranked
   shortlist), the same pattern used to vet and install `gws`
+- `personal-journal` — reflective mentor, not a therapist. Captures journal entries (chat or
+  dashboard) verbatim to `projects/journal/data/` (gitignored), engages with them like a mentor,
+  and promotes only genuine recurring patterns into the memory system — most entries stay raw.
 
 ## Decision Log
 Important decisions go in `decisions/log.md`. Append-only. Never edit old entries.

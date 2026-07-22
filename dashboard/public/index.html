@@ -408,6 +408,7 @@
   <button class="main-tab active" data-main-tab="finance" onclick="switchMainTab('finance')">Finance</button>
   <button class="main-tab" data-main-tab="trading" onclick="switchMainTab('trading')">Trading</button>
   <button class="main-tab" data-main-tab="more" onclick="switchMainTab('more')">More</button>
+  <button class="main-tab" data-main-tab="journal" onclick="switchMainTab('journal')">Journal</button>
 </div>
 
 <!-- ── Finance ── -->
@@ -600,6 +601,26 @@
       </div>
     </div>
   </details>
+
+</div>
+</div>
+
+<!-- ── Journal ── -->
+<div class="tab-panel" id="tab-journal">
+<div class="section-label">Journal</div>
+<div class="grid">
+
+  <div class="card full" id="journal-card">
+    <div class="card-title">New Entry</div>
+    <div class="hint" style="margin-bottom:8px">Write whatever's on your mind. Nothing here is reworded or summarized — it's saved exactly as written.</div>
+    <textarea id="journal-entry-text" placeholder="What's going on..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:13px;padding:10px;border-radius:2px;resize:vertical;min-height:100px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="addJournalEntry()">Save Entry</button>
+  </div>
+
+  <div class="card full" id="journal-history-card">
+    <div class="card-title">Past Entries</div>
+    <div id="journal-history-content"><div class="hint">No entries yet.</div></div>
+  </div>
 
 </div>
 </div>
@@ -1405,6 +1426,53 @@
     setTimeout(plaidAutoSync, 5 * 60 * 1000);
   }
 
+  // ── Journal ──
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  async function loadJournal() {
+    const { ok, entries } = await fetch('/api/journal').then(r => r.json());
+    if (!ok) return;
+    renderJournal(entries || []);
+  }
+
+  function renderJournal(entries) {
+    if (!entries.length) {
+      document.getElementById('journal-history-content').innerHTML = '<div class="hint">No entries yet.</div>';
+      return;
+    }
+    document.getElementById('journal-history-content').innerHTML = entries.map(e => {
+      const dt = new Date(e.timestamp);
+      const when = isNaN(dt) ? e.timestamp : dt.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+      return `
+        <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+          <div class="hint">${when}${e.source === 'chat' ? ' · from chat' : ''}</div>
+          <div style="white-space:pre-wrap">${escapeHtml(e.text)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  async function addJournalEntry() {
+    const input = document.getElementById('journal-entry-text');
+    const text = input.value.trim();
+    if (!text) return;
+    setStatus('Saving entry...');
+    try {
+      const res = await fetch('/api/journal/add', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const { ok, entries, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      input.value = '';
+      renderJournal(entries || []);
+      setStatus('Entry saved.');
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
   // ── SSE — real-time updates when any data file changes ──
   const _reloadMap = {
     finance:     async () => { const { ok, data } = await fetch('/api/finance').then(r => r.json()); if (ok && data) renderFinance(data); },
@@ -1412,6 +1480,7 @@
     income:      () => loadIncome(),
     trading:     () => loadTrading(),
     'meal-plan': () => { loadMealPlan(); loadInventory(); loadShoppingList(); },
+    journal:     () => loadJournal(),
   };
 
   function connectSSE() {
@@ -1457,6 +1526,7 @@
   loadMealPlan();
   loadInventory();
   loadShoppingList();
+  loadJournal();
   connectSSE();
   setTimeout(plaidAutoSync, 5 * 60 * 1000);
 </script>
