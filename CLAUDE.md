@@ -37,6 +37,11 @@ Skills are built organically as recurring workflows emerge. Current skills:
   Gmail, Calendar, Sheets, Docs, Slides, Tasks. Reach for these for anything involving email,
   calendar events, docs/sheets/slides, or Drive files. Installed under `.agents/skills/`,
   symlinked into `.claude/skills/`; tracked in `skills-lock.json` at the repo root.
+- `skill-updates` — checks installed skills (any source, tracked in `skills-lock.json`) for
+  upstream changes and flags them for review; never applies updates without approval. Runs daily
+  via a scheduled routine.
+- `repo-finder` — finds and evaluates repos/tools for a stated need (live search, ranked
+  shortlist), the same pattern used to vet and install `gws`
 
 ## Decision Log
 Important decisions go in `decisions/log.md`. Append-only. Never edit old entries.
