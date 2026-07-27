@@ -31,7 +31,7 @@ COMPASS_ROOT = ROOT.parent.parent
 load_dotenv(COMPASS_ROOT / ".env")
 
 DATA_DIR = ROOT / "data"
-DATA_DIR.mkdir(exist_ok=True)
+DATA_DIR.mkdir(mode=0o700, exist_ok=True)
 LIST_PATH = DATA_DIR / "appointments.json"
 
 STATUSES = ["scheduled", "done", "cancelled"]
@@ -68,7 +68,8 @@ def load() -> list[dict]:
 
 
 def save(items: list[dict]):
-    with open(LIST_PATH, "w") as f:
+    fd = os.open(LIST_PATH, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
         json.dump(items, f, indent=2)
 
 
