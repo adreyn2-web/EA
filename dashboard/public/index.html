@@ -39,7 +39,7 @@
     .wordmark { display: flex; align-items: center; gap: 12px; }
     .enso { width: 26px; height: 26px; flex-shrink: 0; opacity: .85; }
     header h1 { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); }
-    header .sub { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: .02em; }
+    .sub { font-size: 11px; color: var(--muted); letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
     .btn { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 7px 16px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 2px; transition: border-color .15s, color .15s; }
     .btn:hover { border-color: var(--accent); color: var(--accent); }
     .btn:disabled { opacity: .4; cursor: default; }
@@ -50,7 +50,13 @@
     .section-label { font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); padding: 26px 32px 10px; }
 
     /* ── Main tab nav ── */
-    .main-tabs { display: flex; gap: 4px; justify-content: center; padding: 30px 32px 0; border-top: 1px solid var(--border); margin-top: 10px; }
+    .main-tabs { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 30px 32px 0; border-top: 1px solid var(--border); margin-top: 10px; }
+    body.privacy-hidden .mask-target { filter: blur(6px); user-select: none; pointer-events: none; }
+    .eye-btn { background: none; border: none; cursor: pointer; padding: 2px; color: var(--muted); line-height: 0; flex-shrink: 0; }
+    .eye-btn:hover { color: var(--accent); }
+    .eye-icon { width: 14px; height: 14px; display: none; }
+    body.privacy-hidden .eye-open { display: block; }
+    body:not(.privacy-hidden) .eye-closed { display: block; }
     .main-tab { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .04em; padding: 14px 20px 10px; cursor: pointer; transition: color .15s, border-color .15s; }
     .main-tab:hover { color: var(--text); }
     .main-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -172,6 +178,13 @@
     .trade-detail.open { display: block; }
     .trade-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 8px; }
     .trade-detail-label { color: var(--muted); }
+    .journal-item { border-bottom: 1px solid var(--border); padding: 8px 0; cursor: pointer; }
+    .journal-item:last-child { border-bottom: none; }
+    .journal-item:hover .journal-preview { color: var(--accent); }
+    .journal-summary { display: flex; flex-direction: column; gap: 2px; }
+    .journal-preview { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .journal-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 2px; font-size: 13px; white-space: pre-wrap; }
+    .journal-detail.open { display: block; }
     .trade-note-block { margin-top: 8px; }
     .trade-note-block .note-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
     .trade-note-block .note-text { color: var(--text); line-height: 1.7; white-space: pre-wrap; }
@@ -261,7 +274,7 @@
     .sync-dot.active { background: var(--green); }
   </style>
 </head>
-<body>
+<body class="privacy-hidden">
 
 <!-- ── Log Trade Modal ── -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
@@ -382,10 +395,8 @@
     </svg>
     <div>
       <h1>COMPASS</h1>
-      <div class="sub"><span class="sync-dot" id="sync-dot"></span><span id="sync-time">Loading...</span></div>
     </div>
   </div>
-  <button class="btn" id="sync-btn" onclick="syncNow()">Sync Accounts</button>
 </header>
 
 <!-- ── Compass Chat (hero) ── -->
@@ -407,54 +418,64 @@
 <div class="main-tabs">
   <button class="main-tab active" data-main-tab="finance" onclick="switchMainTab('finance')">Finance</button>
   <button class="main-tab" data-main-tab="trading" onclick="switchMainTab('trading')">Trading</button>
-  <button class="main-tab" data-main-tab="more" onclick="switchMainTab('more')">More</button>
-  <button class="main-tab" data-main-tab="journal" onclick="switchMainTab('journal')">Journal</button>
+  <button class="main-tab" data-main-tab="meal-plan" onclick="switchMainTab('meal-plan')">Meal Plan</button>
+  <button class="main-tab" data-main-tab="recipes" onclick="switchMainTab('recipes')">Recipes</button>
+  <button class="main-tab" data-main-tab="shopping-list" onclick="switchMainTab('shopping-list')">Shopping List</button>
+  <button class="main-tab" data-main-tab="inventory" onclick="switchMainTab('inventory')">Inventory</button>
+  <button class="main-tab" data-main-tab="health" onclick="switchMainTab('health')">Health</button>
 </div>
 
 <!-- ── Finance ── -->
 <div class="tab-panel active" id="tab-finance">
+<div class="section-label" style="display:flex;justify-content:space-between;align-items:center;padding-right:32px">
+  Finance
+  <div class="sub"><span class="sync-dot" id="sync-dot"></span><span id="sync-time">Loading...</span><button class="btn" id="sync-btn" onclick="syncNow()">Sync Accounts</button></div>
+</div>
 <div class="grid">
   <div class="card">
-    <div class="card-title">Cash</div>
-    <div id="cash-content">Loading...</div>
+    <div class="card-title">Cash<span class="eye-slot"></span></div>
+    <div id="cash-content" class="mask-target">Loading...</div>
   </div>
   <div class="card">
-    <div class="card-title">Debt Payoff Progress</div>
-    <div id="debt-progress-content">Loading...</div>
+    <div class="card-title">Debt Payoff Progress<span class="eye-slot"></span></div>
+    <div id="debt-progress-content" class="mask-target">Loading...</div>
   </div>
   <div class="card">
-    <div class="card-title">Debts — Avalanche</div>
-    <div id="debts-content">Loading...</div>
+    <div class="card-title">Debts — Avalanche<span class="eye-slot"></span></div>
+    <div id="debts-content" class="mask-target">Loading...</div>
   </div>
   <div class="card">
-    <div class="card-title">Spending This Month</div>
-    <div id="spending-content">Loading...</div>
+    <div class="card-title">Spending This Month<span class="eye-slot"></span></div>
+    <div id="spending-content" class="mask-target">Loading...</div>
   </div>
   <div class="card">
     <div class="card-title">Goals — 2026</div>
     <div id="goals-content">Loading...</div>
   </div>
   <div class="card" id="income-overview-card">
-    <div class="card-title">Income Overview</div>
-    <div id="income-overview-content">Loading...</div>
+    <div class="card-title">Income Overview<span class="eye-slot"></span></div>
+    <div id="income-overview-content" class="mask-target">Loading...</div>
   </div>
   <div class="card" id="income-monthly-card">
-    <div class="card-title">Monthly Net</div>
-    <div id="income-monthly-content">Loading...</div>
+    <div class="card-title">Monthly Net<span class="eye-slot"></span></div>
+    <div id="income-monthly-content" class="mask-target">Loading...</div>
   </div>
   <div class="card full" id="income-history-card">
     <div class="card-title">
       Pay History
-      <div class="income-tabs">
-        <button class="income-tab active" data-tab="casino" onclick="switchPayTab('casino')">Casino</button>
-        <button class="income-tab" data-tab="roots" onclick="switchPayTab('roots')">Roots 95</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="income-tabs">
+          <button class="income-tab active" data-tab="casino" onclick="switchPayTab('casino')">Casino</button>
+          <button class="income-tab" data-tab="roots" onclick="switchPayTab('roots')">Roots 95</button>
+        </div>
+        <span class="eye-slot"></span>
       </div>
     </div>
-    <div id="income-history-content">Loading...</div>
+    <div id="income-history-content" class="mask-target">Loading...</div>
   </div>
   <div class="card full">
-    <div class="card-title">Recent Transactions</div>
-    <div id="tx-content">Loading...</div>
+    <div class="card-title">Recent Transactions<span class="eye-slot"></span></div>
+    <div id="tx-content" class="mask-target">Loading...</div>
   </div>
 </div>
 </div>
@@ -468,7 +489,8 @@
 <div class="grid trading-grid">
 
   <!-- Key stats -->
-  <div class="card full" id="t-stats-card" style="display:none">
+  <div class="card full mask-target" id="t-stats-card" style="display:none">
+    <div class="card-title">Key Stats<span class="eye-slot"></span></div>
     <div class="t-stats" id="t-stats-row"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
       <div class="stat-row"><span class="stat-label">Avg win</span><span class="stat-value pos" id="t-avg-win">—</span></div>
@@ -489,19 +511,20 @@
   <div class="card" id="t-cal-card" style="display:none">
     <div class="card-title">
       <span>P&L Calendar</span>
+      <span class="eye-slot"></span>
     </div>
     <div class="cal-nav">
       <button onclick="calPrev()">&#8249;</button>
       <span id="cal-month-label"></span>
       <button onclick="calNext()">&#8250;</button>
     </div>
-    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-grid mask-target" id="cal-grid"></div>
   </div>
 
   <!-- Equity Curve -->
   <div class="card" id="t-equity-card" style="display:none">
-    <div class="card-title">Equity Curve</div>
-    <svg class="equity-svg" id="equity-svg" viewBox="0 0 400 100" preserveAspectRatio="none"></svg>
+    <div class="card-title">Equity Curve<span class="eye-slot"></span></div>
+    <svg class="equity-svg mask-target" id="equity-svg" viewBox="0 0 400 100" preserveAspectRatio="none"></svg>
     <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:6px">
       <span id="eq-start">Trade 1</span>
       <span id="eq-end"></span>
@@ -510,71 +533,51 @@
 
   <!-- Setup Breakdown -->
   <div class="card" id="t-setup-card" style="display:none">
-    <div class="card-title">Setup Breakdown</div>
+    <div class="card-title">Setup Breakdown<span class="eye-slot"></span></div>
     <div class="breakdown-row setup-row breakdown-header">
       <span>Setup</span><span>Trades</span><span>Win %</span><span>P&L</span>
     </div>
-    <div id="setup-breakdown"></div>
+    <div id="setup-breakdown" class="mask-target"></div>
   </div>
 
   <!-- Grade + Emotion -->
   <div class="card" id="t-grade-card" style="display:none">
-    <div class="card-title">Execution Quality</div>
+    <div class="card-title">Execution Quality<span class="eye-slot"></span></div>
     <div class="section-sub">By Grade</div>
     <div class="breakdown-row grade-row breakdown-header">
       <span>Grade</span><span>Trades</span><span>Win %</span><span>P&L</span>
     </div>
-    <div id="grade-breakdown"></div>
+    <div id="grade-breakdown" class="mask-target"></div>
     <div class="section-sub" style="margin-top:12px">By Emotion</div>
     <div class="breakdown-row emo-row breakdown-header">
       <span>State</span><span>Trades</span><span>Win %</span><span>P&L</span>
     </div>
-    <div id="emo-breakdown"></div>
+    <div id="emo-breakdown" class="mask-target"></div>
   </div>
 
   <!-- Recent Trades -->
   <div class="card full" id="t-trades-card" style="display:none">
-    <div class="card-title">Trade Log</div>
-    <div id="trade-log"></div>
+    <div class="card-title">Trade Log<span class="eye-slot"></span></div>
+    <div id="trade-log" class="mask-target"></div>
   </div>
 
 </div>
 </div>
 
-<!-- ── More ── -->
-<div class="tab-panel" id="tab-more">
+<!-- ── Meal Plan ── -->
+<div class="tab-panel" id="tab-meal-plan">
 <div class="section-label" style="display:flex;justify-content:space-between;align-items:center;padding-right:32px">
-  Health — Meal Plan
+  Meal Plan
   <button class="btn btn-primary" id="meal-generate-btn" onclick="generateMealPlan()">Generate This Week</button>
 </div>
 <div class="grid">
-
-  <div class="card full" id="inventory-card">
-    <div class="card-title">Fridge / Pantry Inventory</div>
-    <textarea id="inv-update-text" placeholder="e.g. used the chicken thighs, milk went bad, grabbed a dozen eggs and 2lbs ground beef" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
-    <button class="btn btn-primary" style="margin-top:8px" onclick="updateInventory()">Update Inventory</button>
-    <div id="inventory-content" style="margin-top:12px"></div>
-  </div>
-
-  <div class="card full" id="shopping-list-card">
-    <div class="card-title">Shopping List — Food &amp; Household</div>
-    <div class="hint" style="margin-bottom:8px">Mention it here or in chat ("out of dish soap", "need more eggs") — it lands here once and stays until you check it off.</div>
-    <textarea id="shop-update-text" placeholder="e.g. out of dish soap, need paper towels" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
-    <button class="btn btn-primary" style="margin-top:8px" onclick="updateShoppingList()">Add to List</button>
-    <div id="shopping-list-content" style="margin-top:12px"></div>
-  </div>
 
   <div class="card" id="meal-empty-card">
     <div class="hint">No meal plan yet. Click <strong>Generate This Week</strong> above — takes a few minutes with full recipes.</div>
   </div>
 
-  <div class="card full" id="meal-grocery-card" style="display:none">
-    <div class="card-title">Grocery List</div>
-    <div id="meal-grocery-content"></div>
-  </div>
-
   <div class="card full" id="meal-days-card" style="display:none">
-    <div class="card-title">Meal Plan by Day</div>
+    <div class="card-title">Plan-Ahead Checklist</div>
     <div id="meal-days-content"></div>
   </div>
 
@@ -605,10 +608,67 @@
 </div>
 </div>
 
-<!-- ── Journal ── -->
-<div class="tab-panel" id="tab-journal">
-<div class="section-label">Journal</div>
+<!-- ── Recipes ── -->
+<div class="tab-panel" id="tab-recipes">
+<div class="section-label">Recipes</div>
 <div class="grid">
+
+  <div class="card" id="recipes-empty-card">
+    <div class="hint">No meal plan yet. Generate one from the Meal Plan tab to see recipes here.</div>
+  </div>
+
+  <div class="card full" id="recipes-card" style="display:none">
+    <div id="recipes-content"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ── Shopping List ── -->
+<div class="tab-panel" id="tab-shopping-list">
+<div class="section-label">Household</div>
+<div class="grid">
+
+  <div class="card full" id="shopping-list-card">
+    <div class="hint" style="margin-bottom:8px">Mention it here or in chat ("out of dish soap", "need more eggs") — it lands here once and stays until you check it off.</div>
+    <textarea id="shop-update-text" placeholder="e.g. out of dish soap, need paper towels" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="updateShoppingList()">Add to List</button>
+    <div id="shopping-list-content" style="margin-top:12px"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ── Inventory ── -->
+<div class="tab-panel" id="tab-inventory">
+<div class="section-label">Fridge / Pantry Inventory</div>
+<div class="grid">
+
+  <div class="card full" id="meal-grocery-card" style="display:none">
+    <div class="card-title">Grocery List</div>
+    <div id="meal-grocery-content"></div>
+  </div>
+
+  <div class="card full" id="inventory-card">
+    <textarea id="inv-update-text" placeholder="e.g. used the chicken thighs, milk went bad, grabbed a dozen eggs and 2lbs ground beef" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="updateInventory()">Update Inventory</button>
+    <div id="inventory-content" style="margin-top:12px"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ── Health ── -->
+<div class="tab-panel" id="tab-health">
+<div class="section-label">Health</div>
+<div class="grid">
+
+  <div class="card full" id="appointments-card">
+    <div class="card-title">Appointments</div>
+    <textarea id="appt-update-text" placeholder="e.g. root canal at Endo PC July 28th 7:30am, $2090, Cherry financing" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="updateAppointments()">Add Appointment</button>
+    <div id="appointments-content" style="margin-top:12px"></div>
+  </div>
 
   <div class="card full" id="journal-card">
     <div class="card-title">New Entry</div>
@@ -637,7 +697,9 @@
   let selectedEmo = '';
 
   // ── Main tabs ──
+  let currentMainTab = 'finance';
   function switchMainTab(name) {
+    currentMainTab = name;
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
     document.querySelectorAll('.main-tab').forEach(b => b.classList.toggle('active', b.dataset.mainTab === name));
   }
@@ -672,7 +734,8 @@
     btn.disabled = true;
 
     try {
-      const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message }) });
+      const res = await apiFetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message }) });
+      if (!res) return;
       const { ok, reply, cost, error } = await res.json();
       if (!ok) { appendChatMsg('error', error); return; }
       appendChatMsg('assistant', reply, cost);
@@ -691,9 +754,154 @@
     log.innerHTML = '<div class="chat-empty" id="chat-empty">New conversation started.</div>';
   }
 
+  // ── Face ID / Touch ID privacy toggle for Finance & Trading numbers ──
+  // Blur is controlled by a single 'privacy-hidden' class on <body> (see .mask-target CSS).
+  // Hiding never needs biometrics; revealing does. WebAuthn ceremonies exchange raw ArrayBuffers
+  // with the browser but base64url strings with the server, hence the buffer helpers below.
+  function bufToBase64url(buf) {
+    const bytes = new Uint8Array(buf);
+    let str = '';
+    for (const b of bytes) str += String.fromCharCode(b);
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function base64urlToBuf(b64url) {
+    const pad = (4 - (b64url.length % 4)) % 4;
+    const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat(pad);
+    const str = atob(b64);
+    const bytes = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  async function webauthnRegister() {
+    const res = await apiFetch('/api/privacy/register/options', { method: 'POST' });
+    if (!res) return false;
+    const { ok, options, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return false; }
+
+    const publicKey = {
+      ...options,
+      challenge: base64urlToBuf(options.challenge),
+      user: { ...options.user, id: base64urlToBuf(options.user.id) },
+      excludeCredentials: (options.excludeCredentials || []).map(c => ({ ...c, id: base64urlToBuf(c.id) })),
+    };
+
+    let cred;
+    try {
+      cred = await navigator.credentials.create({ publicKey });
+    } catch (e) {
+      setStatus('Face ID setup cancelled or failed: ' + e.message);
+      return false;
+    }
+
+    const verifyRes = await apiFetch('/api/privacy/register/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: cred.id,
+        rawId: bufToBase64url(cred.rawId),
+        type: cred.type,
+        response: {
+          clientDataJSON: bufToBase64url(cred.response.clientDataJSON),
+          attestationObject: bufToBase64url(cred.response.attestationObject),
+          transports: cred.response.getTransports ? cred.response.getTransports() : [],
+        },
+        clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+      }),
+    });
+    if (!verifyRes) return false;
+    const verifyData = await verifyRes.json();
+    if (!verifyData.ok) { setStatus('Error: ' + verifyData.error); return false; }
+    return true;
+  }
+
+  async function webauthnAuthenticate() {
+    const res = await apiFetch('/api/privacy/auth/options', { method: 'POST' });
+    if (!res) return false;
+    const { ok, options, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return false; }
+
+    const publicKey = {
+      ...options,
+      challenge: base64urlToBuf(options.challenge),
+      allowCredentials: (options.allowCredentials || []).map(c => ({ ...c, id: base64urlToBuf(c.id) })),
+    };
+
+    let cred;
+    try {
+      cred = await navigator.credentials.get({ publicKey });
+    } catch (e) {
+      setStatus('Face ID cancelled or failed: ' + e.message);
+      return false;
+    }
+
+    const verifyRes = await apiFetch('/api/privacy/auth/verify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: cred.id,
+        rawId: bufToBase64url(cred.rawId),
+        type: cred.type,
+        response: {
+          clientDataJSON: bufToBase64url(cred.response.clientDataJSON),
+          authenticatorData: bufToBase64url(cred.response.authenticatorData),
+          signature: bufToBase64url(cred.response.signature),
+          userHandle: cred.response.userHandle ? bufToBase64url(cred.response.userHandle) : undefined,
+        },
+        clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+      }),
+    });
+    if (!verifyRes) return false;
+    const verifyData = await verifyRes.json();
+    if (!verifyData.ok) { setStatus('Error: ' + verifyData.error); return false; }
+    return true;
+  }
+
+  const EYE_BTN_HTML = `<button class="eye-btn" onclick="togglePrivacy()" title="Show/hide numbers">
+    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    <svg class="eye-icon eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.3 20.3 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a20.3 20.3 0 0 1-2.94 4.13M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+  </button>`;
+  // One eye icon per card, but they all share the same global reveal/hide state (CSS-driven off
+  // body.privacy-hidden, see .eye-open/.eye-closed rules) — clicking any one of them opens or
+  // closes all of them together, there's no per-card lock.
+  function installEyeButtons() {
+    document.querySelectorAll('.eye-slot').forEach(el => el.outerHTML = EYE_BTN_HTML);
+  }
+
+  function hideNumbers() {
+    document.body.classList.add('privacy-hidden');
+  }
+
+  let privacyBusy = false;
+  async function togglePrivacy() {
+    if (!document.body.classList.contains('privacy-hidden')) { hideNumbers(); return; }
+    if (privacyBusy) return;
+
+    if (!window.PublicKeyCredential) {
+      setStatus('This browser/device doesn\'t support Face ID/Touch ID here.');
+      return;
+    }
+
+    privacyBusy = true;
+    try {
+      const statusRes = await apiFetch('/api/privacy/status');
+      if (!statusRes) return;
+      const { registered } = await statusRes.json();
+
+      setStatus(registered ? 'Confirm with Face ID / Touch ID...' : 'Set up Face ID / Touch ID for this dashboard...');
+      const success = registered ? await webauthnAuthenticate() : await webauthnRegister();
+
+      if (success) {
+        document.body.classList.remove('privacy-hidden');
+        setStatus('Numbers revealed.');
+      }
+    } finally {
+      privacyBusy = false;
+    }
+  }
+
   // ── Finance ──
   async function load() {
-    const res = await fetch('/api/finance');
+    const res = await apiFetch('/api/finance');
+    if (!res) return;
     const { ok, data } = await res.json();
     if (!ok || !data) { setStatus('No snapshot. Click "Sync Accounts".'); return; }
     renderFinance(data);
@@ -704,7 +912,8 @@
     btn.disabled = true; btn.textContent = 'Syncing...';
     setStatus('Pulling from Plaid...');
     try {
-      const res = await fetch('/api/sync', { method: 'POST' });
+      const res = await apiFetch('/api/sync', { method: 'POST' });
+      if (!res) return;
       const { ok, data, error } = await res.json();
       if (!ok) { setStatus('Sync failed: ' + error); return; }
       renderFinance(data); setStatus('Synced.');
@@ -766,7 +975,9 @@
 
   // ── Goals ──
   async function loadGoals() {
-    const { ok, sections } = await fetch('/api/goals').then(r => r.json());
+    const res = await apiFetch('/api/goals');
+    if (!res) return;
+    const { ok, sections } = await res.json();
     if (!ok) return;
     let html = '';
     for (const [sec, items] of Object.entries(sections)) {
@@ -778,7 +989,9 @@
 
   // ── Trading ──
   async function loadTrading() {
-    const { stats } = await fetch('/api/trading').then(r => r.json());
+    const res = await apiFetch('/api/trading');
+    if (!res) return;
+    const { stats } = await res.json();
     tradingStats = stats;
     renderTrading(stats);
   }
@@ -1009,7 +1222,8 @@
     };
 
     try {
-      const res = await fetch('/api/trade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await apiFetch('/api/trade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!res) return;
       const { ok, trade, stats, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       closeLogModal();
@@ -1022,12 +1236,26 @@
 
   function setStatus(msg) { document.getElementById('status-bar').innerHTML = msg ? `<span>${msg}</span>` : ''; }
 
+  // Every API call goes through here. The session auto-locks (see visibilitychange handler
+  // below) and expires after 5 idle minutes — when that happens mid-use, the server 302s to
+  // /login, fetch silently follows the redirect, and res.json() on the login HTML throws a
+  // useless "Unexpected token '<'" instead of telling you what actually happened. Route every
+  // call through this so an expired session always reads as "log back in," never as a mystery
+  // error, and callers just get `null` back to signal "stop, already handled."
+  async function apiFetch(url, opts) {
+    const res = await fetch(url, opts);
+    if (res.redirected) { setStatus('Session expired — log back in.'); return null; }
+    return res;
+  }
+
   // ── Income ──
   let incomeData = null;
   let payTab = 'casino';
 
   async function loadIncome() {
-    const { ok, data } = await fetch('/api/income').then(r => r.json());
+    const res = await apiFetch('/api/income');
+    if (!res) return;
+    const { ok, data } = await res.json();
     if (!ok || !data) {
       ['income-overview-content', 'income-monthly-content', 'income-history-content'].forEach(id => {
         document.getElementById(id).innerHTML = '<div class="hint">No income data found.</div>';
@@ -1123,11 +1351,15 @@
   let mealPlanData = null;
 
   async function loadMealPlan() {
-    const { ok, data } = await fetch('/api/meal-plan').then(r => r.json());
+    const res = await apiFetch('/api/meal-plan');
+    if (!res) return;
+    const { ok, data } = await res.json();
     if (!ok || !data) {
       document.getElementById('meal-empty-card').style.display = '';
       ['meal-secondary', 'meal-grocery-card', 'meal-days-card']
         .forEach(id => document.getElementById(id).style.display = 'none');
+      document.getElementById('recipes-empty-card').style.display = '';
+      document.getElementById('recipes-card').style.display = 'none';
       return;
     }
     mealPlanData = data;
@@ -1136,8 +1368,10 @@
 
   function renderMealPlan(d) {
     document.getElementById('meal-empty-card').style.display = 'none';
-    ['meal-secondary', 'meal-grocery-card', 'meal-days-card']
+    ['meal-secondary', 'meal-days-card']
       .forEach(id => document.getElementById(id).style.display = '');
+    document.getElementById('recipes-empty-card').style.display = 'none';
+    document.getElementById('recipes-card').style.display = '';
 
     document.getElementById('meal-week-of').textContent = d.week_of;
 
@@ -1162,18 +1396,26 @@
 
     const groceryLabels = { proteins: 'Proteins', produce: 'Produce', dairy: 'Dairy', grains: 'Grains', pantry: 'Pantry', frozen: 'Frozen', other: 'Other' };
     const grocery = d.grocery_list || {};
+    const hasGrocery = Object.values(grocery).some(arr => (arr || []).length);
+    document.getElementById('meal-grocery-card').style.display = hasGrocery ? '' : 'none';
     document.getElementById('meal-grocery-content').innerHTML = Object.entries(groceryLabels).map(([key, label]) => {
       const items = grocery[key] || [];
       if (!items.length) return '';
-      return `<div class="section-sub">${label}</div>` + items.map(i =>
-        `<div class="tx-row" style="grid-template-columns:1fr 100px 80px"><span class="tx-name">${i.item}</span><span class="tx-date">${i.quantity ?? ''} ${i.unit ?? ''}</span><span class="tx-amt">$${(i.estimated_cost_usd ?? 0).toFixed(2)}</span></div>`
-      ).join('');
+      return `<div class="section-sub">${label}</div>` + items.map((i, idx) => `
+        <div class="inv-row">
+          <span class="inv-item">${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}</span>
+          <span class="inv-actions">
+            <button class="inv-btn" onclick="buyGroceryItem('${key}', ${idx})">Bought</button>
+            <button class="inv-btn" onclick="removeGroceryItem('${key}', ${idx})">×</button>
+          </span>
+        </div>`).join('');
     }).join('') + ((d.used_from_inventory || []).length
       ? `<div class="section-sub" style="margin-top:10px">Used from inventory this week</div>` +
         d.used_from_inventory.map(i => `<div class="hint">${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}</div>`).join('')
       : '');
 
-    renderMealDays(d.days || []);
+    renderMealChecklist(d.days || []);
+    renderRecipes(d.days || []);
   }
 
   const MEAL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -1192,7 +1434,9 @@
     return MEAL_WEEK_DAYS[sortKey] ?? 'Unscheduled';
   }
 
-  function renderMealDays(days) {
+  // Meal Plan tab: prep-ahead checklist + a plain day → meal_type: recipe_name list, no
+  // ingredients/steps inline — that detail lives on the Recipes tab (renderRecipes below).
+  function renderMealChecklist(days) {
     const prepItems = [];
     days.forEach(day => (day.meals || []).forEach(m => {
       (m.prep_tasks || []).forEach(p => {
@@ -1216,13 +1460,33 @@
     }
 
     const daysHtml = days.map(day => {
+      const mealsHtml = (day.meals || []).map(m =>
+        `<div class="inv-row"><span class="inv-item"><strong>${(m.meal_type || '').replace('_', ' ')}</strong>: ${m.recipe_name}</span></div>`
+      ).join('');
+      return `<div class="section-sub">${day.day}</div>${mealsHtml}`;
+    }).join('');
+
+    document.getElementById('meal-days-content').innerHTML =
+      (prepHtml ? prepHtml + '<div class="card-title" style="margin:16px 0 8px">This Week</div>' : '') + daysHtml;
+  }
+
+  // Recipes tab: full recipe detail per meal — ingredients, steps, macros, cost, prep time.
+  function renderRecipes(days) {
+    document.getElementById('recipes-content').innerHTML = days.map(day => {
       const mealsHtml = (day.meals || []).map(m => {
         const ingredients = (m.ingredients || []).map(i => `${i.quantity ?? ''} ${i.unit ?? ''} ${i.item}`).join(', ');
         const steps = (m.recipe_steps || []).map(s => `<li>${s}</li>`).join('');
         const preps = (m.prep_tasks || []).map(p => `<div class="hint">Needs prep: ${p.task} — do on ${mealPrepDayLabel(mealPrepSortKey(p.prep_day, day.day))}</div>`).join('');
+        const macros = m.macros || {};
+        const statsParts = [];
+        if (macros.calories != null) statsParts.push(`${macros.calories} cal`);
+        if (macros.protein_g != null) statsParts.push(`${macros.protein_g}g protein`);
+        if (m.estimated_cost_usd != null) statsParts.push(`$${m.estimated_cost_usd.toFixed(2)}`);
+        if (m.prep_time_minutes != null) statsParts.push(`${m.prep_time_minutes} min`);
         return `
           <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:4px">
             <div><strong>${(m.meal_type || '').replace('_', ' ')}</strong>: ${m.recipe_name}</div>
+            ${statsParts.length ? `<div class="hint">${statsParts.join(' · ')}</div>` : ''}
             ${ingredients ? `<div class="hint">Ingredients: ${ingredients}</div>` : ''}
             ${steps ? `<ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:var(--text)">${steps}</ol>` : ''}
             ${preps}
@@ -1230,8 +1494,6 @@
       }).join('');
       return `<div class="section-sub">${day.day}</div>${mealsHtml}`;
     }).join('');
-
-    document.getElementById('meal-days-content').innerHTML = prepHtml + daysHtml;
   }
 
   async function generateMealPlan() {
@@ -1239,7 +1501,8 @@
     btn.disabled = true; btn.textContent = 'Generating...';
     setStatus('Generating this week\'s meal plan (1–4 minutes, full recipes take longer)...');
     try {
-      const res = await fetch('/api/meal-plan/generate', { method: 'POST' });
+      const res = await apiFetch('/api/meal-plan/generate', { method: 'POST' });
+      if (!res) return;
       const { ok, data, error } = await res.json();
       if (!ok) { setStatus('Meal plan generation failed: ' + error); return; }
       mealPlanData = data;
@@ -1258,10 +1521,11 @@
     const rating = document.getElementById('meal-fb-rating').value;
     const notes = document.getElementById('meal-fb-notes').value;
     try {
-      const res = await fetch('/api/meal-plan/feedback', {
+      const res = await apiFetch('/api/meal-plan/feedback', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ week_of: mealPlanData.week_of, actual_cost, rating, notes }),
       });
+      if (!res) return;
       const { ok, error } = await res.json();
       setStatus(ok ? 'Feedback saved.' : 'Error: ' + error);
     } catch (e) {
@@ -1271,13 +1535,15 @@
 
   // ── Inventory ──
   async function loadInventory() {
-    const { ok, data } = await fetch('/api/inventory').then(r => r.json());
+    const res = await apiFetch('/api/inventory');
+    if (!res) return;
+    const { ok, data } = await res.json();
     if (!ok) return;
     renderInventory(data || []);
   }
 
   function renderInventory(items) {
-    const groceryLabels = { proteins: 'Proteins', produce: 'Produce', dairy: 'Dairy', grains: 'Grains', pantry: 'Pantry', frozen: 'Frozen', other: 'Other' };
+    const locationLabels = { fridge: 'Fridge', freezer: 'Freezer', pantry: 'Pantry', unsorted: 'Unsorted' };
     const badgeLabel = { fresh: 'fresh', expiring_soon: 'expiring soon', expired: 'expired' };
 
     if (!items.length) {
@@ -1285,11 +1551,11 @@
       return;
     }
 
-    const byCategory = {};
-    for (const i of items) (byCategory[i.category] ??= []).push(i);
+    const byLocation = {};
+    for (const i of items) (byLocation[i.location && locationLabels[i.location] ? i.location : 'unsorted'] ??= []).push(i);
 
-    document.getElementById('inventory-content').innerHTML = Object.entries(groceryLabels).map(([key, label]) => {
-      const rows = byCategory[key] || [];
+    document.getElementById('inventory-content').innerHTML = Object.entries(locationLabels).map(([key, label]) => {
+      const rows = byLocation[key] || [];
       if (!rows.length) return '';
       return `<div class="section-sub">${label}</div>` + rows.map(i => `
         <div class="inv-row">
@@ -1308,19 +1574,22 @@
     if (!text) return;
     setStatus('Updating inventory...');
     try {
-      const res = await fetch('/api/inventory/update', {
+      const res = await apiFetch('/api/inventory/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
+      if (!res) return;
       const { ok, items, changes, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       input.value = '';
       renderInventory(items || []);
       const added = (changes?.added || []).map(a => `${a.quantity ?? ''} ${a.unit ?? ''} ${a.item}`.trim()).join(', ');
       const removed = (changes?.removed || []).map(r => r.item).join(', ');
+      const updated = (changes?.updated || []).map(u => `${u.item} → ${u.location ?? u.category ?? 'updated'}`).join(', ');
       const parts = [];
       if (added) parts.push('Added: ' + added);
       if (removed) parts.push('Removed: ' + removed);
+      if (updated) parts.push('Updated: ' + updated);
       setStatus(parts.length ? parts.join(' · ') : 'No changes detected.');
     } catch (e) {
       setStatus('Error: ' + e.message);
@@ -1329,10 +1598,11 @@
 
   async function removeInventoryItem(id) {
     try {
-      const res = await fetch('/api/inventory/remove', {
+      const res = await apiFetch('/api/inventory/remove', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
+      if (!res) return;
       const { ok, items, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       renderInventory(items || []);
@@ -1341,9 +1611,42 @@
     }
   }
 
+  async function buyGroceryItem(category, index) {
+    try {
+      const res = await apiFetch('/api/meal-plan/grocery-list/buy', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, index }),
+      });
+      if (!res) return;
+      const { ok, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      loadMealPlan();
+      loadInventory();
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
+  async function removeGroceryItem(category, index) {
+    try {
+      const res = await apiFetch('/api/meal-plan/grocery-list/remove', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, index }),
+      });
+      if (!res) return;
+      const { ok, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      loadMealPlan();
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
   // ── Shopping List ──
   async function loadShoppingList() {
-    const { ok, data } = await fetch('/api/grocery-list').then(r => r.json());
+    const res = await apiFetch('/api/grocery-list');
+    if (!res) return;
+    const { ok, data } = await res.json();
     if (!ok) return;
     renderShoppingList(data || []);
   }
@@ -1377,10 +1680,11 @@
     if (!text) return;
     setStatus('Updating shopping list...');
     try {
-      const res = await fetch('/api/grocery-list/update', {
+      const res = await apiFetch('/api/grocery-list/update', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
+      if (!res) return;
       const { ok, items, changes, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       input.value = '';
@@ -1394,10 +1698,11 @@
 
   async function removeShoppingListItem(id) {
     try {
-      const res = await fetch('/api/grocery-list/remove', {
+      const res = await apiFetch('/api/grocery-list/remove', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
+      if (!res) return;
       const { ok, items, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       renderShoppingList(items || []);
@@ -1426,15 +1731,109 @@
     setTimeout(plaidAutoSync, 5 * 60 * 1000);
   }
 
-  // ── Journal ──
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
+  // ── Health: Appointments ──
+  async function loadHealthAppointments() {
+    const res = await apiFetch('/api/health/appointments');
+    if (!res) return;
+    const { ok, items } = await res.json();
+    if (!ok) return;
+    renderHealthAppointments(items || []);
+  }
+
+  function renderHealthAppointments(items) {
+    const el = document.getElementById('appointments-content');
+    if (!items.length) { el.innerHTML = '<div class="hint">No appointments tracked yet.</div>'; return; }
+
+    const upcoming = items.filter(a => a.status !== 'done').sort((a, b) => (a.date || '9999') < (b.date || '9999') ? -1 : 1);
+    const done = items.filter(a => a.status === 'done').sort((a, b) => (a.date || '') < (b.date || '') ? 1 : -1);
+
+    const row = (a, actions) => `
+      <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:2px">
+        <div class="inv-item" style="width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+          <span><strong>${escapeHtml(a.type || 'Appointment')}</strong>${a.provider ? ' — ' + escapeHtml(a.provider) : ''}</span>
+          <span class="inv-actions">${actions}</span>
+        </div>
+        <div class="hint">${[a.date, a.time, a.location].filter(Boolean).map(escapeHtml).join(' · ')}${a.cost_usd != null ? ' · $' + Number(a.cost_usd).toFixed(2) : ''}</div>
+        ${a.notes ? `<div class="hint">${escapeHtml(a.notes)}</div>` : ''}
+      </div>`;
+
+    let html = upcoming.length
+      ? upcoming.map(a => row(a, `
+          <button class="inv-btn" onclick="completeAppointment('${a.id}')">Mark Done</button>
+          <button class="inv-btn" onclick="removeAppointment('${a.id}')">Cancel</button>
+        `)).join('')
+      : '<div class="hint">No upcoming appointments.</div>';
+
+    if (done.length) {
+      html += '<div class="section-sub" style="margin-top:10px">Past</div>' +
+        done.map(a => row(a, `<button class="inv-btn" onclick="removeAppointment('${a.id}')">Remove</button>`)).join('');
+    }
+
+    el.innerHTML = html;
+  }
+
+  async function updateAppointments() {
+    const input = document.getElementById('appt-update-text');
+    const text = input.value.trim();
+    if (!text) return;
+    setStatus('Adding appointment...');
+    try {
+      const res = await apiFetch('/api/health/appointments/update', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      if (!res) return;
+      const { ok, items, changes, error } = await res.json();
+      if (!ok) { setStatus('Error: ' + error); return; }
+      input.value = '';
+      renderHealthAppointments(items || []);
+      setStatus(changes?.added?.length ? 'Appointment added.' : 'Could not find an appointment in that — try again with a date/provider.');
+    } catch (e) {
+      setStatus('Error: ' + e.message);
+    }
+  }
+
+  async function completeAppointment(id) {
+    const res = await apiFetch('/api/health/appointments/complete', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (!res) return;
+    const { ok, items, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return; }
+    renderHealthAppointments(items || []);
+  }
+
+  async function removeAppointment(id) {
+    const res = await apiFetch('/api/health/appointments/remove', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (!res) return;
+    const { ok, items, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return; }
+    renderHealthAppointments(items || []);
+  }
+
+  // ── Journal ──
+
   async function loadJournal() {
-    const { ok, entries } = await fetch('/api/journal').then(r => r.json());
+    const res = await apiFetch('/api/journal');
+    if (!res) return;
+    const { ok, entries } = await res.json();
     if (!ok) return;
     renderJournal(entries || []);
+  }
+
+  function journalPreview(text) {
+    const oneLine = text.replace(/\s+/g, ' ').trim();
+    if (oneLine.length <= 80) return oneLine;
+    const cut = oneLine.slice(0, 80);
+    return cut.slice(0, cut.lastIndexOf(' ')) + '…';
   }
 
   function renderJournal(entries) {
@@ -1446,11 +1845,19 @@
       const dt = new Date(e.timestamp);
       const when = isNaN(dt) ? e.timestamp : dt.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
       return `
-        <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:4px">
-          <div class="hint">${when}${e.source === 'chat' ? ' · from chat' : ''}</div>
-          <div style="white-space:pre-wrap">${escapeHtml(e.text)}</div>
+        <div class="journal-item" onclick="toggleJournalEntry('${e.id}')">
+          <div class="journal-summary">
+            <div class="hint">${when}${e.source === 'chat' ? ' · from chat' : ''}</div>
+            <div class="journal-preview">${escapeHtml(journalPreview(e.text))}</div>
+          </div>
+          <div class="journal-detail" id="jd-${e.id}">${escapeHtml(e.text)}</div>
         </div>`;
     }).join('');
+  }
+
+  function toggleJournalEntry(id) {
+    const el = document.getElementById('jd-' + id);
+    if (el) el.classList.toggle('open');
   }
 
   async function addJournalEntry() {
@@ -1459,10 +1866,11 @@
     if (!text) return;
     setStatus('Saving entry...');
     try {
-      const res = await fetch('/api/journal/add', {
+      const res = await apiFetch('/api/journal/add', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
       });
+      if (!res) return;
       const { ok, entries, error } = await res.json();
       if (!ok) { setStatus('Error: ' + error); return; }
       input.value = '';
@@ -1475,12 +1883,13 @@
 
   // ── SSE — real-time updates when any data file changes ──
   const _reloadMap = {
-    finance:     async () => { const { ok, data } = await fetch('/api/finance').then(r => r.json()); if (ok && data) renderFinance(data); },
+    finance:     async () => { const res = await apiFetch('/api/finance'); if (!res) return; const { ok, data } = await res.json(); if (ok && data) renderFinance(data); },
     goals:       () => loadGoals(),
     income:      () => loadIncome(),
     trading:     () => loadTrading(),
     'meal-plan': () => { loadMealPlan(); loadInventory(); loadShoppingList(); },
     journal:     () => loadJournal(),
+    health:      () => loadHealthAppointments(),
   };
 
   function connectSSE() {
@@ -1507,8 +1916,16 @@
     if (document.visibilityState === 'visible') fetch('/api/session/touch', { method: 'POST' }).catch(() => {});
   }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') lockSession();
-    else sessionHeartbeat();
+    // Only Finance and Trading hold anything sensitive enough to justify an instant logout —
+    // everywhere else (Meal Plan, Recipes, Shopping List, Inventory, Health) is exactly where
+    // you're mid-task and likely to background the app for a second (grabbing a quote,
+    // checking something else while shopping), so don't punish that with a forced re-login.
+    // SESSION_MAX_AGE still applies everywhere as a backstop.
+    const HIGH_STAKES_TABS = ['finance', 'trading'];
+    if (document.visibilityState === 'hidden') {
+      if (HIGH_STAKES_TABS.includes(currentMainTab)) lockSession();
+      hideNumbers(); // revealed numbers don't stay revealed once the app leaves the foreground
+    } else sessionHeartbeat();
   });
   window.addEventListener('pagehide', lockSession);
   setInterval(sessionHeartbeat, 60 * 1000);
@@ -1519,6 +1936,7 @@
   window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
 
   // ── Init ──
+  installEyeButtons();
   load();
   loadGoals();
   loadTrading();
@@ -1526,6 +1944,7 @@
   loadMealPlan();
   loadInventory();
   loadShoppingList();
+  loadHealthAppointments();
   loadJournal();
   connectSSE();
   setTimeout(plaidAutoSync, 5 * 60 * 1000);

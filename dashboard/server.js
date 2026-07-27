@@ -1,10 +1,16 @@
 import express from 'express';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, watch } from 'fs';
 import { execSync, execFile, execFileSync } from 'child_process';
+import { randomBytes } from 'crypto';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { config as loadEnv } from 'dotenv';
 import { loadTrades, calcStats, saveTrade } from '../projects/trading-bot/performance/stats.js';
+import {
+  generateRegistrationOptions, verifyRegistrationResponse,
+  generateAuthenticationOptions, verifyAuthenticationResponse,
+} from '@simplewebauthn/server';
+import { isoBase64URL } from '@simplewebauthn/server/helpers';
 
 loadEnv({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env') });
 
@@ -13,11 +19,19 @@ loadEnv({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.
 // log line) — so PATH has to be widened here in code instead of via the plist, or the various
 // execFile/execSync calls below (python3, node, git, claude) can't find their binaries when this
 // runs under launchd's default restricted PATH (/usr/bin:/bin:/usr/sbin:/sbin).
+//
+// System PATH goes FIRST, homebrew/local dirs appended after — only to fill in binaries the
+// system dirs don't have (node, claude). `python3` exists in both /usr/bin (system, Python
+// 3.9 — has anthropic/dotenv/reportlab installed via pip --user) and /opt/homebrew/bin
+// (Homebrew, Python 3.14 — a bare interpreter, none of those packages installed). Putting
+// homebrew first here previously made every python3 execFile call silently resolve to the
+// bare interpreter and fail with ModuleNotFoundError — grocery list, inventory, and meal-plan
+// generation all broke because of it while journal (stdlib-only) kept working.
 process.env.PATH = [
+  process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin',
   '/opt/homebrew/bin',
   '/usr/local/bin',
   `${process.env.HOME}/.local/bin`,
-  process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin',
 ].join(':');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -31,6 +45,8 @@ const MEAL_TRACKER_FILE = path.join(ROOT, 'projects/meal-plan/data/tracker.json'
 const INVENTORY_FILE = path.join(ROOT, 'projects/meal-plan/data/inventory.json');
 const GROCERY_LIST_FILE = path.join(ROOT, 'projects/meal-plan/data/grocery_list.json');
 const JOURNAL_FILE = path.join(ROOT, 'projects/journal/data/entries.json');
+const HEALTH_APPOINTMENTS_FILE = path.join(ROOT, 'projects/health/data/appointments.json');
+const WEBAUTHN_FILE = path.join(ROOT, 'dashboard/data/webauthn_credential.json');
 
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
   ? Buffer.from(`${process.env.DASHBOARD_USER}:${process.env.DASHBOARD_PASS}`).toString('base64')
@@ -74,6 +90,10 @@ button:hover{background:#c99552;color:#1b1714}.err{font-size:11px;color:#b5573c;
 <script>if(location.search.includes('err'))document.getElementById('err').classList.add('show')</script></body></html>`;
 
 const app = express();
+// Needed so req.protocol reflects the real scheme when proxied through the ngrok tunnel — the
+// actual TCP hop from ngrok to this process is plain HTTP even though the public side is HTTPS,
+// and WebAuthn origin verification below has to see 'https' or it'll never match.
+app.set('trust proxy', true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -117,6 +137,121 @@ app.post('/api/session/touch', (_req, res) => {
 app.post('/api/session/lock', (_req, res) => {
   res.setHeader('Set-Cookie', 'ea_auth=; Path=/; Max-Age=0');
   res.status(204).end();
+});
+
+// ── Face ID / Touch ID gate for the Finance & Trading number blur ──
+// A privacy/glance shield, not a real access boundary — /api/finance and /api/trading still
+// return raw numbers regardless of this; what this actually gates is the dashboard *revealing*
+// them client-side. Single-user app, so one stored credential total, and a single in-memory
+// challenge is enough to bridge each two-request ceremony (options → verify) — same pattern as
+// chatSessionId/chatBusy below.
+const RP_NAME = 'COMPASS';
+let webauthnChallenge = null;
+
+function rpIdFor(req) {
+  return req.hostname;
+}
+
+function loadWebAuthnCredential() {
+  if (!existsSync(WEBAUTHN_FILE)) return null;
+  try {
+    const raw = JSON.parse(readFileSync(WEBAUTHN_FILE, 'utf8'));
+    return { id: raw.id, publicKey: isoBase64URL.toBuffer(raw.publicKey), counter: raw.counter, transports: raw.transports || [] };
+  } catch (_) { return null; }
+}
+
+function saveWebAuthnCredential(cred) {
+  mkdirSync(path.dirname(WEBAUTHN_FILE), { recursive: true });
+  writeFileSync(WEBAUTHN_FILE, JSON.stringify({
+    id: cred.id,
+    publicKey: isoBase64URL.fromBuffer(cred.publicKey),
+    counter: cred.counter,
+    transports: cred.transports || [],
+  }, null, 2));
+}
+
+app.get('/api/privacy/status', (_req, res) => {
+  res.json({ ok: true, registered: !!loadWebAuthnCredential() });
+});
+
+app.post('/api/privacy/register/options', async (req, res) => {
+  try {
+    const existing = loadWebAuthnCredential();
+    const options = await generateRegistrationOptions({
+      rpName: RP_NAME,
+      rpID: rpIdFor(req),
+      userName: 'adreyn',
+      userDisplayName: 'Adreyn',
+      attestationType: 'none',
+      excludeCredentials: existing ? [{ id: existing.id, transports: existing.transports }] : [],
+      authenticatorSelection: { residentKey: 'preferred', userVerification: 'preferred', authenticatorAttachment: 'platform' },
+    });
+    webauthnChallenge = options.challenge;
+    res.json({ ok: true, options });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/privacy/register/verify', async (req, res) => {
+  if (!webauthnChallenge) return res.status(400).json({ ok: false, error: 'No registration in progress — try again.' });
+  try {
+    const verification = await verifyRegistrationResponse({
+      response: req.body,
+      expectedChallenge: webauthnChallenge,
+      expectedOrigin: `${req.protocol}://${req.get('host')}`,
+      expectedRPID: rpIdFor(req),
+    });
+    webauthnChallenge = null;
+    if (!verification.verified || !verification.registrationInfo) {
+      return res.status(400).json({ ok: false, error: 'Could not verify registration.' });
+    }
+    saveWebAuthnCredential(verification.registrationInfo.credential);
+    res.json({ ok: true });
+  } catch (err) {
+    webauthnChallenge = null;
+    res.status(400).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/privacy/auth/options', async (req, res) => {
+  const cred = loadWebAuthnCredential();
+  if (!cred) return res.status(400).json({ ok: false, error: 'No Face ID registered yet.' });
+  try {
+    const options = await generateAuthenticationOptions({
+      rpID: rpIdFor(req),
+      allowCredentials: [{ id: cred.id, transports: cred.transports }],
+      userVerification: 'required',
+    });
+    webauthnChallenge = options.challenge;
+    res.json({ ok: true, options });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/privacy/auth/verify', async (req, res) => {
+  const cred = loadWebAuthnCredential();
+  if (!cred) return res.status(400).json({ ok: false, error: 'No Face ID registered yet.' });
+  if (!webauthnChallenge) return res.status(400).json({ ok: false, error: 'No authentication in progress — try again.' });
+  try {
+    const verification = await verifyAuthenticationResponse({
+      response: req.body,
+      expectedChallenge: webauthnChallenge,
+      expectedOrigin: `${req.protocol}://${req.get('host')}`,
+      expectedRPID: rpIdFor(req),
+      credential: cred,
+      requireUserVerification: true,
+    });
+    webauthnChallenge = null;
+    if (!verification.verified) return res.status(400).json({ ok: false, error: 'Face ID did not verify.' });
+    cred.counter = verification.authenticationInfo.newCounter;
+    saveWebAuthnCredential(cred);
+    res.json({ ok: true });
+  } catch (err) {
+    webauthnChallenge = null;
+    res.status(400).json({ ok: false, error: err.message });
+  }
 });
 
 // No-store on everything past the auth gate: without this, Safari's back-forward cache can
@@ -384,6 +519,11 @@ function loadJournal() {
   try { return JSON.parse(readFileSync(JOURNAL_FILE, 'utf8')); } catch (_) { return []; }
 }
 
+function loadHealthAppointments() {
+  if (!existsSync(HEALTH_APPOINTMENTS_FILE)) return [];
+  try { return JSON.parse(readFileSync(HEALTH_APPOINTMENTS_FILE, 'utf8')); } catch (_) { return []; }
+}
+
 function classifyExpiration(expiresOn) {
   if (!expiresOn) return 'fresh';
   const exp = new Date(expiresOn + 'T00:00:00');
@@ -502,6 +642,57 @@ app.post('/api/meal-plan/generate', (_req, res) => {
   }
 });
 
+app.post('/api/meal-plan/grocery-list/buy', (req, res) => {
+  const { category, index } = req.body;
+  if (!category || index == null) return res.status(400).json({ ok: false, error: 'category and index are required.' });
+  if (!existsSync(MEAL_PLAN_FILE)) return res.status(404).json({ ok: false, error: 'No meal plan found.' });
+
+  let plan;
+  try { plan = JSON.parse(readFileSync(MEAL_PLAN_FILE, 'utf8')); } catch (_) {
+    return res.status(500).json({ ok: false, error: 'Could not read meal plan.' });
+  }
+  const items = (plan.grocery_list && plan.grocery_list[category]) || [];
+  const item = items[index];
+  if (!item) return res.status(404).json({ ok: false, error: 'Item not found.' });
+
+  items.splice(index, 1);
+  writeFileSync(MEAL_PLAN_FILE, JSON.stringify(plan, null, 2));
+
+  const inventory = loadInventory();
+  inventory.push({
+    id: 'inv_' + randomBytes(4).toString('hex'),
+    item: item.item,
+    quantity: item.quantity,
+    unit: item.unit,
+    category,
+    location: null,
+    added_on: new Date().toISOString().slice(0, 10),
+    expires_on: null,
+  });
+  mkdirSync(path.dirname(INVENTORY_FILE), { recursive: true });
+  writeFileSync(INVENTORY_FILE, JSON.stringify(inventory, null, 2));
+
+  res.json({ ok: true });
+});
+
+app.post('/api/meal-plan/grocery-list/remove', (req, res) => {
+  const { category, index } = req.body;
+  if (!category || index == null) return res.status(400).json({ ok: false, error: 'category and index are required.' });
+  if (!existsSync(MEAL_PLAN_FILE)) return res.status(404).json({ ok: false, error: 'No meal plan found.' });
+
+  let plan;
+  try { plan = JSON.parse(readFileSync(MEAL_PLAN_FILE, 'utf8')); } catch (_) {
+    return res.status(500).json({ ok: false, error: 'Could not read meal plan.' });
+  }
+  const items = (plan.grocery_list && plan.grocery_list[category]) || [];
+  if (!items[index]) return res.status(404).json({ ok: false, error: 'Item not found.' });
+
+  items.splice(index, 1);
+  writeFileSync(MEAL_PLAN_FILE, JSON.stringify(plan, null, 2));
+
+  res.json({ ok: true });
+});
+
 app.get('/api/inventory', (_req, res) => {
   const items = loadInventory().map((i) => ({ ...i, status: classifyExpiration(i.expires_on) }));
   res.json({ ok: true, data: items });
@@ -585,6 +776,47 @@ app.post('/api/journal/add', (req, res) => {
       if (parsed.error) return res.status(500).json({ ok: false, error: parsed.error });
       res.json({ ok: true, entry: parsed, entries: loadJournal().slice().reverse() });
     });
+});
+
+app.get('/api/health/appointments', (_req, res) => {
+  res.json({ ok: true, items: loadHealthAppointments() });
+});
+
+app.post('/api/health/appointments/update', (req, res) => {
+  const text = (req.body.text || '').trim();
+  if (!text) return res.status(400).json({ ok: false, error: 'text is required.' });
+
+  execFile('python3', ['projects/health/tools/appointments.py', 'update', text],
+    { cwd: ROOT, timeout: 60000, maxBuffer: 2 * 1024 * 1024 },
+    (err, stdout) => {
+      if (err) return res.status(500).json({ ok: false, error: err.message });
+      let parsed;
+      try { parsed = JSON.parse(stdout); } catch (_) {
+        return res.status(500).json({ ok: false, error: 'Could not parse appointments response.' });
+      }
+      if (parsed.error) return res.status(500).json({ ok: false, error: parsed.error });
+      res.json({ ok: true, items: parsed.items, changes: parsed.changes });
+    });
+});
+
+app.post('/api/health/appointments/complete', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const items = loadHealthAppointments().map((a) => a.id === id ? { ...a, status: 'done' } : a);
+  mkdirSync(path.dirname(HEALTH_APPOINTMENTS_FILE), { recursive: true });
+  writeFileSync(HEALTH_APPOINTMENTS_FILE, JSON.stringify(items, null, 2));
+  res.json({ ok: true, items });
+});
+
+app.post('/api/health/appointments/remove', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const items = loadHealthAppointments().filter((a) => a.id !== id);
+  mkdirSync(path.dirname(HEALTH_APPOINTMENTS_FILE), { recursive: true });
+  writeFileSync(HEALTH_APPOINTMENTS_FILE, JSON.stringify(items, null, 2));
+  res.json({ ok: true, items });
 });
 
 app.post('/api/meal-plan/feedback', (req, res) => {
@@ -724,6 +956,7 @@ watchForChanges(INCOME_LOG_FILE, 'income');
 watchForChanges(path.join(ROOT, 'projects/trading-bot/performance'), 'trading');
 watchForChanges(path.join(ROOT, 'projects/meal-plan/data'), 'meal-plan');
 watchForChanges(path.join(ROOT, 'projects/journal/data'), 'journal');
+watchForChanges(path.join(ROOT, 'projects/health/data'), 'health');
 
 const PORT = 4000;
 app.listen(PORT, () => {

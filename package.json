@@ -13,6 +13,7 @@
     "meal:generate": "python3 projects/meal-plan/tools/generate_meal_plan.py"
   },
   "dependencies": {
+    "@simplewebauthn/server": "^13.3.2",
     "dotenv": "^16.0.0",
     "express": "^5.2.1",
     "plaid": "^26.0.0"
