@@ -6,6 +6,8 @@ Solo operator. No official business entity yet.
 ## Primary Mission
 Build the ultimate day trading sidekick — an AI-powered trading bot and financial intelligence system. This is the anchor project that funds future endeavors.
 
+Broader mission: use AI to automate and help other people — then monetize that. Not just personal tooling; the systems built here (skills, automations, the AIOS itself) are also potential products or freelance/service offerings. Keep this in mind across all work, not just the trading bot.
+
 ## Revenue Streams
 | Stream | Source | Biweekly |
 |--------|--------|----------|
