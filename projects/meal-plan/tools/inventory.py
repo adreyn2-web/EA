@@ -36,6 +36,7 @@ DATA_DIR.mkdir(exist_ok=True)
 INVENTORY_PATH = DATA_DIR / "inventory.json"
 
 CATEGORIES = ["proteins", "produce", "dairy", "grains", "pantry", "frozen", "other"]
+LOCATIONS = ["fridge", "freezer", "pantry"]
 
 UPDATE_PROMPT = """You maintain a fridge/pantry inventory for a home cook. Given the CURRENT
 INVENTORY and a free-text update from the user, return ONLY a JSON delta describing what changed
@@ -49,24 +50,34 @@ USER UPDATE:
 
 Rules:
 - "additions": new items the user mentions acquiring. Each: {{"item": "...", "quantity": "...",
-  "unit": "...", "category": one of {categories}, "expires_on": "YYYY-MM-DD"}}. Estimate
-  expires_on using normal food-safety shelf life for that item stored in a home fridge/pantry
-  (e.g. raw chicken ~2 days, milk ~7 days, eggs ~21 days, canned goods ~365 days). Today's date is
-  {today}.
+  "unit": "...", "category": one of {categories}, "location": one of {locations}, "expires_on":
+  "YYYY-MM-DD" or null}}. Infer location from general food knowledge — raw/frozen proteins bought
+  in bulk, ice cream, frozen vegetables, anything the user says is going in the freezer → "freezer";
+  canned goods, dry goods, spices, shelf-stable staples → "pantry"; everything else (things that
+  actually need refrigeration) → "fridge". Only estimate expires_on for "fridge" items, using
+  normal food-safety shelf life (e.g. raw chicken ~2 days, milk ~7 days, eggs ~21 days). For
+  "freezer" or "pantry" items, leave expires_on null unless the user states an explicit date —
+  those don't need close watching. Today's date is {today}.
 - "removals": items the user says are used up, gone, or spoiled. Each: {{"id": "...", "item":
   "..."}} where "id" is copied EXACTLY from the matching row in CURRENT INVENTORY. Only remove
   items the user explicitly describes as used/gone/spoiled/thrown out — never guess or remove
   something not mentioned.
-- If the user's update doesn't clearly map to an existing row for a removal, omit that removal
-  rather than guessing an id.
+- "updates": corrections to an ALREADY-TRACKED item's location/category/expiration — e.g. "the
+  salmon is in the freezer, not the fridge", "move the canned tuna to pantry". Each: {{"id": "...",
+  "location": "...", "category": "...", "expires_on": "..."}} with "id" copied EXACTLY from the
+  matching row in CURRENT INVENTORY and ONLY the fields that are actually changing (omit the
+  rest). Use "updates" for correcting/moving something already in the list, never for new
+  acquisitions (those are "additions").
+- If the user's update doesn't clearly map to an existing row for a removal or update, omit that
+  entry rather than guessing an id.
 - This message may come from a general chat assistant, not a dedicated inventory form — it might
   not be about food/inventory at all (e.g. a question about trading, finances, or anything else).
-  If the USER UPDATE isn't clearly describing fridge/pantry items being acquired, used, or gone
-  bad, respond with exactly {{"additions": [], "removals": []}} and nothing else. Do not force a
-  match.
+  If the USER UPDATE isn't clearly describing fridge/pantry items being acquired, used, gone bad,
+  or moved/recategorized, respond with exactly {{"additions": [], "removals": [], "updates": []}}
+  and nothing else. Do not force a match.
 
 Respond ONLY with valid JSON, no prose, no markdown fences:
-{{"additions": [...], "removals": [...]}}"""
+{{"additions": [...], "removals": [...], "updates": [...]}}"""
 
 
 def load() -> list[dict]:
@@ -123,12 +134,14 @@ def parse_update(current_items: list[dict], free_text: str, retry: bool = False)
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     current = "\n".join(
-        f"- id={i['id']}: {i.get('quantity','')} {i.get('unit','')} {i['item']} [{i['category']}]"
+        f"- id={i['id']}: {i.get('quantity','')} {i.get('unit','')} {i['item']} "
+        f"[{i['category']}, {i.get('location') or 'unsorted'}]"
         for i in current_items
     ) or "(empty)"
 
     prompt = UPDATE_PROMPT.format(
-        current=current, text=free_text, categories=CATEGORIES, today=date.today().isoformat()
+        current=current, text=free_text, categories=CATEGORIES, locations=LOCATIONS,
+        today=date.today().isoformat(),
     )
 
     raw = ""
@@ -164,13 +177,28 @@ def apply_delta(items: list[dict], delta: dict) -> tuple[list[dict], dict]:
             "quantity": a.get("quantity", ""),
             "unit": a.get("unit", ""),
             "category": a.get("category") if a.get("category") in CATEGORIES else "other",
+            "location": a.get("location") if a.get("location") in LOCATIONS else None,
             "added_on": date.today().isoformat(),
             "expires_on": a.get("expires_on"),
         }
         added.append(item)
 
+    by_id = {i["id"]: i for i in kept}
+    updated_items = []
+    for u in delta.get("updates", []):
+        item = by_id.get(u.get("id"))
+        if not item:
+            continue
+        if "location" in u and u["location"] in LOCATIONS:
+            item["location"] = u["location"]
+        if "category" in u and u["category"] in CATEGORIES:
+            item["category"] = u["category"]
+        if "expires_on" in u:
+            item["expires_on"] = u["expires_on"]
+        updated_items.append(item)
+
     updated = kept + added
-    summary = {"added": added, "removed": actually_removed}
+    summary = {"added": added, "removed": actually_removed, "updated": updated_items}
     return updated, summary
 
 
@@ -182,9 +210,50 @@ def update_from_text(free_text: str) -> dict:
     return {"items": with_status(updated), "changes": summary}
 
 
+BACKFILL_PROMPT = """You maintain a fridge/pantry inventory for a home cook. Each of these items
+is missing a storage location. Using general food knowledge, assign each one a location: one of
+{locations} ("freezer" for raw/frozen proteins, ice cream, frozen vegetables; "pantry" for canned/
+dry/shelf-stable goods; "fridge" for everything else that needs refrigeration).
+
+ITEMS:
+{items}
+
+Respond ONLY with valid JSON, no prose, no markdown fences:
+{{"updates": [{{"id": "...", "location": "..."}}, ...]}}"""
+
+
+def backfill_locations() -> dict:
+    items = load()
+    missing = [i for i in items if not i.get("location")]
+    if not missing:
+        return {"items": with_status(items), "changes": {"added": [], "removed": [], "updated": []}}
+
+    listing = "\n".join(
+        f"- id={i['id']}: {i.get('quantity','')} {i.get('unit','')} {i['item']} [{i['category']}]"
+        for i in missing
+    )
+    prompt = BACKFILL_PROMPT.format(locations=LOCATIONS, items=listing)
+
+    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    raw = ""
+    with client.messages.stream(
+        model="claude-opus-4-8",
+        max_tokens=4096,
+        system="You output only valid JSON for an inventory system. No prose, no markdown fences.",
+        messages=[{"role": "user", "content": prompt}],
+    ) as stream:
+        for chunk in stream.text_stream:
+            raw += chunk
+    delta = json.loads(_strip_fences(raw))
+
+    updated, summary = apply_delta(items, delta)
+    save(updated)
+    return {"items": with_status(updated), "changes": summary}
+
+
 def main():
     if len(sys.argv) < 2:
-        print(json.dumps({"error": "Usage: inventory.py list | inventory.py update '<text>'"}))
+        print(json.dumps({"error": "Usage: inventory.py list | inventory.py update '<text>' | inventory.py backfill-locations"}))
         sys.exit(1)
 
     cmd = sys.argv[1]
@@ -196,6 +265,8 @@ def main():
                 print(json.dumps({"error": "update requires free text"}))
                 sys.exit(1)
             print(json.dumps(update_from_text(sys.argv[2])))
+        elif cmd == "backfill-locations":
+            print(json.dumps(backfill_locations()))
         else:
             print(json.dumps({"error": f"Unknown command: {cmd}"}))
             sys.exit(1)
