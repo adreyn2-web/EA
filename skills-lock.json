@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "audit": {
+      "source": "nateherkai/AIS-OS",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/audit/SKILL.md",
+      "computedHash": "6c6cbdde6d71269ecd7e7f542a5ee6db3e62eb8e6602b759ea0327d31fd31d6b"
+    },
     "gws-calendar": {
       "source": "googleworkspace/cli",
       "sourceType": "github",
