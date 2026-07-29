@@ -1,5 +1,5 @@
 import express from 'express';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, watch } from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync, watch } from 'fs';
 import { execSync, execFile, execFileSync } from 'child_process';
 import { randomBytes } from 'crypto';
 import { fileURLToPath } from 'url';
@@ -11,6 +11,7 @@ import {
   generateAuthenticationOptions, verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
 import { isoBase64URL } from '@simplewebauthn/server/helpers';
+import michelleIntakeRouter from '../projects/client-work/michelle-az-home/server/intake-router.js';
 
 loadEnv({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env') });
 
@@ -60,7 +61,18 @@ const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
 // fires an instant-lock beacon on backgrounding so that's immediate rather than waiting out
 // SESSION_MAX_AGE — see /api/session/lock and dashboard/public/index.html.
 const SESSION_MAX_AGE = 5 * 60; // seconds
-const AUTH_COOKIE = `Path=/; HttpOnly; SameSite=Lax; Secure; Max-Age=${SESSION_MAX_AGE}`;
+// Secure is omitted only for plain-HTTP requests to the loopback hostname — Safari (unlike
+// Chrome) refuses to store/send cookies marked Secure over plain http://localhost, which
+// silently broke local login: the POST would succeed but the cookie never stuck, bouncing back
+// to /login with no error shown. app.listen binds all interfaces, not just loopback, so this
+// checks req.hostname (not just req.secure) — otherwise anyone reaching this box over plain
+// HTTP on the LAN (bypassing the ngrok tunnel) would also get a non-Secure cookie carrying the
+// login credentials.
+function authCookie(req) {
+  const isLoopback = ['localhost', '127.0.0.1', '::1'].includes(req.hostname);
+  const useSecure = req.secure || !isLoopback;
+  return `Path=/; HttpOnly; SameSite=Lax;${useSecure ? ' Secure;' : ''} Max-Age=${SESSION_MAX_AGE}`;
+}
 
 function parseCookies(req) {
   const out = {};
@@ -94,15 +106,22 @@ const app = express();
 // actual TCP hop from ngrok to this process is plain HTTP even though the public side is HTTPS,
 // and WebAuthn origin verification below has to see 'https' or it'll never match.
 app.set('trust proxy', true);
-app.use(express.json());
+// 25mb (default is 100kb) — the Michelle intake form below can carry a handful of resized
+// reference photos as base64 JSON; everything else in the app sends payloads far smaller than
+// this, so raising the ceiling app-wide is harmless.
+app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+// Client-work intake form — mounted before the auth gate below on purpose. Michelle (or anyone
+// else this kind of link goes to) must never need Adreyn's dashboard password to reach it.
+app.use('/michelle-home-search', michelleIntakeRouter);
 
 app.get('/login', (_req, res) => res.send(LOGIN_HTML));
 
 app.post('/login', (req, res) => {
   const token = Buffer.from(`${req.body.user}:${req.body.pass}`).toString('base64');
   if (AUTH_TOKEN && token === AUTH_TOKEN) {
-    res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${AUTH_COOKIE}`);
+    res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${authCookie(req)}`);
     return res.redirect('/');
   }
   res.redirect('/login?err=1');
@@ -125,8 +144,8 @@ if (AUTH_TOKEN) {
 // Sliding-session renewal — only reachable because it's past the auth gate, so a valid cookie
 // already got us here; just re-issue it with a fresh Max-Age. Called by the dashboard's own
 // heartbeat while the tab is visible (see dashboard/public/index.html).
-app.post('/api/session/touch', (_req, res) => {
-  res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${AUTH_COOKIE}`);
+app.post('/api/session/touch', (req, res) => {
+  res.setHeader('Set-Cookie', `ea_auth=${AUTH_TOKEN}; ${authCookie(req)}`);
   res.json({ ok: true });
 });
 
@@ -524,6 +543,16 @@ function loadHealthAppointments() {
   try { return JSON.parse(readFileSync(HEALTH_APPOINTMENTS_FILE, 'utf8')); } catch (_) { return []; }
 }
 
+// Mirrors projects/health/tools/appointments.py's save() — this file holds PHI (appointment
+// cost/financing details), so mode is enforced explicitly rather than left to the umask.
+function saveHealthAppointments(items) {
+  const dir = path.dirname(HEALTH_APPOINTMENTS_FILE);
+  mkdirSync(dir, { recursive: true });
+  chmodSync(dir, 0o700);
+  writeFileSync(HEALTH_APPOINTMENTS_FILE, JSON.stringify(items, null, 2), { mode: 0o600 });
+  chmodSync(HEALTH_APPOINTMENTS_FILE, 0o600);
+}
+
 function classifyExpiration(expiresOn) {
   if (!expiresOn) return 'fresh';
   const exp = new Date(expiresOn + 'T00:00:00');
@@ -804,8 +833,7 @@ app.post('/api/health/appointments/complete', (req, res) => {
   if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
 
   const items = loadHealthAppointments().map((a) => a.id === id ? { ...a, status: 'done' } : a);
-  mkdirSync(path.dirname(HEALTH_APPOINTMENTS_FILE), { recursive: true });
-  writeFileSync(HEALTH_APPOINTMENTS_FILE, JSON.stringify(items, null, 2));
+  saveHealthAppointments(items);
   res.json({ ok: true, items });
 });
 
@@ -814,8 +842,7 @@ app.post('/api/health/appointments/remove', (req, res) => {
   if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
 
   const items = loadHealthAppointments().filter((a) => a.id !== id);
-  mkdirSync(path.dirname(HEALTH_APPOINTMENTS_FILE), { recursive: true });
-  writeFileSync(HEALTH_APPOINTMENTS_FILE, JSON.stringify(items, null, 2));
+  saveHealthAppointments(items);
   res.json({ ok: true, items });
 });
 

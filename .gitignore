@@ -9,6 +9,7 @@ projects/meal-plan/data/
 projects/journal/data/
 projects/health/data/
 dashboard/data/
+projects/client-work/*/data/
 income/
 Apple Card/
 logs/

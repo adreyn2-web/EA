@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Search — Arizona</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :focus-visible { outline: 2px solid rgba(201,149,82,.5); outline-offset: 1px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    }
+
+    :root {
+      --bg: #1b1714;
+      --surface: #221e19;
+      --surface2: #2b2620;
+      --border: #362f27;
+      --border2: #443a30;
+      --text: #ece3d3;
+      --muted: #8d8071;
+      --accent: #c99552;
+      --green: #86ab73;
+      --font-display: 'Shippori Mincho', serif;
+    }
+
+    body {
+      background:
+        radial-gradient(rgba(236,227,211,.015) 1px, transparent 1px) 0 0/3px 3px,
+        var(--bg);
+      color: var(--text); font-family: 'SF Mono','Fira Code','Menlo',monospace; font-size: 13px; line-height: 1.6; min-height: 100vh;
+    }
+
+    header { padding: 28px 20px 22px; border-bottom: 1px solid var(--border); text-align: center; }
+    .wordmark { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px; }
+    .enso { width: 24px; height: 24px; flex-shrink: 0; opacity: .85; }
+    header h1 { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: 0.06em; color: var(--accent); }
+    header p { font-size: 12px; color: var(--muted); margin-top: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+    main { max-width: 640px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    .section { margin-bottom: 36px; }
+    .section-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: 0.03em; color: var(--text); margin-bottom: 4px; }
+    .section-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; line-height: 1.7; }
+
+    .known-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; margin-bottom: 36px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 2px 6px rgba(0,0,0,.3); }
+    .known-box .section-title { margin-bottom: 10px; }
+    .known-row { display: flex; gap: 8px; padding: 3px 0; font-size: 12px; }
+    .known-row .check { color: var(--green); flex-shrink: 0; }
+
+    .field-group { margin-bottom: 18px; }
+    .field-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 7px; }
+    .field-input, .field-textarea, .field-select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2); color: var(--text);
+      font-family: inherit; font-size: 13px; padding: 9px 12px; border-radius: 4px; outline: none;
+    }
+    .field-input:focus, .field-textarea:focus, .field-select:focus { border-color: var(--accent); }
+    .field-textarea { resize: vertical; min-height: 70px; }
+    .field-hint { font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+
+    .choice-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .choice-btn {
+      background: var(--surface2); border: 1px solid var(--border2); color: var(--muted);
+      font-family: inherit; font-size: 12px; padding: 8px 14px; border-radius: 4px; cursor: pointer;
+      transition: border-color .15s, color .15s, background-color .15s, transform .1s;
+    }
+    .choice-btn:hover { border-color: var(--accent); color: var(--text); }
+    .choice-btn:active { transform: scale(.97); }
+    .choice-btn.sel { border-color: var(--accent); color: var(--accent); background: rgba(201,149,82,.1); }
+
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+    .photo-card {
+      position: relative; border-radius: 6px; overflow: hidden; cursor: pointer; aspect-ratio: 4/3;
+      border: 2px solid var(--border); transition: border-color .15s, transform .1s;
+      background: var(--surface2);
+    }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-card:hover { border-color: var(--border2); }
+    .photo-card:active { transform: scale(.98); }
+    .photo-card.sel { border-color: var(--accent); }
+    .photo-check {
+      position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--bg); border: 1px solid var(--border2); color: transparent;
+      display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+      transition: background-color .15s, color .15s, border-color .15s;
+    }
+    .photo-card.sel .photo-check { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+    .photo-preview-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .photo-preview-item { position: relative; width: 72px; height: 72px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border2); }
+    .photo-preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-preview-remove {
+      position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-size: 11px;
+      line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .photo-preview-remove:hover { border-color: var(--red, #c85f3d); color: var(--red, #c85f3d); }
+    .photo-preview-note { font-size: 10px; color: var(--muted); margin-top: 6px; width: 100%; }
+
+    .submit-row { margin-top: 40px; text-align: center; }
+    .btn-submit {
+      background: var(--accent); border: 1px solid var(--accent); color: var(--bg); font-family: inherit;
+      font-size: 14px; font-weight: 600; padding: 13px 32px; border-radius: 4px; cursor: pointer;
+      letter-spacing: .04em; transition: opacity .15s, transform .1s;
+    }
+    .btn-submit:hover { opacity: .9; }
+    .btn-submit:active { transform: scale(.98); }
+    .btn-submit:disabled { opacity: .4; cursor: default; }
+    .submit-note { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+    #thankyou { display: none; text-align: center; padding: 80px 20px; max-width: 480px; margin: 0 auto; }
+    #thankyou h2 { font-family: var(--font-display); font-size: 20px; color: var(--accent); margin-bottom: 14px; }
+    #thankyou p { font-size: 13px; color: var(--muted); line-height: 1.8; }
+
+    .error-note { display: none; color: var(--red, #c85f3d); font-size: 12px; margin-top: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">
+    <svg class="enso" viewBox="0 0 100 100" fill="none">
+      <path d="M50 8 C74 8 92 27 92 51 C92 73 75 90 53 92 C33 94 15 82 9 64" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <h1>COMPASS</h1>
+  </div>
+  <p>A short questionnaire to help Adreyn find the right place for you in Arizona — takes about 5 minutes. Nothing here is final, just a starting point.</p>
+</header>
+
+<main>
+  <form id="intake-form">
+
+    <div class="known-box">
+      <div class="section-title">What we already know</div>
+      <div class="known-row"><span class="check">✓</span><span>Areas — 85266 (North Scottsdale) and 85254 (North Phoenix / Scottsdale border)</span></div>
+      <div class="known-row"><span class="check">✓</span><span>Furnished — you want it move-in ready, no furniture shopping</span></div>
+      <div class="known-row"><span class="check">✓</span><span>Landscaping — as low-maintenance as possible, you want nothing to do with yard work</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Location & Timing</div>
+      <div class="section-sub">Anything to add to the areas above, and roughly when you're looking to buy.</div>
+      <input type="hidden" id="f-zips" name="zips" value="85266, 85254" />
+      <div class="field-group">
+        <label class="field-label" for="f-zips-other">Other areas you'd consider (optional)</label>
+        <input class="field-input" id="f-zips-other" name="zips_other" type="text" placeholder="e.g. any other ZIPs or areas you're open to" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Target purchase window</label>
+        <div class="choice-group" data-field="timing">
+          <button type="button" class="choice-btn" data-value="January">January</button>
+          <button type="button" class="choice-btn" data-value="February">February</button>
+          <button type="button" class="choice-btn" data-value="March">March</button>
+          <button type="button" class="choice-btn" data-value="Flexible Jan-March">Flexible across all three</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Budget & Financing</div>
+      <div class="section-sub">This is the single biggest thing we're missing — helps rule places in or out fast.</div>
+      <div class="row2">
+        <div class="field-group">
+          <label class="field-label" for="f-budget-min">Budget — low end</label>
+          <input class="field-input" id="f-budget-min" name="budget_min" type="number" placeholder="$" min="0" step="1000" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="f-budget-max">Budget — high end</label>
+          <input class="field-input" id="f-budget-max" name="budget_max" type="number" placeholder="$" min="0" step="1000" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Financing status</label>
+        <div class="choice-group" data-field="financing">
+          <button type="button" class="choice-btn" data-value="Cash buyer">Cash buyer</button>
+          <button type="button" class="choice-btn" data-value="Pre-approved for a mortgage">Pre-approved for a mortgage</button>
+          <button type="button" class="choice-btn" data-value="Still figuring out financing">Still figuring out financing</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Home Type & Size</div>
+      <div class="field-group">
+        <label class="field-label">What kind of place?</label>
+        <div class="choice-group" data-field="home_type" data-multi="true">
+          <button type="button" class="choice-btn" data-value="Single-family house">Single-family house</button>
+          <button type="button" class="choice-btn" data-value="Condo">Condo</button>
+          <button type="button" class="choice-btn" data-value="Townhome">Townhome</button>
+          <button type="button" class="choice-btn" data-value="Gated / 55+ community">Gated / 55+ community</button>
+        </div>
+        <div class="field-hint">Pick as many as you'd genuinely consider.</div>
+      </div>
+      <div class="row2">
+        <div class="field-group">
+          <label class="field-label" for="f-beds">Bedrooms (minimum)</label>
+          <select class="field-select" id="f-beds" name="beds">
+            <option value="">No preference</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="f-baths">Bathrooms (minimum)</label>
+          <select class="field-select" id="f-baths" name="baths">
+            <option value="">No preference</option>
+            <option>1</option><option>1.5</option><option>2</option><option>2.5</option><option>3+</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Must-haves, Nice-to-haves & Dealbreakers</div>
+      <div class="field-group">
+        <label class="field-label" for="f-musthave">Must-haves</label>
+        <textarea class="field-textarea" id="f-musthave" name="must_haves" placeholder="Things it absolutely needs"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-nicetohave">Nice-to-haves</label>
+        <textarea class="field-textarea" id="f-nicetohave" name="nice_to_haves" placeholder="Things that would be a bonus, not required"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-dealbreaker">Dealbreakers</label>
+        <textarea class="field-textarea" id="f-dealbreaker" name="dealbreakers" placeholder="Anything that would rule a place out immediately"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Already Found Something?</div>
+      <div class="section-sub">If you've already got listings, links, or photos of places you like — in the area or not — drop them here. Any of it helps.</div>
+      <div class="field-group">
+        <label class="field-label" for="f-seen-links">Links to listings or houses you've seen</label>
+        <textarea class="field-textarea" id="f-seen-links" name="seen_links" placeholder="Paste any links — one per line. Notes are welcome too, e.g. 'loved the kitchen in this one'"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="f-seen-photos-input">Photos</label>
+        <input class="field-input" id="f-seen-photos-input" type="file" accept="image/*" multiple />
+        <div class="field-hint">Up to 5 photos — screenshots, pictures you've taken, whatever you've got.</div>
+        <div class="photo-preview-grid" id="seen-photos-preview"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Exterior Style</div>
+      <div class="section-sub">Click any that appeal to you — none required, pick as few or as many as you want.</div>
+      <div class="photo-grid" data-category="exterior_style">
+        <div class="photo-card" data-photo="desert-modern-white"><img loading="lazy" src="https://images.unsplash.com/photo-1570630856429-32cf3feef67c?w=400&q=70&auto=format&fit=crop" alt="White concrete desert-modern house"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="spanish-desert-landscaping"><img loading="lazy" src="https://images.unsplash.com/photo-1760574152812-446463182358?w=400&q=70&auto=format&fit=crop" alt="Spanish-style house with desert landscaping, golf-community style"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="desert-mountain-estate"><img loading="lazy" src="https://images.unsplash.com/photo-1649181353619-d3ed1e023984?w=400&q=70&auto=format&fit=crop" alt="House in the desert with mountains in the background"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="desert-set-house"><img loading="lazy" src="https://images.unsplash.com/photo-1725220464500-a7db9188eab8?w=400&q=70&auto=format&fit=crop" alt="House in the middle of the desert"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="desert-cactus-house"><img loading="lazy" src="https://images.unsplash.com/photo-1750806267476-bc6b7216e69b?w=400&q=70&auto=format&fit=crop" alt="Desert landscape home with cactus"><div class="photo-check">✓</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Kitchen Finish</div>
+      <div class="section-sub">Which finishes feel like you?</div>
+      <div class="photo-grid" data-category="kitchen_finish">
+        <div class="photo-card" data-photo="kitchen-white-bright"><img loading="lazy" src="https://images.unsplash.com/photo-1502005097973-6a7082348e28?w=400&q=70&auto=format&fit=crop" alt="White bright kitchen"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="kitchen-dark-modern"><img loading="lazy" src="https://images.unsplash.com/photo-1663811397261-916af74a9363?w=400&q=70&auto=format&fit=crop" alt="Dark modern kitchen cabinets"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="kitchen-warm-wood"><img loading="lazy" src="https://images.unsplash.com/photo-1512916194211-3f2b7f5f7de3?w=400&q=70&auto=format&fit=crop" alt="Warm wood kitchen cabinets"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="kitchen-marble-bold"><img loading="lazy" src="https://images.unsplash.com/photo-1671197244266-73129c97c096?w=400&q=70&auto=format&fit=crop" alt="Modern kitchen with marble countertops"><div class="photo-check">✓</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Living Space Vibe</div>
+      <div class="section-sub">What kind of room do you want to actually relax in?</div>
+      <div class="photo-grid" data-category="living_space_vibe">
+        <div class="photo-card" data-photo="living-minimalist"><img loading="lazy" src="https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?w=400&q=70&auto=format&fit=crop" alt="Minimalist gray and white living room"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="living-cozy-traditional"><img loading="lazy" src="https://images.unsplash.com/photo-1616593871468-2a9452218369?w=400&q=70&auto=format&fit=crop" alt="Cozy traditional living room"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="living-bright-airy"><img loading="lazy" src="https://images.unsplash.com/photo-1720247520862-7e4b14176fa8?w=400&q=70&auto=format&fit=crop" alt="Bright airy living room"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="living-bold-eclectic"><img loading="lazy" src="https://images.unsplash.com/photo-1618221381711-42ca8ab6e908?w=400&q=70&auto=format&fit=crop" alt="Bold colorful eclectic living room"><div class="photo-check">✓</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Outdoor Space Style</div>
+      <div class="section-sub">Remember — low-maintenance matters most, but pick whatever appeals to you visually.</div>
+      <div class="photo-grid" data-category="outdoor_style">
+        <div class="photo-card" data-photo="outdoor-gravel-path"><img loading="lazy" src="https://images.unsplash.com/photo-1780399346101-6481fec66224?w=400&q=70&auto=format&fit=crop" alt="Low-maintenance gravel garden path"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="outdoor-pool-palms"><img loading="lazy" src="https://images.unsplash.com/photo-1763479142525-1a3b1f7800c2?w=400&q=70&auto=format&fit=crop" alt="Modern house with pool and palm trees"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="outdoor-resort-pool"><img loading="lazy" src="https://images.unsplash.com/photo-1768590149180-fb8b111db951?w=400&q=70&auto=format&fit=crop" alt="Sunny resort-style pool near houses and palm trees"><div class="photo-check">✓</div></div>
+        <div class="photo-card" data-photo="outdoor-pergola-gravel"><img loading="lazy" src="https://images.unsplash.com/photo-1758791768407-dca4c35045b7?w=400&q=70&auto=format&fit=crop" alt="Pergola over a low-maintenance gravel yard"><div class="photo-check">✓</div></div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="f-name">Your name</label>
+      <input class="field-input" id="f-name" name="name" type="text" placeholder="Michelle" required />
+    </div>
+
+    <div class="submit-row">
+      <button type="submit" class="btn-submit" id="submit-btn">Send to Adreyn</button>
+      <div class="submit-note">He'll take this and start putting a shortlist together.</div>
+      <div class="error-note" id="error-note">Something went wrong sending this — try again in a moment.</div>
+    </div>
+  </form>
+
+  <div id="thankyou">
+    <h2>Got it — thank you.</h2>
+    <p>This is on its way to Adreyn. He'll use it to start narrowing down real options and follow up with you directly.</p>
+  </div>
+</main>
+
+<script>
+  document.querySelectorAll('.choice-group').forEach(group => {
+    const multi = group.dataset.multi === 'true';
+    group.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!multi) group.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('sel'));
+        btn.classList.toggle('sel');
+      });
+    });
+  });
+
+  document.querySelectorAll('.photo-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('sel'));
+  });
+
+  function selectedValues(field) {
+    const group = document.querySelector(`.choice-group[data-field="${field}"]`);
+    return [...group.querySelectorAll('.choice-btn.sel')].map(b => b.dataset.value);
+  }
+
+  function selectedPhotos(category) {
+    const grid = document.querySelector(`.photo-grid[data-category="${category}"]`);
+    return [...grid.querySelectorAll('.photo-card.sel')].map(c => c.dataset.photo);
+  }
+
+  // ── "Already found something?" photo uploads ──
+  // Resized/re-encoded client-side before it ever leaves the browser: keeps the payload small
+  // regardless of how large the original phone photo was, and — as a side effect — strips
+  // whatever EXIF/GPS metadata the photo had, since re-drawing onto a canvas doesn't carry it.
+  const MAX_UPLOAD_PHOTOS = 5;
+  let uploadedPhotos = []; // [{ filename, dataUrl }]
+
+  function resizeImageFile(file, maxDim = 1600, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('read failed'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('decode failed'));
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+            else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPhotoPreview() {
+    const wrap = document.getElementById('seen-photos-preview');
+    wrap.innerHTML = '';
+    uploadedPhotos.forEach((p, i) => {
+      const item = document.createElement('div');
+      item.className = 'photo-preview-item';
+      item.innerHTML = `<img src="${p.dataUrl}" alt=""><div class="photo-preview-remove" data-i="${i}">×</div>`;
+      wrap.appendChild(item);
+    });
+    if (uploadedPhotos.length >= MAX_UPLOAD_PHOTOS) {
+      const note = document.createElement('div');
+      note.className = 'photo-preview-note';
+      note.textContent = `Max ${MAX_UPLOAD_PHOTOS} photos — remove one to add another.`;
+      wrap.appendChild(note);
+    }
+    wrap.querySelectorAll('.photo-preview-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        uploadedPhotos.splice(Number(btn.dataset.i), 1);
+        renderPhotoPreview();
+      });
+    });
+  }
+
+  document.getElementById('f-seen-photos-input').addEventListener('change', async (e) => {
+    const files = [...e.target.files].filter(f => f.type.startsWith('image/'));
+    const room = Math.max(0, MAX_UPLOAD_PHOTOS - uploadedPhotos.length);
+    for (const file of files.slice(0, room)) {
+      try {
+        const dataUrl = await resizeImageFile(file);
+        uploadedPhotos.push({ filename: file.name, dataUrl });
+      } catch (_) { /* skip anything that fails to decode */ }
+    }
+    renderPhotoPreview();
+    e.target.value = ''; // allow re-selecting the same file after removing it
+  });
+
+  document.getElementById('intake-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errorNote = document.getElementById('error-note');
+    errorNote.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const payload = {
+      name: document.getElementById('f-name').value.trim(),
+      zips: document.getElementById('f-zips').value.trim(),
+      zips_other: document.getElementById('f-zips-other').value.trim(),
+      timing: selectedValues('timing'),
+      budget_min: document.getElementById('f-budget-min').value,
+      budget_max: document.getElementById('f-budget-max').value,
+      financing: selectedValues('financing'),
+      home_type: selectedValues('home_type'),
+      beds: document.getElementById('f-beds').value,
+      baths: document.getElementById('f-baths').value,
+      must_haves: document.getElementById('f-musthave').value.trim(),
+      nice_to_haves: document.getElementById('f-nicetohave').value.trim(),
+      dealbreakers: document.getElementById('f-dealbreaker').value.trim(),
+      seen_links: document.getElementById('f-seen-links').value.trim(),
+      seen_photos: uploadedPhotos,
+      photo_reactions: {
+        exterior_style: selectedPhotos('exterior_style'),
+        kitchen_finish: selectedPhotos('kitchen_finish'),
+        living_space_vibe: selectedPhotos('living_space_vibe'),
+        outdoor_style: selectedPhotos('outdoor_style'),
+      },
+    };
+
+    try {
+      const res = await fetch('/michelle-home-search/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('bad response');
+      document.getElementById('intake-form').style.display = 'none';
+      document.getElementById('thankyou').style.display = 'block';
+      window.scrollTo(0, 0);
+    } catch (err) {
+      errorNote.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Send to Adreyn';
+    }
+  });
+</script>
+
+</body>
+</html>
