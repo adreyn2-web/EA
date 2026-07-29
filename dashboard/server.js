@@ -11,7 +11,7 @@ import {
   generateAuthenticationOptions, verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
 import { isoBase64URL } from '@simplewebauthn/server/helpers';
-import michelleIntakeRouter from '../projects/client-work/michelle-az-home/server/intake-router.js';
+import michelleIntakeRouter, { michelleAdminRouter } from '../projects/client-work/michelle-az-home/server/intake-router.js';
 
 loadEnv({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.env') });
 
@@ -140,6 +140,11 @@ if (AUTH_TOKEN) {
     res.redirect('/login');
   });
 }
+
+// Uploaded reference photos from the Michelle intake form — deliberately kept off the public
+// router above and mounted here, past the auth gate, since they can contain identifying photos
+// of a real person's home search.
+app.use('/michelle-home-search', michelleAdminRouter);
 
 // Sliding-session renewal — only reachable because it's past the auth gate, so a valid cookie
 // already got us here; just re-issue it with a fresh Max-Age. Called by the dashboard's own

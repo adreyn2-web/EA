@@ -1,6 +1,7 @@
 import express from 'express';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { execFile } from 'child_process';
+import { randomUUID } from 'crypto';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -20,6 +21,43 @@ const ALLOWED_MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp'
 // Where the "you've got a submission" heads-up email goes — the account gws is
 // already authenticated as (see CLAUDE.md Tool Integrations).
 const NOTIFY_EMAIL = 'adreynf@perspectiveautomation.com';
+
+// /submit is unauthenticated by design (see below), which means anyone with the link — not
+// just Michelle — can hit it directly and repeatedly. Without a limit, that's a free way to
+// spam a real inbox (every submission fires a gws gmail send) and grow submissions.json
+// without bound. Per-IP, in-memory, resets on restart — proportionate to a single-node
+// personal tool, not meant to survive a distributed attack.
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const RATE_LIMIT_MAX_PER_WINDOW = 5;
+const submitTimestampsByIp = new Map();
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const recent = (submitTimestampsByIp.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  recent.push(now);
+  submitTimestampsByIp.set(ip, recent);
+  return recent.length > RATE_LIMIT_MAX_PER_WINDOW;
+}
+
+// Defense in depth alongside the 25mb body limit in server.js: photos are already capped
+// individually in savePhotos, but nothing stopped an attacker stuffing megabytes into a text
+// field. Caps every string/array field on the way into the saved entry.
+const MAX_STRING_LEN = 5000;
+const MAX_ARRAY_LEN = 50;
+
+function sanitizeFields(obj) {
+  const out = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === 'string') {
+      out[key] = value.slice(0, MAX_STRING_LEN);
+    } else if (Array.isArray(value)) {
+      out[key] = value.slice(0, MAX_ARRAY_LEN).map((v) => (typeof v === 'string' ? v.slice(0, MAX_STRING_LEN) : v));
+    } else {
+      out[key] = value;
+    }
+  }
+  return out;
+}
 
 function loadSubmissions() {
   if (!existsSync(SUBMISSIONS_FILE)) return [];
@@ -93,20 +131,22 @@ const router = express.Router();
 // this is a link Adreyn texts to a real person, so it should just load.
 router.get('/', (_req, res) => res.sendFile(path.join(__dirname, '../public/index.html')));
 
-// Uploaded reference photos, served back so Adreyn can actually view them from the dashboard
-// or a browser later without digging through the filesystem.
-router.use('/uploads', express.static(UPLOADS_DIR));
-
 // Mounted before the dashboard's auth gate in server.js — this route (and everything
 // under it) must never require Adreyn's dashboard login.
 router.post('/submit', (req, res) => {
+  if (isRateLimited(req.ip)) {
+    return res.status(429).json({ ok: false, error: 'Too many submissions — try again later.' });
+  }
+
   const body = req.body || {};
   if (!body.name || typeof body.name !== 'string' || !body.name.trim()) {
     return res.status(400).json({ ok: false, error: 'name is required' });
   }
 
-  const id = Date.now().toString(36);
-  const { seen_photos, ...rest } = body;
+  // randomUUID, not a timestamp — this ID also names the upload directory served back to
+  // Adreyn below (mounted post-auth), so it must not be guessable by anyone who isn't him.
+  const id = randomUUID();
+  const { seen_photos, ...rest } = sanitizeFields(body);
 
   let savedPhotos = [];
   try {
@@ -130,4 +170,12 @@ router.post('/submit', (req, res) => {
 
 router.use(express.static(path.join(__dirname, '../public')));
 
+// Uploaded reference photos — separate router, mounted in server.js *after* the dashboard's
+// auth gate. These can contain identifying photos of a real person's home search; only Adreyn
+// (logged in) should ever be able to browse them, so this must never share a mount point with
+// the public form/submit router above.
+const adminRouter = express.Router();
+adminRouter.use('/uploads', express.static(UPLOADS_DIR));
+
 export default router;
+export { adminRouter as michelleAdminRouter };
