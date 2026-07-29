@@ -10,6 +10,12 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :focus-visible { outline: 2px solid rgba(201,149,82,.5); outline-offset: 1px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+
     :root {
       --bg: #1b1714;
       --surface: #221e19;
@@ -19,8 +25,8 @@
       --text: #ece3d3;
       --muted: #8d8071;
       --accent: #c99552;
-      --green: #7f9670;
-      --red: #b5573c;
+      --green: #86ab73;
+      --red: #c85f3d;
       --yellow: #d0a458;
       --blue: #6f8598;
       --purple: #8a6f7d;
@@ -40,8 +46,9 @@
     .enso { width: 26px; height: 26px; flex-shrink: 0; opacity: .85; }
     header h1 { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); }
     .sub { font-size: 11px; color: var(--muted); letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
-    .btn { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 7px 16px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 2px; transition: border-color .15s, color .15s; }
+    .btn { background: transparent; border: 1px solid var(--border2); color: var(--text); padding: 7px 16px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: border-color .15s, color .15s, background-color .15s, transform .1s; }
     .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:active:not(:disabled) { transform: scale(.97); }
     .btn:disabled { opacity: .4; cursor: default; }
     .btn-primary { border-color: var(--accent); color: var(--accent); }
     .btn-primary:hover { background: var(--accent); color: var(--bg); }
@@ -68,12 +75,17 @@
     .grid.trading-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 
     /* ── Cards ── */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 2px 6px rgba(0,0,0,.3); }
     .card.span2 { grid-column: span 2; }
     .card.full { grid-column: 1 / -1; }
     .card-title { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .placeholder { border: 1px dashed var(--border); background: transparent; opacity: .35; }
+    .placeholder { border: 1px dashed var(--border); background: transparent; opacity: .35; box-shadow: none; }
     .coming-soon { color: var(--muted); font-size: 12px; padding: 8px 0; }
+
+    /* ── Hero stat (headline number per card) ── */
+    .stat-hero-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .stat-hero { font-family: var(--font-display); font-size: 30px; font-weight: 700; line-height: 1; }
+    .stat-hero-label { font-size: 11px; color: var(--muted); }
 
     /* ── Common rows ── */
     .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--border); }
@@ -86,8 +98,8 @@
 
     /* ── Progress bar ── */
     .progress-wrap { margin: 10px 0; }
-    .progress-track { background: var(--border); border-radius: 2px; height: 5px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .4s ease; }
+    .progress-track { background: var(--border); border-radius: 4px; height: 5px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width .4s ease; }
     .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 5px; }
 
     /* ── Debt rows ── */
@@ -104,7 +116,7 @@
     .spending-row:last-child { border-bottom: none; }
     .spending-cat { color: var(--muted); font-size: 11px; min-width: 120px; }
     .spending-bar-wrap { flex: 1; margin: 0 10px; }
-    .spending-bar { height: 3px; background: var(--blue); border-radius: 2px; opacity: .5; }
+    .spending-bar { height: 3px; background: var(--blue); border-radius: 4px; opacity: .5; }
     .spending-amt { color: var(--red); font-size: 12px; }
 
     /* ── Tx rows ── */
@@ -118,7 +130,7 @@
     .tx-bal { text-align: right; font-size: 11px; color: var(--muted); }
     .tx-section-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 10px 0 5px; border-bottom: 1px solid var(--border2); margin-bottom: 2px; display: grid; grid-template-columns: 76px 1fr 108px 72px 86px; gap: 8px; }
     .tx-section-label.first { padding-top: 0; }
-    .pending-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .08em; color: var(--yellow); border: 1px solid rgba(208,164,88,.3); border-radius: 3px; padding: 0 4px; margin-left: 4px; vertical-align: middle; }
+    .pending-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .08em; color: var(--yellow); border: 1px solid rgba(208,164,88,.3); border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: middle; }
 
     /* ── Goals ── */
     .section-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin: 10px 0 5px; }
@@ -135,9 +147,11 @@
 
     /* ── Trading stat pills ── */
     .t-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
-    .t-stat { background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px; padding: 10px 12px; }
+    .t-stat { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 12px; }
     .t-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .t-stat-value { font-size: 18px; font-weight: 700; margin-top: 2px; }
+    .t-stat-hero { border-color: var(--border2); }
+    .t-stat-hero .t-stat-value { font-family: var(--font-display); font-size: 26px; }
 
     /* ── Calendar ── */
     .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -146,7 +160,7 @@
     .cal-nav button:hover { color: var(--accent); }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
     .cal-dow { font-size: 9px; color: var(--muted); text-align: center; padding: 2px 0 4px; letter-spacing: .06em; }
-    .cal-day { border-radius: 3px; padding: 4px 2px; min-height: 42px; text-align: center; font-size: 10px; cursor: default; position: relative; transition: opacity .15s; }
+    .cal-day { border-radius: 4px; padding: 4px 2px; min-height: 42px; text-align: center; font-size: 10px; cursor: default; position: relative; transition: opacity .15s; }
     .cal-day.empty { background: transparent; }
     .cal-day.no-trade { background: var(--surface2); color: var(--muted); }
     .cal-day.win-day { background: rgba(127,150,112,.15); border: 1px solid rgba(127,150,112,.25); }
@@ -167,28 +181,30 @@
     .grade-row { grid-template-columns: 28px 44px 60px 70px; }
     .emo-row { grid-template-columns: 1fr 44px 60px 70px; }
     .wr-bar-wrap { display: flex; align-items: center; gap: 6px; }
-    .wr-bar { height: 3px; background: var(--green); border-radius: 2px; opacity: .6; }
+    .wr-bar { height: 3px; background: var(--green); border-radius: 4px; opacity: .6; }
 
     /* ── Trade log (recent trades) ── */
-    .trade-item { border-bottom: 1px solid var(--border); padding: 8px 0; cursor: pointer; }
+    .trade-item { border-bottom: 1px solid var(--border); padding: 8px 10px; margin: 0 -10px; border-radius: 4px; cursor: pointer; transition: background-color .15s ease; }
     .trade-item:last-child { border-bottom: none; }
+    .trade-item:hover { background: var(--surface2); }
     .trade-item:hover .trade-summary { color: var(--accent); }
-    .trade-summary { display: grid; grid-template-columns: 72px 80px 1fr 36px 80px; gap: 8px; align-items: baseline; font-size: 12px; }
-    .trade-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 2px; font-size: 11px; }
+    .trade-summary { display: grid; grid-template-columns: 72px 80px 1fr 36px 80px; gap: 8px; align-items: baseline; font-size: 12px; transition: color .15s ease; }
+    .trade-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; font-size: 11px; }
     .trade-detail.open { display: block; }
     .trade-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-bottom: 8px; }
     .trade-detail-label { color: var(--muted); }
-    .journal-item { border-bottom: 1px solid var(--border); padding: 8px 0; cursor: pointer; }
+    .journal-item { border-bottom: 1px solid var(--border); padding: 8px 10px; margin: 0 -10px; border-radius: 4px; cursor: pointer; transition: background-color .15s ease; }
     .journal-item:last-child { border-bottom: none; }
+    .journal-item:hover { background: var(--surface2); }
     .journal-item:hover .journal-preview { color: var(--accent); }
     .journal-summary { display: flex; flex-direction: column; gap: 2px; }
     .journal-preview { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .journal-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 2px; font-size: 13px; white-space: pre-wrap; }
+    .journal-detail { display: none; margin-top: 8px; padding: 10px; background: var(--surface2); border-radius: 4px; font-size: 13px; white-space: pre-wrap; }
     .journal-detail.open { display: block; }
     .trade-note-block { margin-top: 8px; }
     .trade-note-block .note-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
     .trade-note-block .note-text { color: var(--text); line-height: 1.7; white-space: pre-wrap; }
-    .grade-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 700; }
+    .grade-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
     .grade-A { color: var(--green); border: 1px solid rgba(127,150,112,.4); }
     .grade-B { color: var(--blue); border: 1px solid rgba(111,133,152,.4); }
     .grade-C { color: var(--yellow); border: 1px solid rgba(208,164,88,.4); }
@@ -196,16 +212,18 @@
     .grade-F { color: var(--red); border: 1px solid rgba(181,87,60,.4); }
 
     /* ── Inventory ── */
-    .exp-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-left: 6px; }
+    .exp-badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-left: 6px; }
     .exp-fresh { color: var(--green); border: 1px solid rgba(127,150,112,.4); }
     .exp-expiring_soon { color: var(--yellow); border: 1px solid rgba(208,164,88,.4); }
     .exp-expired { color: var(--red); border: 1px solid rgba(181,87,60,.4); }
-    .inv-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; gap: 8px; }
+    .inv-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; margin: 0 -10px; border-bottom: 1px solid var(--border); border-radius: 4px; font-size: 12px; gap: 8px; transition: background-color .15s ease; }
     .inv-row:last-child { border-bottom: none; }
+    .inv-row:hover { background: var(--surface2); }
     .inv-item { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .inv-actions { display: flex; gap: 4px; flex-shrink: 0; }
-    .inv-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 2px; cursor: pointer; }
+    .inv-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 10px; padding: 2px 8px; border-radius: 4px; cursor: pointer; transition: border-color .15s, color .15s, transform .1s; }
     .inv-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .inv-btn:active { transform: scale(.95); }
     .meal-secondary summary { cursor: pointer; list-style: none; }
     .meal-secondary summary::-webkit-details-marker { display: none; }
     .meal-secondary summary::before { content: '▸ '; color: var(--muted); }
@@ -215,7 +233,7 @@
     /* ── Log Trade Modal ── */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 3px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; padding: 24px; }
     .modal-title { font-size: 13px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
     .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
     .modal-close:hover { color: var(--accent); }
@@ -224,41 +242,44 @@
     .form-row.cols3 { grid-template-columns: 1fr 1fr 1fr; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .form-input { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 2px; outline: none; }
-    .form-input:focus { border-color: #444; }
+    .form-input { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 4px; outline: none; }
+    .form-input:focus { border-color: var(--accent); }
     textarea.form-input { resize: vertical; min-height: 70px; }
     .dir-toggle { display: flex; gap: 6px; }
-    .dir-btn { flex: 1; padding: 7px; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; letter-spacing: .06em; }
+    .dir-btn { flex: 1; padding: 7px; font-family: inherit; font-size: 12px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; letter-spacing: .06em; transition: border-color .15s, color .15s, background-color .15s, transform .1s; }
+    .dir-btn:active { transform: scale(.97); }
     .dir-btn.active-long { background: rgba(127,150,112,.12); border-color: rgba(127,150,112,.4); color: var(--green); }
     .dir-btn.active-short { background: rgba(181,87,60,.12); border-color: rgba(181,87,60,.4); color: var(--red); }
     .grade-btns { display: flex; gap: 6px; }
-    .grade-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 12px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; }
+    .grade-btn { flex: 1; padding: 6px 4px; font-family: inherit; font-size: 12px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; transition: border-color .15s, color .15s, background-color .15s, transform .1s; }
+    .grade-btn:active { transform: scale(.95); }
     .grade-btn.sel { border-color: var(--accent); color: var(--accent); background: rgba(236,227,211,.08); }
     .emo-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-    .emo-btn { padding: 5px 10px; font-family: inherit; font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 2px; }
+    .emo-btn { padding: 5px 10px; font-family: inherit; font-size: 11px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); cursor: pointer; border-radius: 4px; transition: border-color .15s, color .15s, background-color .15s, transform .1s; }
+    .emo-btn:active { transform: scale(.95); }
     .emo-btn.sel { border-color: var(--blue); color: var(--blue); background: rgba(111,133,152,.08); }
-    .pnl-preview { background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .pnl-preview { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
     .pnl-preview-label { color: var(--muted); font-size: 11px; }
     .pnl-preview-value { font-weight: 700; font-size: 16px; }
     .form-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
     /* ── Income ── */
     .income-tabs { display: flex; gap: 6px; }
-    .income-tab { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 2px; cursor: pointer; }
+    .income-tab { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: inherit; font-size: 11px; padding: 3px 10px; border-radius: 4px; cursor: pointer; }
     .income-tab.active { border-color: var(--accent); color: var(--accent); }
     .income-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .income-table th { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; text-align: left; padding: 4px 8px 4px 0; border-bottom: 1px solid var(--border); font-weight: 600; }
     .income-table th.right, .income-table td.right { text-align: right; }
     .income-table td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--border); }
     .income-table tbody tr:last-child td { border-bottom: none; }
-    .income-bar { height: 3px; background: var(--green); border-radius: 2px; opacity: .5; }
+    .income-bar { height: 3px; background: var(--green); border-radius: 4px; opacity: .5; }
 
     /* ── Compass chat (hero) ── */
     .chat-hero { max-width: 760px; margin: 12px auto 8px; padding: 0 32px; }
     .chat-hero-label { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
     .chat-log { display: flex; flex-direction: column; gap: 18px; min-height: 260px; max-height: 480px; overflow-y: auto; padding: 4px 2px 8px; margin-bottom: 14px; }
     .chat-msg { max-width: 84%; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
-    .chat-msg.user { align-self: flex-end; background: rgba(201,149,82,.12); border: 1px solid rgba(201,149,82,.25); border-radius: 3px; padding: 10px 14px; }
+    .chat-msg.user { align-self: flex-end; background: rgba(201,149,82,.12); border: 1px solid rgba(201,149,82,.25); border-radius: 4px; padding: 10px 14px; }
     .chat-msg.assistant { align-self: flex-start; border-left: 2px solid var(--border2); padding: 2px 0 2px 14px; }
     .chat-msg.error { align-self: flex-start; border-left: 2px solid rgba(181,87,60,.5); padding: 2px 0 2px 14px; color: var(--red); }
     .chat-cost { font-size: 9px; color: var(--muted); margin-top: 6px; }
@@ -272,6 +293,70 @@
     .status-bar span { color: var(--text); }
     .sync-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-right: 5px; vertical-align: middle; transition: background .3s; }
     .sync-dot.active { background: var(--green); }
+
+    /* ── Horizontally-scrollable table wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    /* ══════════ Mobile ══════════ */
+    @media (max-width: 640px) {
+      header { padding: 18px 16px; }
+      .section-label { padding: 20px 16px 8px; }
+      .chat-hero { padding: 0 16px; }
+      .status-bar { padding: 4px 16px 16px; }
+
+      .main-tabs {
+        padding: 20px 16px 0;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .main-tabs::-webkit-scrollbar { display: none; }
+      .main-tab { flex-shrink: 0; padding: 14px 14px 10px; }
+
+      .grid { grid-template-columns: 1fr; padding: 8px 16px 20px; gap: 12px; }
+      .card { padding: 16px; }
+      .card.span2 { grid-column: 1; }
+
+      .modal { padding: 18px; }
+      .form-row.cols2, .form-row.cols3 { grid-template-columns: 1fr; }
+
+      .t-stats { grid-template-columns: repeat(2, 1fr); }
+
+      /* Data rows: switch from fixed pixel-column grids to a wrapping,
+         two-line layout (primary info + right-aligned amount on line 1,
+         secondary meta on line 2) using existing field classes/order —
+         no markup changes needed. */
+      .tx-section-label.first { display: none; }
+      .tx-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 10px;
+        font-size: 12px;
+      }
+      .tx-name { order: 1; flex: 1 1 auto; white-space: normal; }
+      .tx-amt { order: 2; margin-left: auto; }
+      .tx-date { order: 3; font-size: 10px; }
+      .tx-acct { order: 4; font-size: 9px; max-width: none; }
+      .tx-bal { order: 5; margin-left: auto; }
+
+      .trade-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 10px;
+      }
+      .trade-summary > *:nth-child(1) { order: 3; font-size: 10px; color: var(--muted); }
+      .trade-summary > *:nth-child(2) { order: 1; font-size: 13px; }
+      .trade-summary > *:nth-child(3) { order: 4; font-size: 11px; }
+      .trade-summary > *:nth-child(4) { order: 5; }
+      .trade-summary > *:nth-child(5) { order: 2; margin-left: auto; font-size: 14px; font-weight: 700; }
+
+      .setup-row, .emo-row { grid-template-columns: 1fr 34px 42px 56px; font-size: 11px; }
+      .grade-row { grid-template-columns: 24px 34px 42px 56px; font-size: 11px; }
+
+      .income-table { min-width: 560px; }
+    }
   </style>
 </head>
 <body class="privacy-hidden">
@@ -631,7 +716,7 @@
 
   <div class="card full" id="shopping-list-card">
     <div class="hint" style="margin-bottom:8px">Mention it here or in chat ("out of dish soap", "need more eggs") — it lands here once and stays until you check it off.</div>
-    <textarea id="shop-update-text" placeholder="e.g. out of dish soap, need paper towels" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <textarea id="shop-update-text" placeholder="e.g. out of dish soap, need paper towels" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:44px"></textarea>
     <button class="btn btn-primary" style="margin-top:8px" onclick="updateShoppingList()">Add to List</button>
     <div id="shopping-list-content" style="margin-top:12px"></div>
   </div>
@@ -650,7 +735,7 @@
   </div>
 
   <div class="card full" id="inventory-card">
-    <textarea id="inv-update-text" placeholder="e.g. used the chicken thighs, milk went bad, grabbed a dozen eggs and 2lbs ground beef" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <textarea id="inv-update-text" placeholder="e.g. used the chicken thighs, milk went bad, grabbed a dozen eggs and 2lbs ground beef" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:44px"></textarea>
     <button class="btn btn-primary" style="margin-top:8px" onclick="updateInventory()">Update Inventory</button>
     <div id="inventory-content" style="margin-top:12px"></div>
   </div>
@@ -665,7 +750,7 @@
 
   <div class="card full" id="appointments-card">
     <div class="card-title">Appointments</div>
-    <textarea id="appt-update-text" placeholder="e.g. root canal at Endo PC July 28th 7:30am, $2090, Cherry financing" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px"></textarea>
+    <textarea id="appt-update-text" placeholder="e.g. root canal at Endo PC July 28th 7:30am, $2090, Cherry financing" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:44px"></textarea>
     <button class="btn btn-primary" style="margin-top:8px" onclick="updateAppointments()">Add Appointment</button>
     <div id="appointments-content" style="margin-top:12px"></div>
   </div>
@@ -673,7 +758,7 @@
   <div class="card full" id="journal-card">
     <div class="card-title">New Entry</div>
     <div class="hint" style="margin-bottom:8px">Write whatever's on your mind. Nothing here is reworded or summarized — it's saved exactly as written.</div>
-    <textarea id="journal-entry-text" placeholder="What's going on..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:13px;padding:10px;border-radius:2px;resize:vertical;min-height:100px"></textarea>
+    <textarea id="journal-entry-text" placeholder="What's going on..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:13px;padding:10px;border-radius:4px;resize:vertical;min-height:100px"></textarea>
     <button class="btn btn-primary" style="margin-top:8px" onclick="addJournalEntry()">Save Entry</button>
   </div>
 
@@ -927,12 +1012,15 @@
   function renderFinance(d) {
     document.getElementById('sync-time').textContent = 'Last synced: ' + new Date(d.synced_at).toLocaleString();
 
-    document.getElementById('cash-content').innerHTML = d.cashAccounts.map(a =>
-      `<div class="stat-row"><span class="stat-label">${a.label}</span><span class="stat-value ${a.balance>=0?'pos':'neg'}">${fmt(a.balance)}</span></div>`
-    ).join('') + `<div class="stat-row" style="margin-top:6px"><span class="stat-label">Total liquid</span><span class="stat-value ${d.totalCash>=0?'pos':'neg'}">${fmt(d.totalCash)}</span></div>`;
+    document.getElementById('cash-content').innerHTML =
+      `<div class="stat-hero-row"><span class="stat-hero ${d.totalCash>=0?'pos':'neg'}">${fmt(d.totalCash)}</span><span class="stat-hero-label">total liquid</span></div>` +
+      d.cashAccounts.map(a =>
+        `<div class="stat-row"><span class="stat-label">${a.label}</span><span class="stat-value ${a.balance>=0?'pos':'neg'}">${fmt(a.balance)}</span></div>`
+      ).join('');
 
     const pct = Math.max(0, Math.min(100, d.progressPct));
     document.getElementById('debt-progress-content').innerHTML = `
+      <div class="stat-hero-row"><span class="stat-hero ${d.progressPct>=0?'pos':'neutral'}">${d.progressPct.toFixed(1)}%</span><span class="stat-hero-label">paid off toward debt-free</span></div>
       <div class="stat-row"><span class="stat-label">Baseline</span><span class="stat-value neutral">$${d.debtBaseline.toFixed(2)}</span></div>
       <div class="stat-row"><span class="stat-label">Current</span><span class="stat-value neg">$${d.totalDebt.toFixed(2)}</span></div>
       <div class="stat-row"><span class="stat-label">Paid down</span><span class="stat-value ${d.paidDown>=0?'pos':'neg'}">${fmt(d.paidDown)} (${d.progressPct.toFixed(1)}%)</span></div>
@@ -1010,7 +1098,7 @@
     const wrCls = s.win_rate >= 50 ? 'pos' : 'neg';
     document.getElementById('t-stats-row').innerHTML = `
       <div class="t-stat"><div class="t-stat-label">Win Rate</div><div class="t-stat-value ${wrCls}">${s.win_rate}%</div></div>
-      <div class="t-stat"><div class="t-stat-label">Total P&L</div><div class="t-stat-value ${pnlCls}">${fmtSign(s.total_pnl)}</div></div>
+      <div class="t-stat t-stat-hero"><div class="t-stat-label">Total P&L</div><div class="t-stat-value ${pnlCls}">${fmtSign(s.total_pnl)}</div></div>
       <div class="t-stat"><div class="t-stat-label">Trades</div><div class="t-stat-value neutral">${s.total_trades}</div></div>
       <div class="t-stat"><div class="t-stat-label">Profit Factor</div><div class="t-stat-value ${s.profit_factor>=1?'pos':'neg'}">${s.profit_factor ?? '—'}</div></div>`;
     document.getElementById('t-avg-win').textContent = '+$' + s.avg_win.toFixed(2);
@@ -1328,6 +1416,7 @@
     </tr>`).join('');
 
     document.getElementById('income-history-content').innerHTML = `
+      <div class="table-scroll">
       <table class="income-table">
         <thead><tr>
           <th>Pay Date</th><th>Period</th><th class="right">Gross</th><th class="right">Net</th>
@@ -1344,7 +1433,8 @@
             <td class="right" style="color:var(--muted)">${totalTpct}</td>
           </tr>
         </tbody>
-      </table>`;
+      </table>
+      </div>`;
   }
 
   // ── Meal Plan ──
@@ -1385,9 +1475,9 @@
 
     const fb = d.current_feedback || {};
     document.getElementById('meal-feedback-content').innerHTML = `
-      <div class="stat-row"><span class="stat-label">Actual cost</span><input id="meal-fb-cost" type="number" step="0.01" placeholder="$" value="${fb.actual_cost ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:2px"></div>
-      <div class="stat-row"><span class="stat-label">Rating (1–5)</span><input id="meal-fb-rating" type="number" min="1" max="5" placeholder="—" value="${fb.rating ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:2px"></div>
-      <textarea id="meal-fb-notes" placeholder="Notes for next week..." style="width:100%;margin-top:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:2px;resize:vertical;min-height:44px">${fb.notes ?? ''}</textarea>
+      <div class="stat-row"><span class="stat-label">Actual cost</span><input id="meal-fb-cost" type="number" step="0.01" placeholder="$" value="${fb.actual_cost ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:4px"></div>
+      <div class="stat-row"><span class="stat-label">Rating (1–5)</span><input id="meal-fb-rating" type="number" min="1" max="5" placeholder="—" value="${fb.rating ?? ''}" style="width:90px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:4px 8px;border-radius:4px"></div>
+      <textarea id="meal-fb-notes" placeholder="Notes for next week..." style="width:100%;margin-top:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:44px">${fb.notes ?? ''}</textarea>
       <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="submitMealFeedback()">Save Feedback</button>`;
 
     document.getElementById('meal-history-content').innerHTML = (d.history || []).length
