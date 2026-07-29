@@ -17,18 +17,18 @@ Reads/writes projects/meal-plan/data/grocery_list.json:
 from __future__ import annotations
 
 import json
-import os
 import sys
-import uuid
 from datetime import date
 from pathlib import Path
 
-import anthropic
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).parent.parent
 COMPASS_ROOT = ROOT.parent.parent
 load_dotenv(COMPASS_ROOT / ".env")
+
+sys.path.insert(0, str(COMPASS_ROOT / "projects" / "_shared"))
+import common
 
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -63,58 +63,21 @@ Respond ONLY with valid JSON, no prose, no markdown fences:
 
 
 def load() -> list[dict]:
-    if not LIST_PATH.exists():
-        return []
-    with open(LIST_PATH) as f:
-        return json.load(f)
+    return common.load_json(LIST_PATH)
 
 
 def save(items: list[dict]):
-    with open(LIST_PATH, "w") as f:
-        json.dump(items, f, indent=2)
+    common.save_json(LIST_PATH, items)
 
 
-def next_id(items: list[dict]) -> str:
-    existing = {i.get("id") for i in items}
-    while True:
-        candidate = f"gl_{uuid.uuid4().hex[:8]}"
-        if candidate not in existing:
-            return candidate
-
-
-def _strip_fences(raw: str) -> str:
-    raw = raw.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-        raw = raw.strip()
-    return raw
-
-
-def parse_update(current_items: list[dict], free_text: str, retry: bool = False) -> dict:
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
+def parse_update(current_items: list[dict], free_text: str) -> dict:
     current = "\n".join(f"- {i['item']} [{i['category']}]" for i in current_items) or "(empty)"
-
     prompt = UPDATE_PROMPT.format(current=current, text=free_text)
-
-    raw = ""
-    with client.messages.stream(
-        model="claude-opus-4-8",
-        max_tokens=1024,
+    return common.stream_json(
+        prompt,
         system="You output only valid JSON deltas for a shopping list. No prose, no markdown fences.",
-        messages=[{"role": "user", "content": prompt}],
-    ) as stream:
-        for chunk in stream.text_stream:
-            raw += chunk
-
-    try:
-        return json.loads(_strip_fences(raw))
-    except json.JSONDecodeError:
-        if not retry:
-            return parse_update(current_items, free_text, retry=True)
-        raise
+        max_tokens=1024,
+    )
 
 
 def apply_additions(items: list[dict], additions: list[dict]) -> tuple[list[dict], list[dict]]:
@@ -125,7 +88,7 @@ def apply_additions(items: list[dict], additions: list[dict]) -> tuple[list[dict
         if not name or name.lower() in existing_names:
             continue
         item = {
-            "id": next_id(items + added),
+            "id": common.next_id(items + added, "gl"),
             "item": name,
             "category": a.get("category") if a.get("category") in CATEGORIES else "household",
             "added_on": date.today().isoformat(),

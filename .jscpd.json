@@ -1,0 +1,6 @@
+{
+  "reporters": ["console"],
+  "gitignore": true,
+  "ignore": ["**/archives/**"],
+  "format": ["javascript", "python"]
+}

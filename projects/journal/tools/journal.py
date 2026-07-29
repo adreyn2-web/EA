@@ -15,36 +15,27 @@ from __future__ import annotations
 
 import json
 import sys
-import uuid
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
+COMPASS_ROOT = ROOT.parent.parent
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
 ENTRIES_PATH = DATA_DIR / "entries.json"
+
+sys.path.insert(0, str(COMPASS_ROOT / "projects" / "_shared"))
+import common
 
 SOURCES = ["chat", "dashboard"]
 
 
 def load() -> list[dict]:
-    if not ENTRIES_PATH.exists():
-        return []
-    with open(ENTRIES_PATH) as f:
-        return json.load(f)
+    return common.load_json(ENTRIES_PATH)
 
 
 def save(entries: list[dict]):
-    with open(ENTRIES_PATH, "w") as f:
-        json.dump(entries, f, indent=2)
-
-
-def next_id(entries: list[dict]) -> str:
-    existing = {e.get("id") for e in entries}
-    while True:
-        candidate = f"jrn_{uuid.uuid4().hex[:8]}"
-        if candidate not in existing:
-            return candidate
+    common.save_json(ENTRIES_PATH, entries)
 
 
 def add_entry(text: str, source: str = "chat") -> dict:
@@ -52,7 +43,7 @@ def add_entry(text: str, source: str = "chat") -> dict:
         source = "chat"
     entries = load()
     entry = {
-        "id": next_id(entries),
+        "id": common.next_id(entries, "jrn"),
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "source": source,
         "text": text,

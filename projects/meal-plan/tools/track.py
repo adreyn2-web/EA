@@ -14,7 +14,6 @@ Reads/writes projects/meal-plan/data/tracker.json:
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -24,6 +23,9 @@ DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
 TRACKER_PATH = DATA_DIR / "tracker.json"
 MEAL_PLAN_PATH = DATA_DIR / "meal_plan.json"
+
+sys.path.insert(0, str(COMPASS_ROOT / "projects" / "_shared"))
+import common
 
 FEEDBACK_UPDATE_PROMPT = """A home cook is chatting with a general assistant, not filling out a
 dedicated feedback form. Extract meal-plan feedback from their message, if any is present.
@@ -48,15 +50,11 @@ Rules:
 
 
 def load() -> list[dict]:
-    if not TRACKER_PATH.exists():
-        return []
-    with open(TRACKER_PATH) as f:
-        return json.load(f)
+    return common.load_json(TRACKER_PATH)
 
 
 def save(entries: list[dict]):
-    with open(TRACKER_PATH, "w") as f:
-        json.dump(entries, f, indent=2)
+    common.save_json(TRACKER_PATH, entries)
 
 
 def record_feedback(week_of: str, estimated_cost: float | None = None,
@@ -92,39 +90,15 @@ def current_week_of() -> str | None:
         return json.load(f).get("week_of")
 
 
-def _strip_fences(raw: str) -> str:
-    raw = raw.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-        raw = raw.strip()
-    return raw
-
-
-def parse_feedback_update(free_text: str, retry: bool = False) -> dict:
-    import anthropic
+def parse_feedback_update(free_text: str) -> dict:
     from dotenv import load_dotenv
 
     load_dotenv(COMPASS_ROOT / ".env")
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
-    raw = ""
-    with client.messages.stream(
-        model="claude-opus-4-8",
-        max_tokens=512,
+    return common.stream_json(
+        FEEDBACK_UPDATE_PROMPT.format(text=free_text),
         system="You extract structured meal-feedback fields from chat messages. Output only valid JSON.",
-        messages=[{"role": "user", "content": FEEDBACK_UPDATE_PROMPT.format(text=free_text)}],
-    ) as stream:
-        for chunk in stream.text_stream:
-            raw += chunk
-
-    try:
-        return json.loads(_strip_fences(raw))
-    except json.JSONDecodeError:
-        if not retry:
-            return parse_feedback_update(free_text, retry=True)
-        raise
+        max_tokens=512,
+    )
 
 
 def update_from_chat(free_text: str) -> dict:

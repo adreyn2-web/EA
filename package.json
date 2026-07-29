@@ -10,12 +10,16 @@
     "plaid:link": "node projects/finance/plaid/link.js",
     "plaid:sync": "node projects/finance/plaid/sync.js",
     "finance:summary": "node projects/finance/summary.js",
-    "meal:generate": "python3 projects/meal-plan/tools/generate_meal_plan.py"
+    "meal:generate": "python3 projects/meal-plan/tools/generate_meal_plan.py",
+    "dup-check": "jscpd projects dashboard"
   },
   "dependencies": {
     "@simplewebauthn/server": "^13.3.2",
     "dotenv": "^16.0.0",
     "express": "^5.2.1",
     "plaid": "^26.0.0"
+  },
+  "devDependencies": {
+    "jscpd": "^5.0.14"
   }
 }

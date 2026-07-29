@@ -17,18 +17,18 @@ Reads/writes projects/health/data/appointments.json:
 from __future__ import annotations
 
 import json
-import os
 import sys
-import uuid
 from datetime import date
 from pathlib import Path
 
-import anthropic
 from dotenv import load_dotenv
 
 ROOT = Path(__file__).parent.parent
 COMPASS_ROOT = ROOT.parent.parent
 load_dotenv(COMPASS_ROOT / ".env")
+
+sys.path.insert(0, str(COMPASS_ROOT / "projects" / "_shared"))
+import common
 
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(mode=0o700, exist_ok=True)
@@ -61,57 +61,20 @@ Respond ONLY with valid JSON, no prose, no markdown fences:
 
 
 def load() -> list[dict]:
-    if not LIST_PATH.exists():
-        return []
-    with open(LIST_PATH) as f:
-        return json.load(f)
+    return common.load_json(LIST_PATH)
 
 
 def save(items: list[dict]):
-    fd = os.open(LIST_PATH, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(fd, "w") as f:
-        json.dump(items, f, indent=2)
+    common.save_json(LIST_PATH, items, mode=0o600)
 
 
-def next_id(items: list[dict]) -> str:
-    existing = {i.get("id") for i in items}
-    while True:
-        candidate = f"apt_{uuid.uuid4().hex[:8]}"
-        if candidate not in existing:
-            return candidate
-
-
-def _strip_fences(raw: str) -> str:
-    raw = raw.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-        raw = raw.strip()
-    return raw
-
-
-def parse_update(free_text: str, retry: bool = False) -> dict:
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-
+def parse_update(free_text: str) -> dict:
     prompt = UPDATE_PROMPT.format(today=date.today().isoformat(), text=free_text)
-
-    raw = ""
-    with client.messages.stream(
-        model="claude-opus-4-8",
-        max_tokens=1024,
+    return common.stream_json(
+        prompt,
         system="You output only valid JSON for an appointment tracker. No prose, no markdown fences.",
-        messages=[{"role": "user", "content": prompt}],
-    ) as stream:
-        for chunk in stream.text_stream:
-            raw += chunk
-
-    try:
-        return json.loads(_strip_fences(raw))
-    except json.JSONDecodeError:
-        if not retry:
-            return parse_update(free_text, retry=True)
-        raise
+        max_tokens=1024,
+    )
 
 
 def update_from_text(free_text: str) -> dict:
@@ -122,7 +85,7 @@ def update_from_text(free_text: str) -> dict:
         return {"items": items, "changes": {"added": []}}
 
     entry = {
-        "id": next_id(items),
+        "id": common.next_id(items, "apt"),
         "provider": appt.get("provider"),
         "type": appt.get("type"),
         "date": appt.get("date"),
