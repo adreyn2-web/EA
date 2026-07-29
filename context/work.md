@@ -4,9 +4,9 @@
 Solo operator. No official business entity yet.
 
 ## Primary Mission
-Build the ultimate day trading sidekick — an AI-powered trading bot and financial intelligence system. This is the anchor project that funds future endeavors.
+Use AI (this operating system) to automate and improve businesses and workflows for other people, then monetize that — as freelance/service work and potential products built from the skills and automations already here. This is the current anchor project that funds everything else.
 
-Broader mission: use AI to automate and help other people — then monetize that. Not just personal tooling; the systems built here (skills, automations, the AIOS itself) are also potential products or freelance/service offerings. Keep this in mind across all work, not just the trading bot.
+Day trading is a later phase, not the current focus. Adreyn stepped back from active trading to concentrate on the AIOS/automation work. Down the road he'll return to it — his own day trading plus finishing the trading bot — as a second income stream alongside the AIOS work, not the primary one.
 
 ## Revenue Streams
 | Stream | Source | Biweekly |
@@ -22,7 +22,7 @@ Broader mission: use AI to automate and help other people — then monetize that
 - No MCP servers connected yet
 
 ## Roadmap
-1. Build the trading bot / day trading sidekick
-2. Use Claude Code to take on freelance work
-3. Replace restaurant income with trading + freelance income
+1. Use Claude Code / the AIOS to take on freelance and automation work for other people
+2. Replace restaurant income with that freelance/automation income
+3. Return to day trading — personal trading plus finishing the trading bot — as a second income stream
 4. Fund physical/real-world entrepreneurial endeavors
