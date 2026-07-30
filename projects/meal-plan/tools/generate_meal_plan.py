@@ -46,7 +46,7 @@ FEEDBACK FROM LAST WEEK (avoid low-rated, repeat high-rated occasionally):
 CURRENT INVENTORY (fridge/pantry — use what's on hand before buying more; never plan to cook
 with anything marked EXPIRED):
 {inventory_section}
-
+{pantry_only_block}
 REQUIREMENTS:
 - 7 days, each with: breakfast, lunch, dinner, snack_1, snack_2
 - Each meal must include: recipe_name, ingredients (with quantities in standard US units), recipe_steps (a full, in-depth, step-by-step cooking recipe — numbered instructions detailed enough to cook from with no outside knowledge, including exact temperatures, times, and technique), macros (protein_g, carbs_g, fat_g, calories), estimated_cost_usd, prep_time_minutes
@@ -105,6 +105,16 @@ Respond ONLY with a valid JSON object matching this exact structure:
   "estimated_weekly_cost_usd": 0.00
 }}"""
 
+PANTRY_ONLY_BLOCK = """
+PANTRY-ONLY MODE (no grocery shopping this week): Every ingredient in every recipe MUST already
+appear in CURRENT INVENTORY above (water, ice, and tap-level staples are fine even if untracked).
+Do not invent or assume any item that isn't listed. grocery_list must come back with every
+category as an empty array — zero new items. If hitting the exact calorie/protein targets isn't
+possible from inventory alone, get as close as reasonably possible and let daily_totals reflect
+the real numbers rather than padding with ungrocery-able ingredients. Quantities used across the
+week for any one item must not exceed what CURRENT INVENTORY shows on hand.
+"""
+
 
 def load_config():
     with open(CONFIG_PATH) as f:
@@ -146,7 +156,7 @@ def get_week_start():
     return (today + timedelta(days=days_ahead)).isoformat()
 
 
-def generate_meal_plan(config: dict, feedback: str, retry: bool = False) -> dict:
+def generate_meal_plan(config: dict, feedback: str, retry: bool = False, pantry_only: bool = False) -> dict:
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     profile = config["profile"]
@@ -167,6 +177,7 @@ def generate_meal_plan(config: dict, feedback: str, retry: bool = False) -> dict
         feedback=feedback,
         inventory_section=load_inventory_section(),
         culinary_procedure=load_culinary_procedure(),
+        pantry_only_block=PANTRY_ONLY_BLOCK if pantry_only else "",
     )
 
     system = "You are a precise JSON-outputting meal planning API. Output only valid JSON, no prose, no markdown fences."
@@ -195,7 +206,7 @@ def generate_meal_plan(config: dict, feedback: str, retry: bool = False) -> dict
         if not retry:
             print(f"JSON parse error on first attempt: {e}. Retrying...")
             time.sleep(3)
-            return generate_meal_plan(config, feedback, retry=True)
+            return generate_meal_plan(config, feedback, retry=True, pantry_only=pantry_only)
         print(f"Fatal: could not parse Claude response as JSON after retry.\n{e}")
         sys.exit(1)
 
@@ -205,6 +216,8 @@ def generate_meal_plan(config: dict, feedback: str, retry: bool = False) -> dict
 
 
 def main():
+    pantry_only = "--pantry-only" in sys.argv
+
     print("Loading config...")
     config = load_config()
 
@@ -212,8 +225,8 @@ def main():
     feedback = load_feedback()
     print(f"Feedback: {feedback[:80]}...")
 
-    # Guard: don't regenerate if already done this week
-    if OUTPUT_PATH.exists():
+    # Guard: don't regenerate if already done this week (skipped for explicit re-requests)
+    if OUTPUT_PATH.exists() and not pantry_only:
         with open(OUTPUT_PATH) as f:
             existing = json.load(f)
         if existing.get("week_of") == get_week_start():
@@ -222,7 +235,7 @@ def main():
             return
 
     print("Calling Claude API to generate meal plan (this may take 30–60 seconds)...")
-    plan = generate_meal_plan(config, feedback)
+    plan = generate_meal_plan(config, feedback, pantry_only=pantry_only)
 
     with open(OUTPUT_PATH, "w") as f:
         json.dump(plan, f, indent=2)
