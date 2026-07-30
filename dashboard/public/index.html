@@ -821,9 +821,52 @@
     try {
       const res = await apiFetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message }) });
       if (!res) return;
-      const { ok, reply, cost, error } = await res.json();
-      if (!ok) { appendChatMsg('error', error); return; }
-      appendChatMsg('assistant', reply, cost);
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({}));
+        appendChatMsg('error', error || 'Request failed.');
+        return;
+      }
+
+      const empty = document.getElementById('chat-empty');
+      if (empty) empty.remove();
+      const log = document.getElementById('chat-log');
+      const div = document.createElement('div');
+      div.className = 'chat-msg assistant';
+      log.appendChild(div);
+      let text = '';
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx;
+        while ((idx = buffer.indexOf('\n')) !== -1) {
+          const line = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 1);
+          if (!line.trim()) continue;
+          const evt = JSON.parse(line);
+          if (evt.type === 'delta') {
+            text += evt.text;
+            div.textContent = text;
+            log.scrollTop = log.scrollHeight;
+          } else if (evt.type === 'error') {
+            div.remove();
+            appendChatMsg('error', evt.error);
+          } else if (evt.type === 'done') {
+            if (evt.notes?.length) text += `\n\n(${evt.notes.join(' ')})`;
+            div.textContent = text;
+            if (evt.cost != null) {
+              const costEl = document.createElement('div');
+              costEl.className = 'chat-cost';
+              costEl.textContent = '$' + evt.cost.toFixed(4);
+              div.appendChild(costEl);
+            }
+          }
+        }
+      }
     } catch (e) {
       appendChatMsg('error', 'Error: ' + e.message);
     } finally {

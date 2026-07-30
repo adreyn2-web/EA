@@ -1,6 +1,6 @@
 import express from 'express';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync, watch } from 'fs';
-import { execSync, execFile, execFileSync } from 'child_process';
+import { execSync, execFile, execFileSync, spawn } from 'child_process';
 import { randomBytes } from 'crypto';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -875,13 +875,59 @@ let chatSessionId = null;
 let chatBusy = false;
 const CHAT_ALLOWED_TOOLS = 'Read,Grep,Glob';
 
-function runClaude(message, sessionId) {
-  const args = ['-p', message, '--output-format', 'json', '--tools', CHAT_ALLOWED_TOOLS];
+// The inventory/feedback/grocery-list checks below used to fire on every single chat
+// message — three extra subprocess + API round-trips even for "what's my net worth doing".
+// This is a cheap local pre-filter: only bother calling out to those scripts when the
+// message plausibly mentions food/kitchen stuff at all. Intentionally broad — a false
+// positive just costs one fast Haiku call, a false negative would silently break the feature.
+const FOOD_DOMAIN_KEYWORDS = /\b(fridge|freezer|pantry|inventory|grocery|groceries|shopping|meal|meals|recipe|cook(?:ed|ing)?|dinner|lunch|breakfast|snack|food|ingredient|leftover|kitchen|ran out|threw out|expired|ate|eating|meal[\s-]?plan)\b/i;
+
+function looksFoodRelated(message) {
+  return FOOD_DOMAIN_KEYWORDS.test(message);
+}
+
+// Streams the claude CLI's reply via --output-format stream-json instead of waiting for the
+// whole response — onDelta fires with each chunk of assistant text as it's generated (see
+// sendChat() in dashboard/public/index.html for the client side). The CLI's stream is
+// newline-delimited JSON carrying a lot more than the reply itself (hook/system/thinking
+// events); we forward only assistant text deltas and keep the final `result` event, which
+// has the same shape (session_id/total_cost_usd/is_error/result) the old --output-format
+// json path used.
+function streamClaude(message, sessionId, onDelta) {
+  // --verbose is mandatory alongside --print --output-format=stream-json (the CLI errors
+  // without it, unrelated to actual verbosity); stdin is explicitly closed so the child
+  // doesn't sit for a few seconds waiting on stdin data that's never coming.
+  const args = ['-p', message, '--output-format', 'stream-json', '--include-partial-messages', '--verbose', '--tools', CHAT_ALLOWED_TOOLS];
   if (sessionId) args.push('--resume', sessionId);
+
   return new Promise((resolve, reject) => {
-    execFile('claude', args, { cwd: ROOT, timeout: 120000, maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
-      if (err) return reject(err);
-      try { resolve(JSON.parse(stdout)); } catch (_) { reject(new Error('Could not parse Claude response.')); }
+    const child = spawn('claude', args, { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
+    let buffer = '';
+    let stderr = '';
+    let result = null;
+
+    child.stdout.on('data', (chunk) => {
+      buffer += chunk.toString('utf8');
+      let idx;
+      while ((idx = buffer.indexOf('\n')) !== -1) {
+        const line = buffer.slice(0, idx);
+        buffer = buffer.slice(idx + 1);
+        if (!line.trim()) continue;
+        let evt;
+        try { evt = JSON.parse(line); } catch (_) { continue; }
+
+        if (evt.type === 'stream_event' && evt.event?.type === 'content_block_delta' && evt.event.delta?.type === 'text_delta') {
+          onDelta(evt.event.delta.text);
+        } else if (evt.type === 'result') {
+          result = evt;
+        }
+      }
+    });
+    child.stderr.on('data', (chunk) => { stderr += chunk.toString('utf8'); });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      if (result) return resolve(result);
+      reject(new Error(stderr.trim() || `claude exited with code ${code}`));
     });
   });
 }
@@ -918,19 +964,26 @@ app.post('/api/chat', async (req, res) => {
   if (chatBusy) return res.status(429).json({ ok: false, error: 'Compass is still responding to your last message.' });
 
   chatBusy = true;
+  // Kick these off now, gated on the cheap local keyword check, so they run in parallel
+  // with the streamed reply below rather than serially after it.
+  const sideEffects = looksFoodRelated(message)
+    ? Promise.all([runInventoryUpdate(message), runFeedbackUpdate(message), runGroceryListUpdate(message)])
+    : Promise.resolve([null, null, null]);
+
+  res.setHeader('Content-Type', 'application/x-ndjson');
+  res.setHeader('Cache-Control', 'no-cache');
+
   try {
-    const [chatResult, inventoryResult, feedbackResult, groceryListResult] = await Promise.all([
-      runClaude(message, chatSessionId),
-      runInventoryUpdate(message),
-      runFeedbackUpdate(message),
-      runGroceryListUpdate(message),
-    ]);
+    const chatResult = await streamClaude(message, chatSessionId, (text) => {
+      res.write(JSON.stringify({ type: 'delta', text }) + '\n');
+    });
     chatSessionId = chatResult.session_id;
     if (chatResult.is_error) {
-      return res.status(500).json({ ok: false, error: chatResult.result || 'Compass hit an error.' });
+      res.write(JSON.stringify({ type: 'error', error: chatResult.result || 'Compass hit an error.' }) + '\n');
+      return res.end();
     }
 
-    let reply = chatResult.result;
+    const [inventoryResult, feedbackResult, groceryListResult] = await sideEffects;
     const notes = [];
 
     const changes = inventoryResult?.changes;
@@ -954,11 +1007,11 @@ app.post('/api/chat', async (req, res) => {
       notes.push(`Added to shopping list — ${groceryAdded.map((a) => a.item).join(', ')}.`);
     }
 
-    if (notes.length) reply += `\n\n(${notes.join(' ')})`;
-
-    res.json({ ok: true, reply, cost: chatResult.total_cost_usd });
+    res.write(JSON.stringify({ type: 'done', cost: chatResult.total_cost_usd, notes }) + '\n');
+    res.end();
   } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
+    res.write(JSON.stringify({ type: 'error', error: err.message }) + '\n');
+    res.end();
   } finally {
     chatBusy = false;
   }

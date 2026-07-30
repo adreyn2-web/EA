@@ -55,8 +55,12 @@ def stream_json(prompt: str, system: str, max_tokens: int = 1024, retry: bool = 
 
     client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
     raw = ""
+    # Every caller of this helper (appointments/inventory/track/grocery-list) is the same
+    # shape of task: parse a short free-text message into a handful of JSON fields. Haiku
+    # handles that as reliably as Opus at a fraction of the latency and cost — the "retry
+    # once on a bad parse" fallback below is the safety net if it ever isn't.
     with client.messages.stream(
-        model="claude-opus-4-8",
+        model="claude-haiku-4-5",
         max_tokens=max_tokens,
         system=system,
         messages=[{"role": "user", "content": prompt}],
