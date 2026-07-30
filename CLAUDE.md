@@ -89,6 +89,9 @@ Active workstreams live in `projects/`. Each has its own folder with a `README.m
 
 Current projects:
 - `projects/trading-bot/` — The day trading sidekick (anchor project)
+- `projects/leads/` — Freelance client prospecting: Des Moines-metro food-industry leads tracker
+  (restaurants, butchers, food retailers), feeding the freelance/automation anchor project (see
+  `context/work.md`)
 
 ## Templates
 `templates/session-summary.md` — use at the end of working sessions.

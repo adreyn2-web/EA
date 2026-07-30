@@ -47,6 +47,7 @@ const INVENTORY_FILE = path.join(ROOT, 'projects/meal-plan/data/inventory.json')
 const GROCERY_LIST_FILE = path.join(ROOT, 'projects/meal-plan/data/grocery_list.json');
 const JOURNAL_FILE = path.join(ROOT, 'projects/journal/data/entries.json');
 const HEALTH_APPOINTMENTS_FILE = path.join(ROOT, 'projects/health/data/appointments.json');
+const LEADS_FILE = path.join(ROOT, 'projects/leads/data/leads.json');
 const WEBAUTHN_FILE = path.join(ROOT, 'dashboard/data/webauthn_credential.json');
 
 const AUTH_TOKEN = (process.env.DASHBOARD_USER && process.env.DASHBOARD_PASS)
@@ -558,6 +559,16 @@ function saveHealthAppointments(items) {
   chmodSync(HEALTH_APPOINTMENTS_FILE, 0o600);
 }
 
+function loadLeads() {
+  if (!existsSync(LEADS_FILE)) return [];
+  try { return JSON.parse(readFileSync(LEADS_FILE, 'utf8')); } catch (_) { return []; }
+}
+
+function saveLeads(items) {
+  mkdirSync(path.dirname(LEADS_FILE), { recursive: true });
+  writeFileSync(LEADS_FILE, JSON.stringify(items, null, 2));
+}
+
 function classifyExpiration(expiresOn) {
   if (!expiresOn) return 'fresh';
   const exp = new Date(expiresOn + 'T00:00:00');
@@ -851,6 +862,53 @@ app.post('/api/health/appointments/remove', (req, res) => {
   res.json({ ok: true, items });
 });
 
+app.get('/api/leads', (_req, res) => {
+  res.json({ ok: true, items: loadLeads() });
+});
+
+app.post('/api/leads/add', (req, res) => {
+  const { business_name, category, location, signals, outreach_angle, contact, source, notes } = req.body;
+  if (!business_name) return res.status(400).json({ ok: false, error: 'business_name is required.' });
+
+  const today = new Date().toISOString().slice(0, 10);
+  const items = loadLeads();
+  items.push({
+    id: 'lead_' + randomBytes(4).toString('hex'),
+    business_name,
+    category: category || 'other',
+    location: location || '',
+    signals: Array.isArray(signals) ? signals : [],
+    outreach_angle: outreach_angle || '',
+    contact: contact || { phone: null, website: null, social: null, email: null },
+    status: 'found',
+    source: source || '',
+    date_added: today,
+    updated_at: today,
+    notes: notes || '',
+  });
+  saveLeads(items);
+  res.json({ ok: true, items });
+});
+
+app.post('/api/leads/update', (req, res) => {
+  const { id, ...patch } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const today = new Date().toISOString().slice(0, 10);
+  const items = loadLeads().map((l) => l.id === id ? { ...l, ...patch, updated_at: today } : l);
+  saveLeads(items);
+  res.json({ ok: true, items });
+});
+
+app.post('/api/leads/remove', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ ok: false, error: 'id is required.' });
+
+  const items = loadLeads().filter((l) => l.id !== id);
+  saveLeads(items);
+  res.json({ ok: true, items });
+});
+
 app.post('/api/meal-plan/feedback', (req, res) => {
   const { week_of, actual_cost, rating, notes } = req.body;
   if (!week_of) return res.status(400).json({ ok: false, error: 'week_of is required.' });
@@ -1042,6 +1100,7 @@ watchForChanges(path.join(ROOT, 'projects/trading-bot/performance'), 'trading');
 watchForChanges(path.join(ROOT, 'projects/meal-plan/data'), 'meal-plan');
 watchForChanges(path.join(ROOT, 'projects/journal/data'), 'journal');
 watchForChanges(path.join(ROOT, 'projects/health/data'), 'health');
+watchForChanges(path.join(ROOT, 'projects/leads/data'), 'leads');
 
 const PORT = 4000;
 app.listen(PORT, () => {

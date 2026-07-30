@@ -508,6 +508,7 @@
   <button class="main-tab" data-main-tab="shopping-list" onclick="switchMainTab('shopping-list')">Shopping List</button>
   <button class="main-tab" data-main-tab="inventory" onclick="switchMainTab('inventory')">Inventory</button>
   <button class="main-tab" data-main-tab="health" onclick="switchMainTab('health')">Health</button>
+  <button class="main-tab" data-main-tab="leads" onclick="switchMainTab('leads')">Leads</button>
 </div>
 
 <!-- ── Finance ── -->
@@ -765,6 +766,44 @@
   <div class="card full" id="journal-history-card">
     <div class="card-title">Past Entries</div>
     <div id="journal-history-content"><div class="hint">No entries yet.</div></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ── Leads ── -->
+<div class="tab-panel" id="tab-leads">
+<div class="section-label">Leads — Des Moines Food Industry</div>
+<div class="grid">
+
+  <div class="card full" id="lead-add-card">
+    <div class="card-title">Add Lead</div>
+    <input type="text" id="lead-business-name" placeholder="Business name" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;margin-bottom:6px" />
+    <div style="display:flex;gap:6px;margin-bottom:6px">
+      <select id="lead-category" style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px">
+        <option value="restaurant">Restaurant</option>
+        <option value="butcher">Butcher</option>
+        <option value="food-retail/grocer">Food retail/grocer</option>
+        <option value="bakery">Bakery</option>
+        <option value="food-truck">Food truck</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="text" id="lead-location" placeholder="Location" style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px" />
+    </div>
+    <textarea id="lead-signals" placeholder="Signals (one per line — bad reviews, no website, dead social...)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:44px;margin-bottom:6px"></textarea>
+    <textarea id="lead-outreach-angle" placeholder="Outreach angle" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;resize:vertical;min-height:36px;margin-bottom:6px"></textarea>
+    <div style="display:flex;gap:6px;margin-bottom:6px">
+      <input type="text" id="lead-phone" placeholder="Phone" style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px" />
+      <input type="text" id="lead-website" placeholder="Website" style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px" />
+      <input type="text" id="lead-social" placeholder="Social" style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px" />
+    </div>
+    <input type="text" id="lead-source" placeholder="Source (how you found it)" style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:12px;padding:8px;border-radius:4px;margin-bottom:6px" />
+    <button class="btn btn-primary" onclick="addLead()">Save Lead</button>
+  </div>
+
+  <div class="card full" id="leads-card">
+    <div class="card-title">Pipeline</div>
+    <div id="leads-content"><div class="hint">No leads tracked yet.</div></div>
   </div>
 
 </div>
@@ -1952,6 +1991,124 @@
     renderHealthAppointments(items || []);
   }
 
+  // ── Leads ──
+  const LEAD_PIPELINE = ['found', 'contacted', 'pitched', 'won', 'lost'];
+  const LEAD_NEXT_STATUS = { found: 'contacted', contacted: 'pitched', pitched: 'won' };
+  const LEAD_STATUS_LABEL = { found: 'Found', contacted: 'Contacted', pitched: 'Pitched', won: 'Won', lost: 'Lost' };
+
+  async function loadLeads() {
+    const res = await apiFetch('/api/leads');
+    if (!res) return;
+    const { ok, items } = await res.json();
+    if (!ok) return;
+    renderLeads(items || []);
+  }
+
+  function renderLeads(items) {
+    const el = document.getElementById('leads-content');
+    if (!items.length) { el.innerHTML = '<div class="hint">No leads tracked yet.</div>'; return; }
+
+    const row = (l) => {
+      const contactParts = [];
+      if (l.contact?.phone) contactParts.push(`<a href="tel:${escapeHtml(l.contact.phone)}" style="color:var(--accent)">${escapeHtml(l.contact.phone)}</a>`);
+      if (l.contact?.website) contactParts.push(`<a href="//${escapeHtml(l.contact.website.replace(/^\/\//, ''))}" target="_blank" style="color:var(--accent)">${escapeHtml(l.contact.website)}</a>`);
+      if (l.contact?.social) contactParts.push(escapeHtml(l.contact.social));
+      if (l.contact?.email) contactParts.push(escapeHtml(l.contact.email));
+
+      const next = LEAD_NEXT_STATUS[l.status];
+      const actions = [
+        next ? `<button class="inv-btn" onclick="updateLeadStatus('${l.id}','${next}')">Mark ${LEAD_STATUS_LABEL[next]}</button>` : '',
+        (l.status !== 'won' && l.status !== 'lost') ? `<button class="inv-btn" onclick="updateLeadStatus('${l.id}','lost')">Lost</button>` : '',
+        `<button class="inv-btn" onclick="removeLead('${l.id}')">Remove</button>`,
+      ].filter(Boolean).join('');
+
+      return `
+        <div class="inv-row" style="flex-direction:column;align-items:flex-start;gap:2px">
+          <div class="inv-item" style="width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+            <span><strong>${escapeHtml(l.business_name)}</strong> — ${escapeHtml(l.category || '')}${l.location ? ' · ' + escapeHtml(l.location) : ''}</span>
+            <span class="inv-actions">${actions}</span>
+          </div>
+          ${(l.signals || []).length ? `<div class="hint">${l.signals.map(escapeHtml).join(' · ')}</div>` : ''}
+          ${l.outreach_angle ? `<div class="hint">${escapeHtml(l.outreach_angle)}</div>` : ''}
+          ${contactParts.length ? `<div class="hint">${contactParts.join(' · ')}</div>` : ''}
+          ${l.source ? `<div class="hint">${escapeHtml(l.source)}</div>` : ''}
+          <textarea onchange="saveLeadNote('${l.id}', this.value)" placeholder="Notes..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:inherit;font-size:11px;padding:6px;border-radius:4px;resize:vertical;min-height:28px;margin-top:2px">${escapeHtml(l.notes || '')}</textarea>
+        </div>`;
+    };
+
+    let html = '';
+    for (const status of LEAD_PIPELINE) {
+      const group = items.filter(l => l.status === status);
+      if (!group.length) continue;
+      html += `<div class="section-sub" style="margin-top:10px">${LEAD_STATUS_LABEL[status]} (${group.length})</div>` + group.map(row).join('');
+    }
+    el.innerHTML = html || '<div class="hint">No leads tracked yet.</div>';
+  }
+
+  async function addLead() {
+    const business_name = document.getElementById('lead-business-name').value.trim();
+    if (!business_name) return;
+    const signals = document.getElementById('lead-signals').value.split('\n').map(s => s.trim()).filter(Boolean);
+    const payload = {
+      business_name,
+      category: document.getElementById('lead-category').value,
+      location: document.getElementById('lead-location').value.trim(),
+      signals,
+      outreach_angle: document.getElementById('lead-outreach-angle').value.trim(),
+      contact: {
+        phone: document.getElementById('lead-phone').value.trim() || null,
+        website: document.getElementById('lead-website').value.trim() || null,
+        social: document.getElementById('lead-social').value.trim() || null,
+        email: null,
+      },
+      source: document.getElementById('lead-source').value.trim(),
+    };
+    setStatus('Saving lead...');
+    const res = await apiFetch('/api/leads/add', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res) return;
+    const { ok, items, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return; }
+    ['lead-business-name', 'lead-location', 'lead-signals', 'lead-outreach-angle', 'lead-phone', 'lead-website', 'lead-social', 'lead-source']
+      .forEach(id => document.getElementById(id).value = '');
+    renderLeads(items || []);
+    setStatus('Lead saved.');
+  }
+
+  async function updateLeadStatus(id, status) {
+    const res = await apiFetch('/api/leads/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status }),
+    });
+    if (!res) return;
+    const { ok, items, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return; }
+    renderLeads(items || []);
+  }
+
+  async function saveLeadNote(id, notes) {
+    const res = await apiFetch('/api/leads/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, notes }),
+    });
+    if (!res) return;
+    const { ok, error } = await res.json();
+    if (!ok) setStatus('Error: ' + error);
+  }
+
+  async function removeLead(id) {
+    const res = await apiFetch('/api/leads/remove', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (!res) return;
+    const { ok, items, error } = await res.json();
+    if (!ok) { setStatus('Error: ' + error); return; }
+    renderLeads(items || []);
+  }
+
   // ── Journal ──
 
   async function loadJournal() {
@@ -2023,6 +2180,7 @@
     'meal-plan': () => { loadMealPlan(); loadInventory(); loadShoppingList(); },
     journal:     () => loadJournal(),
     health:      () => loadHealthAppointments(),
+    leads:       () => loadLeads(),
   };
 
   function connectSSE() {
@@ -2079,6 +2237,7 @@
   loadShoppingList();
   loadHealthAppointments();
   loadJournal();
+  loadLeads();
   connectSSE();
   setTimeout(plaidAutoSync, 5 * 60 * 1000);
 </script>
