@@ -9,10 +9,10 @@ Adreyn is an ambitious young man building toward financial, economic, and time f
 
 ## Codebase Overview
 
-Compass is a Claude Code-orchestrated second brain: a local Express dashboard (`dashboard/`) surfaces finance, health, meal-plan, journal, and trading data that's produced by standalone scripted pipelines under `projects/`, each runnable via `npm run <script>` or directly as a CLI. Skills in `.claude/skills/` (11 hand-authored + 19 installed Google Workspace skills) provide the conversational workflows; some are wired directly into the automation (e.g. `culinary-procedure` is injected into the meal-plan generation prompt), others are parallel, loosely-coupled surfaces for the same domain.
+Compass is a Claude Code-orchestrated second brain: a local Express dashboard (`dashboard/`) surfaces finance, health, meal-plan, journal, leads, and trading data that's produced by standalone scripted pipelines under `projects/`, each runnable via `npm run <script>` or directly as a CLI. Per-client mini-apps (`projects/client-work/`) mount their own Express routers directly into the dashboard. Skills in `.claude/skills/` (11 hand-authored + 20 installed Google Workspace skills + `audit` + `frontend-design`) provide the conversational workflows; some are wired directly into the automation (e.g. `culinary-procedure` is injected into the meal-plan generation prompt), others are parallel, loosely-coupled surfaces for the same domain. `projects/_shared/common.py` centralizes JSON load/save, ID generation, and Claude-call helpers shared by the health/journal/meal-plan tools.
 
 **Stack**: Node/Express + vanilla JS (dashboard), Python + Anthropic API (health/journal/meal-plan tools), Node + Plaid SDK (finance sync), GitHub Actions cron (meal-plan automation).
-**Structure**: `dashboard/` (the app) · `projects/` (finance, health, journal, meal-plan, trading-bot pipelines) · `.claude/skills/` (workflows) · `context/` + `decisions/` + `references/` (persistent memory/state).
+**Structure**: `dashboard/` (the app) · `projects/` (finance, health, journal, meal-plan, leads, client-work, trading-bot pipelines) · `.claude/skills/` (workflows) · `context/` + `decisions/` + `references/` (persistent memory/state).
 
 For detailed architecture, module-by-module breakdown, data flow diagrams, and known gotchas (including a couple of security follow-ups worth fixing), see [docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md).
 
@@ -88,10 +88,14 @@ Claude Code maintains persistent memory across conversations. Patterns, preferen
 Active workstreams live in `projects/`. Each has its own folder with a `README.md`.
 
 Current projects:
-- `projects/trading-bot/` — The day trading sidekick (anchor project)
+- `projects/trading-bot/` — The day trading sidekick (second income stream, not the anchor —
+  see Identity above)
 - `projects/leads/` — Freelance client prospecting: Des Moines-metro food-industry leads tracker
   (restaurants, butchers, food retailers), feeding the freelance/automation anchor project (see
   `context/work.md`)
+- `projects/client-work/` — Per-client mini-apps mounted into the dashboard (e.g.
+  `michelle-az-home/`, an AZ home-search intake form); the first paid-work-style deliverables
+  built on this system
 
 ## Templates
 `templates/session-summary.md` — use at the end of working sessions.
