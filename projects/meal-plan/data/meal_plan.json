@@ -1,10 +1,10 @@
 {
-  "week_of": "2026-08-17",
+  "week_of": "2026-08-24",
   "macro_targets": {
     "calories": 3300,
     "protein_g": 175,
-    "carbs_g": 385,
-    "fat_g": 110
+    "carbs_g": 400,
+    "fat_g": 100
   },
   "days": [
     {
@@ -12,283 +12,20 @@
       "meals": [
         {
           "meal_type": "breakfast",
-          "recipe_name": "Loaded Scrambled Egg & Cheddar Breakfast Burrito",
+          "recipe_name": "Protein Banana Oatmeal with Peanut Butter",
           "ingredients": [
             {
-              "item": "eggs",
-              "quantity": "4",
-              "unit": "large"
-            },
-            {
-              "item": "flour tortilla (homemade)",
+              "item": "rolled oats",
               "quantity": "1",
-              "unit": "10-inch"
-            },
-            {
-              "item": "shredded cheddar",
-              "quantity": "1/2",
               "unit": "cup"
             },
             {
-              "item": "black beans",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "avocado",
-              "quantity": "1/2",
-              "unit": "medium"
-            },
-            {
-              "item": "butter",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "salsa",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "salt",
-              "quantity": "1/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Crack 4 eggs into a bowl, add 1/4 tsp salt, and whisk vigorously for 30 seconds until uniform.",
-            "Melt 1 tbsp butter in a nonstick skillet over medium-low heat (about 300F) until foaming subsides.",
-            "Pour in eggs. Let sit 20 seconds, then using a silicone spatula gently push from edges to center, folding soft curds, for about 3 minutes until just set but glossy. Remove from heat.",
-            "Warm 1/2 cup black beans in a small pot over medium heat for 2 minutes; drain excess liquid.",
-            "Lay the warm 10-inch tortilla flat. Layer eggs down the center, top with 1/2 cup cheddar (residual heat melts it), 1/2 cup beans, sliced 1/2 avocado, and 1/4 cup salsa.",
-            "Fold both short sides inward, then roll tightly from the bottom into a burrito.",
-            "Return the burrito seam-side down to the skillet over medium heat for 1 minute per side to crisp and seal. Slice in half and serve."
-          ],
-          "macros": {
-            "protein_g": 34,
-            "carbs_g": 52,
-            "fat_g": 42,
-            "calories": 700
-          },
-          "estimated_cost_usd": 2.75,
-          "prep_time_minutes": 18,
-          "prep_tasks": [
-            {
-              "task": "Make tortilla dough",
-              "prep_day": "Sunday",
-              "instructions": "Mix 2 cups all-purpose flour, 3/4 tsp salt, 3 tbsp lard/oil, and 2/3 cup warm water. Knead 5 min into a smooth dough, cover, rest at room temp 1 hour, then refrigerate. Divide into portions; roll one 10-inch tortilla and cook on a dry skillet 45 sec/side the morning of."
-            }
-          ]
-        },
-        {
-          "meal_type": "lunch",
-          "recipe_name": "Teriyaki Chicken Rice Bowl",
-          "ingredients": [
-            {
-              "item": "chicken thigh, boneless skinless",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "cooked white rice",
+              "item": "whole milk",
               "quantity": "1.5",
               "unit": "cups"
             },
             {
-              "item": "soy sauce",
-              "quantity": "3",
-              "unit": "tbsp"
-            },
-            {
-              "item": "mirin",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "brown sugar",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "garlic",
-              "quantity": "2",
-              "unit": "cloves"
-            },
-            {
-              "item": "ginger",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "broccoli",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "sesame oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "sesame seeds",
-              "quantity": "1",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Whisk 3 tbsp soy sauce, 2 tbsp mirin, 1 tbsp brown sugar, minced garlic, and 1 tsp grated ginger into a sauce.",
-            "Pat chicken thighs dry and cut into 1-inch pieces.",
-            "Heat 1 tbsp sesame oil in a skillet over medium-high (about 375F). Add chicken and sear 5 minutes until browned, stirring occasionally.",
-            "Add 1 cup broccoli florets and 2 tbsp water; cover and steam 3 minutes.",
-            "Pour in the sauce and simmer uncovered 3-4 minutes until it thickens and glazes the chicken.",
-            "Serve over 1.5 cups warm rice, spoon extra glaze on top, and sprinkle with sesame seeds."
-          ],
-          "macros": {
-            "protein_g": 48,
-            "carbs_g": 78,
-            "fat_g": 26,
-            "calories": 720
-          },
-          "estimated_cost_usd": 3.5,
-          "prep_time_minutes": 20,
-          "prep_tasks": [
-            {
-              "task": "Thaw chicken",
-              "prep_day": "Sunday",
-              "instructions": "Move 8 oz chicken thighs from freezer to fridge Sunday evening for Monday lunch (~24 hr thaw)."
-            },
-            {
-              "task": "Cook rice base",
-              "prep_day": "Sunday",
-              "instructions": "Rinse 2 cups white rice, cook with 3 cups water; refrigerate. Reheat 1.5 cups portions with a splash of water as needed through Tuesday."
-            }
-          ]
-        },
-        {
-          "meal_type": "dinner",
-          "recipe_name": "Seared Salmon with Garlic Butter Quinoa",
-          "ingredients": [
-            {
-              "item": "salmon fillet",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "quinoa",
-              "quantity": "3/4",
-              "unit": "cup dry"
-            },
-            {
-              "item": "butter",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "garlic",
-              "quantity": "2",
-              "unit": "cloves"
-            },
-            {
-              "item": "lemon",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "asparagus",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "salt",
-              "quantity": "1/2",
-              "unit": "tsp"
-            },
-            {
-              "item": "black pepper",
-              "quantity": "1/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Rinse 3/4 cup quinoa, add to a pot with 1.5 cups water, bring to a boil, cover, reduce to low and simmer 15 minutes; fluff.",
-            "Pat salmon dry, season both sides with salt and pepper.",
-            "Heat 1 tbsp olive oil in a skillet over medium-high (400F). Place salmon skin-side down and sear 4 minutes without moving.",
-            "Flip salmon, add 2 tbsp butter and minced garlic to the pan, and baste salmon with foaming butter for 3 minutes.",
-            "Add trimmed asparagus to the pan for the last 3 minutes, turning to coat in butter.",
-            "Squeeze 1/2 lemon over everything. Serve salmon and asparagus over the garlic-butter quinoa."
-          ],
-          "macros": {
-            "protein_g": 46,
-            "carbs_g": 48,
-            "fat_g": 38,
-            "calories": 720
-          },
-          "estimated_cost_usd": 6.0,
-          "prep_time_minutes": 22,
-          "prep_tasks": [
-            {
-              "task": "Thaw salmon",
-              "prep_day": "Sunday",
-              "instructions": "Move 8 oz salmon from freezer to fridge Sunday night for Monday dinner (~24 hr). If forgotten, cold-water thaw in sealed bag Monday afternoon ~30 min, changing water every 30 min."
-            }
-          ]
-        },
-        {
-          "meal_type": "snack_1",
-          "recipe_name": "Greek Yogurt Berry Protein Bowl",
-          "ingredients": [
-            {
-              "item": "Greek yogurt, plain 2%",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "mixed berries",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "honey",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "granola",
-              "quantity": "1/3",
-              "unit": "cup"
-            },
-            {
-              "item": "chia seeds",
-              "quantity": "1",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Spoon 1.5 cups Greek yogurt into a bowl.",
-            "Top with 3/4 cup mixed berries, 1/3 cup granola, and 1 tbsp chia seeds.",
-            "Drizzle 1 tbsp honey over the top and serve immediately."
-          ],
-          "macros": {
-            "protein_g": 30,
-            "carbs_g": 48,
-            "fat_g": 12,
-            "calories": 420
-          },
-          "estimated_cost_usd": 2.25,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        },
-        {
-          "meal_type": "snack_2",
-          "recipe_name": "Peanut Butter Banana Protein Shake",
-          "ingredients": [
-            {
-              "item": "whey protein powder, vanilla",
+              "item": "vanilla whey protein powder",
               "quantity": "1",
               "unit": "scoop"
             },
@@ -298,9 +35,253 @@
               "unit": "medium"
             },
             {
-              "item": "peanut butter",
+              "item": "natural peanut butter",
               "quantity": "2",
               "unit": "tbsp"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "cinnamon",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. In a medium saucepan over medium heat, combine 1 cup rolled oats and 1.5 cups whole milk.",
+            "2. Stir constantly and bring to a gentle simmer, about 4 minutes. Reduce heat to medium-low.",
+            "3. Cook, stirring frequently, for 5 minutes until oats are creamy and thickened.",
+            "4. Remove from heat and let cool 1 minute (to avoid clumping protein). Stir in 1 scoop vanilla whey protein powder until fully dissolved.",
+            "5. Slice 1 banana. Transfer oatmeal to a bowl, top with banana slices, 2 tbsp peanut butter, drizzle 1 tbsp honey, and dust with 0.5 tsp cinnamon.",
+            "6. Stir slightly and serve warm."
+          ],
+          "macros": {
+            "protein_g": 43,
+            "carbs_g": 88,
+            "fat_g": 24,
+            "calories": 730
+          },
+          "estimated_cost_usd": 2.1,
+          "prep_time_minutes": 12,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "lunch",
+          "recipe_name": "Grilled Chicken Burrito Bowl",
+          "ingredients": [
+            {
+              "item": "chicken breast",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "black beans",
+              "quantity": "0.75",
+              "unit": "cup"
+            },
+            {
+              "item": "corn kernels",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "cherry tomatoes",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "avocado",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "lime",
+              "quantity": "1",
+              "unit": "whole"
+            },
+            {
+              "item": "cumin",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "chili powder",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Pat 8 oz chicken breast dry. Rub with 1 tsp cumin, 1 tsp chili powder, 0.5 tsp salt, and 0.5 tbsp olive oil.",
+            "2. Heat a grill pan or skillet over medium-high heat with 0.5 tbsp olive oil until shimmering.",
+            "3. Cook chicken 6 minutes per side until internal temp reaches 165\u00b0F. Rest 5 minutes, then slice.",
+            "4. Warm 1 cup cooked white rice and 0.75 cup black beans in the microwave 90 seconds.",
+            "5. Add 0.5 cup corn to the hot skillet for 2 minutes to char lightly.",
+            "6. Build bowl: rice base, then beans, corn, halved cherry tomatoes, sliced avocado, and chicken.",
+            "7. Squeeze juice of 1 lime over the top and serve."
+          ],
+          "macros": {
+            "protein_g": 60,
+            "carbs_g": 78,
+            "fat_g": 20,
+            "calories": 730
+          },
+          "estimated_cost_usd": 3.8,
+          "prep_time_minutes": 20,
+          "prep_tasks": [
+            {
+              "task": "Thaw chicken",
+              "prep_day": "Sunday",
+              "instructions": "Move one 8 oz chicken breast from freezer to a plate in the fridge Sunday night for Monday lunch. If forgotten, cold-water thaw Monday morning: seal in a zip bag, submerge in cold water ~40 min, changing water every 30 min."
+            },
+            {
+              "task": "Cook rice base",
+              "prep_day": "Sunday",
+              "instructions": "Cook a pot of white rice: rinse 2 cups dry rice, combine with 3 cups water, bring to boil, cover, simmer 18 min, rest 10 min. Refrigerate portioned; this base covers multiple meals this week (use within 3-4 days)."
+            }
+          ]
+        },
+        {
+          "meal_type": "dinner",
+          "recipe_name": "Pan-Seared Salmon with Garlic Butter Rice and Broccoli",
+          "ingredients": [
+            {
+              "item": "salmon fillet",
+              "quantity": "7",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "broccoli",
+              "quantity": "1.5",
+              "unit": "cups"
+            },
+            {
+              "item": "butter",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "3",
+              "unit": "cloves"
+            },
+            {
+              "item": "lemon",
+              "quantity": "0.5",
+              "unit": "whole"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
+            },
+            {
+              "item": "black pepper",
+              "quantity": "0.25",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Pat 7 oz salmon dry, season both sides with 0.5 tsp salt and 0.25 tsp black pepper.",
+            "2. Heat 1 tbsp olive oil in a nonstick skillet over medium-high until shimmering.",
+            "3. Place salmon skin-side down, press gently, and sear 4 minutes until skin is crisp.",
+            "4. Flip and cook 3 more minutes until internal temp reaches 125-130\u00b0F. Remove and rest.",
+            "5. Steam 1.5 cups broccoli in a covered pot with 2 tbsp water over medium heat for 4 minutes until bright green.",
+            "6. In the same salmon skillet, lower heat to medium, add 2 tbsp butter and 3 minced garlic cloves. Cook 1 minute until fragrant.",
+            "7. Add 1 cup cooked rice, toss to coat in garlic butter for 2 minutes.",
+            "8. Plate rice and broccoli, top with salmon, and squeeze juice of 0.5 lemon over everything."
+          ],
+          "macros": {
+            "protein_g": 45,
+            "carbs_g": 62,
+            "fat_g": 38,
+            "calories": 780
+          },
+          "estimated_cost_usd": 6.5,
+          "prep_time_minutes": 18,
+          "prep_tasks": [
+            {
+              "task": "Thaw salmon",
+              "prep_day": "Sunday",
+              "instructions": "Move one 7 oz salmon fillet from freezer to fridge Sunday night for Monday dinner. Alternatively cold-water thaw Monday afternoon (~30 min, sealed, changing water every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "snack_1",
+          "recipe_name": "Greek Yogurt Berry Protein Bowl",
+          "ingredients": [
+            {
+              "item": "plain Greek yogurt (2%)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "mixed berries",
+              "quantity": "0.75",
+              "unit": "cup"
+            },
+            {
+              "item": "granola",
+              "quantity": "0.33",
+              "unit": "cup"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tbsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Spoon 1 cup Greek yogurt into a bowl.",
+            "2. Top with 0.75 cup mixed berries and 0.33 cup granola.",
+            "3. Drizzle 1 tbsp honey over the top and serve immediately."
+          ],
+          "macros": {
+            "protein_g": 26,
+            "carbs_g": 52,
+            "fat_g": 8,
+            "calories": 380
+          },
+          "estimated_cost_usd": 2.2,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "snack_2",
+          "recipe_name": "Almond Chocolate Protein Shake",
+          "ingredients": [
+            {
+              "item": "chocolate whey protein powder",
+              "quantity": "1",
+              "unit": "scoop"
             },
             {
               "item": "whole milk",
@@ -308,32 +289,43 @@
               "unit": "cups"
             },
             {
-              "item": "oats",
-              "quantity": "1/4",
+              "item": "almond butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "banana",
+              "quantity": "1",
+              "unit": "medium"
+            },
+            {
+              "item": "ice",
+              "quantity": "1",
               "unit": "cup"
             }
           ],
           "recipe_steps": [
-            "Add 1.5 cups milk, 1 banana, 1 scoop protein powder, 2 tbsp peanut butter, and 1/4 cup oats to a blender.",
-            "Blend on high 45 seconds until smooth. Serve immediately."
+            "1. Add 1.5 cups whole milk, 1 scoop chocolate whey, 1 tbsp almond butter, 1 banana, and 1 cup ice to a blender.",
+            "2. Blend on high 45 seconds until smooth and frothy.",
+            "3. Pour into a glass and drink immediately."
           ],
           "macros": {
-            "protein_g": 42,
-            "carbs_g": 55,
-            "fat_g": 22,
-            "calories": 620
+            "protein_g": 38,
+            "carbs_g": 45,
+            "fat_g": 18,
+            "calories": 480
           },
-          "estimated_cost_usd": 1.75,
+          "estimated_cost_usd": 1.9,
           "prep_time_minutes": 4,
           "prep_tasks": []
         }
       ],
       "daily_totals": {
-        "protein_g": 200,
-        "carbs_g": 281,
-        "fat_g": 140,
-        "calories": 3180,
-        "estimated_cost_usd": 16.25
+        "protein_g": 212,
+        "carbs_g": 325,
+        "fat_g": 108,
+        "calories": 3100,
+        "estimated_cost_usd": 16.5
       }
     },
     {
@@ -341,22 +333,656 @@
       "meals": [
         {
           "meal_type": "breakfast",
-          "recipe_name": "Cottage Cheese Protein Pancakes",
+          "recipe_name": "Three-Egg Veggie Scramble with Cheddar Toast",
           "ingredients": [
-            {
-              "item": "cottage cheese",
-              "quantity": "1",
-              "unit": "cup"
-            },
             {
               "item": "eggs",
               "quantity": "3",
               "unit": "large"
             },
             {
-              "item": "oats",
-              "quantity": "3/4",
+              "item": "egg whites",
+              "quantity": "3",
+              "unit": "large"
+            },
+            {
+              "item": "bell pepper",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "spinach",
+              "quantity": "1",
               "unit": "cup"
+            },
+            {
+              "item": "cheddar cheese",
+              "quantity": "1",
+              "unit": "oz"
+            },
+            {
+              "item": "homemade sandwich bread",
+              "quantity": "2",
+              "unit": "slices"
+            },
+            {
+              "item": "butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.25",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Whisk 3 whole eggs and 3 egg whites with 0.25 tsp salt in a bowl.",
+            "2. Heat 1 tsp olive oil in a nonstick skillet over medium. Add 0.5 diced bell pepper, cook 3 minutes.",
+            "3. Add 1 cup spinach, cook 1 minute until wilted.",
+            "4. Pour in eggs, let set 20 seconds, then gently fold with a spatula for 2-3 minutes until just set.",
+            "5. Sprinkle 1 oz shredded cheddar over eggs, fold once, remove from heat.",
+            "6. Toast 2 slices homemade bread, spread with 1 tbsp butter. Serve alongside scramble."
+          ],
+          "macros": {
+            "protein_g": 38,
+            "carbs_g": 32,
+            "fat_g": 30,
+            "calories": 560
+          },
+          "estimated_cost_usd": 2.4,
+          "prep_time_minutes": 12,
+          "prep_tasks": [
+            {
+              "task": "Bake sandwich bread",
+              "prep_day": "Sunday",
+              "instructions": "Make one loaf: mix 3.5 cups bread flour, 1.25 cups warm water, 2.25 tsp instant yeast, 2 tbsp sugar, 1.5 tsp salt, 2 tbsp oil. Knead 10 min, rise 1 hr until doubled, shape into loaf pan, rise 40 min, bake at 375\u00b0F for 32 min. Cool fully, slice, store; use slices across the week."
+            }
+          ]
+        },
+        {
+          "meal_type": "lunch",
+          "recipe_name": "Teriyaki Beef and Vegetable Stir-Fry",
+          "ingredients": [
+            {
+              "item": "beef sirloin strips",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "broccoli",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "bell pepper",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "soy sauce",
+              "quantity": "3",
+              "unit": "tbsp"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "2",
+              "unit": "cloves"
+            },
+            {
+              "item": "fresh ginger",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "sesame oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "cornstarch",
+              "quantity": "1",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Whisk 3 tbsp soy sauce, 1 tbsp honey, 1 tsp cornstarch, and 2 tbsp water into a sauce. Set aside.",
+            "2. Heat 1 tbsp sesame oil in a wok over high heat until smoking.",
+            "3. Add 8 oz beef strips in a single layer, sear 2 minutes without moving, then stir-fry 1 minute. Remove.",
+            "4. Add 1 cup broccoli and 0.5 sliced bell pepper, stir-fry 3 minutes.",
+            "5. Add 2 minced garlic cloves and 1 tsp grated ginger, cook 30 seconds.",
+            "6. Return beef, pour in sauce, toss 1-2 minutes until glossy and thickened.",
+            "7. Serve over 1 cup warmed cooked rice."
+          ],
+          "macros": {
+            "protein_g": 52,
+            "carbs_g": 72,
+            "fat_g": 24,
+            "calories": 720
+          },
+          "estimated_cost_usd": 5.2,
+          "prep_time_minutes": 18,
+          "prep_tasks": [
+            {
+              "task": "Thaw beef",
+              "prep_day": "Monday",
+              "instructions": "Move 8 oz beef sirloin strips from freezer to fridge Monday night for Tuesday lunch. Or cold-water thaw Tuesday morning (~35 min, sealed, water changed every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "dinner",
+          "recipe_name": "Herb-Roasted Pork Tenderloin with Mashed Sweet Potato",
+          "ingredients": [
+            {
+              "item": "pork tenderloin",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "sweet potato",
+              "quantity": "2",
+              "unit": "medium"
+            },
+            {
+              "item": "green beans",
+              "quantity": "1.5",
+              "unit": "cups"
+            },
+            {
+              "item": "butter",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "2",
+              "unit": "cloves"
+            },
+            {
+              "item": "rosemary",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.75",
+              "unit": "tsp"
+            },
+            {
+              "item": "black pepper",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Preheat oven to 400\u00b0F. Peel and cube 2 sweet potatoes, boil in salted water 15 minutes until fork-tender.",
+            "2. Pat 8 oz pork tenderloin dry, rub with 1 tbsp olive oil, 1 tsp rosemary, 0.5 tsp salt, 0.5 tsp pepper.",
+            "3. Sear pork in an oven-safe skillet over medium-high 2 minutes per side until browned.",
+            "4. Transfer skillet to oven, roast 12-14 minutes until internal temp reaches 145\u00b0F. Rest 5 minutes, slice.",
+            "5. Drain sweet potatoes, mash with 1 tbsp butter and 0.25 tsp salt.",
+            "6. Saut\u00e9 1.5 cups green beans in 1 tbsp butter with 2 minced garlic cloves over medium heat 5 minutes.",
+            "7. Plate mash, green beans, and sliced pork."
+          ],
+          "macros": {
+            "protein_g": 52,
+            "carbs_g": 68,
+            "fat_g": 26,
+            "calories": 740
+          },
+          "estimated_cost_usd": 5.4,
+          "prep_time_minutes": 22,
+          "prep_tasks": [
+            {
+              "task": "Thaw pork",
+              "prep_day": "Monday",
+              "instructions": "Move 8 oz pork tenderloin from freezer to fridge Monday night for Tuesday dinner. Or cold-water thaw Tuesday afternoon (~40 min, sealed, water changed every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "snack_1",
+          "recipe_name": "Cottage Cheese with Pineapple and Walnuts",
+          "ingredients": [
+            {
+              "item": "cottage cheese (2%)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "pineapple chunks",
+              "quantity": "0.75",
+              "unit": "cup"
+            },
+            {
+              "item": "walnuts",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Spoon 1 cup cottage cheese into a bowl.",
+            "2. Top with 0.75 cup pineapple chunks and 0.25 cup walnuts.",
+            "3. Drizzle 1 tsp honey and serve."
+          ],
+          "macros": {
+            "protein_g": 30,
+            "carbs_g": 32,
+            "fat_g": 20,
+            "calories": 420
+          },
+          "estimated_cost_usd": 2.0,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "snack_2",
+          "recipe_name": "Vanilla Peanut Butter Protein Shake",
+          "ingredients": [
+            {
+              "item": "vanilla whey protein powder",
+              "quantity": "1",
+              "unit": "scoop"
+            },
+            {
+              "item": "whole milk",
+              "quantity": "1.5",
+              "unit": "cups"
+            },
+            {
+              "item": "peanut butter",
+              "quantity": "1.5",
+              "unit": "tbsp"
+            },
+            {
+              "item": "oats",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "ice",
+              "quantity": "1",
+              "unit": "cup"
+            }
+          ],
+          "recipe_steps": [
+            "1. Combine 1.5 cups whole milk, 1 scoop vanilla whey, 1.5 tbsp peanut butter, 0.25 cup oats, and 1 cup ice in a blender.",
+            "2. Blend on high 45 seconds until smooth.",
+            "3. Pour and drink immediately."
+          ],
+          "macros": {
+            "protein_g": 40,
+            "carbs_g": 42,
+            "fat_g": 20,
+            "calories": 510
+          },
+          "estimated_cost_usd": 1.8,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        }
+      ],
+      "daily_totals": {
+        "protein_g": 212,
+        "carbs_g": 246,
+        "fat_g": 120,
+        "calories": 2950,
+        "estimated_cost_usd": 16.8
+      }
+    },
+    {
+      "day": "Wednesday",
+      "meals": [
+        {
+          "meal_type": "breakfast",
+          "recipe_name": "Tuna Melt on Homemade Bread with Fruit",
+          "ingredients": [
+            {
+              "item": "canned tuna",
+              "quantity": "1",
+              "unit": "can (5 oz)"
+            },
+            {
+              "item": "homemade sandwich bread",
+              "quantity": "2",
+              "unit": "slices"
+            },
+            {
+              "item": "cheddar cheese",
+              "quantity": "1",
+              "unit": "oz"
+            },
+            {
+              "item": "mayonnaise",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "Greek yogurt (2%)",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "apple",
+              "quantity": "1",
+              "unit": "medium"
+            }
+          ],
+          "recipe_steps": [
+            "1. Drain 1 can tuna, mix in a bowl with 1 tbsp mayo and 1 tbsp Greek yogurt.",
+            "2. Butter one side of each of 2 bread slices with 1 tbsp butter total.",
+            "3. Place one slice butter-side down in a skillet over medium heat. Top with tuna mix and 1 oz shredded cheddar.",
+            "4. Add second slice, butter-side up. Cook 3 minutes until golden, flip, cook 3 more minutes until cheese melts.",
+            "5. Slice sandwich in half, serve with 1 sliced apple."
+          ],
+          "macros": {
+            "protein_g": 42,
+            "carbs_g": 48,
+            "fat_g": 26,
+            "calories": 600
+          },
+          "estimated_cost_usd": 2.8,
+          "prep_time_minutes": 12,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "lunch",
+          "recipe_name": "Shrimp Scampi Linguine",
+          "ingredients": [
+            {
+              "item": "shrimp (peeled, deveined)",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "linguine pasta",
+              "quantity": "4",
+              "unit": "oz"
+            },
+            {
+              "item": "butter",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "4",
+              "unit": "cloves"
+            },
+            {
+              "item": "lemon",
+              "quantity": "0.5",
+              "unit": "whole"
+            },
+            {
+              "item": "parsley",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "red pepper flakes",
+              "quantity": "0.25",
+              "unit": "tsp"
+            },
+            {
+              "item": "parmesan cheese",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Boil 4 oz linguine in salted water per package directions (~9 min) until al dente. Reserve 0.5 cup pasta water, drain.",
+            "2. Pat 8 oz shrimp dry, season with 0.25 tsp salt.",
+            "3. Heat 1 tbsp olive oil and 1 tbsp butter in a skillet over medium-high. Add shrimp, cook 1.5 min per side until pink. Remove.",
+            "4. Lower heat to medium, add remaining 1 tbsp butter, 4 minced garlic cloves, 0.25 tsp red pepper flakes. Cook 1 minute.",
+            "5. Add juice of 0.5 lemon and 0.25 cup reserved pasta water, simmer 1 minute.",
+            "6. Add drained linguine, shrimp, and 2 tbsp parsley. Toss 1 minute to coat.",
+            "7. Top with 0.25 cup grated parmesan and serve."
+          ],
+          "macros": {
+            "protein_g": 50,
+            "carbs_g": 82,
+            "fat_g": 28,
+            "calories": 780
+          },
+          "estimated_cost_usd": 6.0,
+          "prep_time_minutes": 20,
+          "prep_tasks": [
+            {
+              "task": "Thaw shrimp",
+              "prep_day": "Tuesday",
+              "instructions": "Move 8 oz shrimp from freezer to fridge Tuesday night for Wednesday lunch. Or cold-water thaw Wednesday morning (~20 min, sealed, in cold water)."
+            }
+          ]
+        },
+        {
+          "meal_type": "dinner",
+          "recipe_name": "Ground Turkey Taco Skillet with Rice",
+          "ingredients": [
+            {
+              "item": "ground turkey (93%)",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "black beans",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "corn kernels",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "cherry tomatoes",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "cheddar cheese",
+              "quantity": "1",
+              "unit": "oz"
+            },
+            {
+              "item": "avocado",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "cumin",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "chili powder",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Heat 1 tbsp olive oil in a skillet over medium-high. Add 8 oz ground turkey, break apart, cook 6 minutes until browned.",
+            "2. Add 1 tsp cumin, 1 tsp chili powder, and 0.25 tsp salt, stir 1 minute.",
+            "3. Add 0.5 cup black beans and 0.5 cup corn, cook 3 minutes.",
+            "4. Warm 1 cup cooked rice and add to the skillet, tossing 2 minutes.",
+            "5. Remove from heat, top with 1 oz shredded cheddar, halved cherry tomatoes, and sliced avocado.",
+            "6. Serve directly from the skillet."
+          ],
+          "macros": {
+            "protein_g": 54,
+            "carbs_g": 74,
+            "fat_g": 28,
+            "calories": 760
+          },
+          "estimated_cost_usd": 4.6,
+          "prep_time_minutes": 18,
+          "prep_tasks": [
+            {
+              "task": "Thaw ground turkey",
+              "prep_day": "Tuesday",
+              "instructions": "Move 8 oz ground turkey from freezer to fridge Tuesday night for Wednesday dinner. Or cold-water thaw Wednesday afternoon (~40 min, sealed, water changed every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "snack_1",
+          "recipe_name": "Chocolate Greek Yogurt Protein Pudding",
+          "ingredients": [
+            {
+              "item": "Greek yogurt (2%)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "chocolate whey protein powder",
+              "quantity": "0.5",
+              "unit": "scoop"
+            },
+            {
+              "item": "cocoa powder",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "walnuts",
+              "quantity": "2",
+              "unit": "tbsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. In a bowl, whisk 1 cup Greek yogurt with 0.5 scoop chocolate whey, 1 tsp cocoa powder, and 1 tbsp honey until smooth and thick.",
+            "2. Top with 2 tbsp chopped walnuts and serve."
+          ],
+          "macros": {
+            "protein_g": 32,
+            "carbs_g": 30,
+            "fat_g": 12,
+            "calories": 350
+          },
+          "estimated_cost_usd": 1.9,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "snack_2",
+          "recipe_name": "Hard-Boiled Eggs with Banana and Almonds",
+          "ingredients": [
+            {
+              "item": "eggs",
+              "quantity": "3",
+              "unit": "large"
+            },
+            {
+              "item": "banana",
+              "quantity": "1",
+              "unit": "medium"
+            },
+            {
+              "item": "almonds",
+              "quantity": "0.25",
+              "unit": "cup"
+            }
+          ],
+          "recipe_steps": [
+            "1. Place 3 eggs in a saucepan, cover with cold water by 1 inch. Bring to a boil.",
+            "2. Once boiling, cover, remove from heat, let sit 11 minutes.",
+            "3. Transfer eggs to an ice bath 5 minutes, then peel.",
+            "4. Serve eggs with 1 banana and 0.25 cup almonds."
+          ],
+          "macros": {
+            "protein_g": 24,
+            "carbs_g": 36,
+            "fat_g": 28,
+            "calories": 480
+          },
+          "estimated_cost_usd": 1.6,
+          "prep_time_minutes": 15,
+          "prep_tasks": []
+        }
+      ],
+      "daily_totals": {
+        "protein_g": 202,
+        "carbs_g": 270,
+        "fat_g": 122,
+        "calories": 2970,
+        "estimated_cost_usd": 16.9
+      }
+    },
+    {
+      "day": "Thursday",
+      "meals": [
+        {
+          "meal_type": "breakfast",
+          "recipe_name": "Protein Pancakes with Greek Yogurt and Berries",
+          "ingredients": [
+            {
+              "item": "rolled oats",
+              "quantity": "0.75",
+              "unit": "cup"
+            },
+            {
+              "item": "eggs",
+              "quantity": "2",
+              "unit": "large"
+            },
+            {
+              "item": "vanilla whey protein powder",
+              "quantity": "1",
+              "unit": "scoop"
             },
             {
               "item": "banana",
@@ -369,256 +995,240 @@
               "unit": "tsp"
             },
             {
+              "item": "Greek yogurt (2%)",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "mixed berries",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
               "item": "maple syrup",
-              "quantity": "2",
+              "quantity": "1",
               "unit": "tbsp"
             },
             {
               "item": "butter",
               "quantity": "1",
               "unit": "tbsp"
-            },
-            {
-              "item": "vanilla extract",
-              "quantity": "1",
-              "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Blend 1 cup cottage cheese, 3 eggs, 3/4 cup oats, 1 banana, 1 tsp baking powder, and 1 tsp vanilla until smooth. Let batter rest 5 minutes.",
-            "Melt 1 tbsp butter in a nonstick skillet over medium heat (325F).",
-            "Pour 1/4-cup portions of batter, cook 2-3 minutes until bubbles form on top, flip, and cook 1-2 minutes more.",
-            "Repeat with remaining batter (about 6 pancakes). Stack and drizzle with 2 tbsp maple syrup."
+            "1. Blend 0.75 cup oats, 2 eggs, 1 scoop vanilla whey, 1 banana, and 1 tsp baking powder into a smooth batter.",
+            "2. Melt 1 tbsp butter in a nonstick skillet over medium heat.",
+            "3. Pour 1/4-cup portions of batter, cook 2 minutes until bubbles form, flip, cook 1.5 minutes more. Repeat for ~4 pancakes.",
+            "4. Stack pancakes, top with 0.5 cup Greek yogurt, 0.5 cup berries, and 1 tbsp maple syrup."
           ],
           "macros": {
-            "protein_g": 42,
-            "carbs_g": 62,
+            "protein_g": 46,
+            "carbs_g": 70,
             "fat_g": 22,
-            "calories": 610
+            "calories": 660
           },
-          "estimated_cost_usd": 2.5,
-          "prep_time_minutes": 18,
+          "estimated_cost_usd": 2.6,
+          "prep_time_minutes": 15,
           "prep_tasks": []
         },
         {
           "meal_type": "lunch",
-          "recipe_name": "Shrimp Pad Thai",
+          "recipe_name": "Chicken Caesar Wrap with Homemade Tortilla",
           "ingredients": [
             {
-              "item": "shrimp, peeled",
-              "quantity": "8",
+              "item": "chicken breast",
+              "quantity": "7",
               "unit": "oz"
             },
             {
-              "item": "rice noodles",
-              "quantity": "4",
-              "unit": "oz dry"
-            },
-            {
-              "item": "eggs",
+              "item": "romaine lettuce",
               "quantity": "2",
-              "unit": "large"
+              "unit": "cups"
             },
             {
-              "item": "bean sprouts",
-              "quantity": "1",
+              "item": "parmesan cheese",
+              "quantity": "0.25",
               "unit": "cup"
             },
             {
-              "item": "peanuts",
-              "quantity": "3",
-              "unit": "tbsp"
-            },
-            {
-              "item": "fish sauce",
+              "item": "caesar dressing",
               "quantity": "2",
               "unit": "tbsp"
             },
             {
-              "item": "tamarind paste",
-              "quantity": "1",
-              "unit": "tbsp"
+              "item": "all-purpose flour",
+              "quantity": "1.25",
+              "unit": "cups"
             },
             {
-              "item": "brown sugar",
-              "quantity": "1.5",
-              "unit": "tbsp"
-            },
-            {
-              "item": "lime",
-              "quantity": "1",
-              "unit": "each"
-            },
-            {
-              "item": "green onion",
-              "quantity": "2",
-              "unit": "stalks"
-            },
-            {
-              "item": "vegetable oil",
+              "item": "olive oil",
               "quantity": "2",
               "unit": "tbsp"
+            },
+            {
+              "item": "baking powder",
+              "quantity": "0.5",
+              "unit": "tsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Soak 4 oz rice noodles in warm water 20 minutes until pliable; drain.",
-            "Whisk 2 tbsp fish sauce, 1 tbsp tamarind paste, 1.5 tbsp brown sugar, and juice of 1/2 lime into a sauce.",
-            "Heat 2 tbsp oil in a wok over high heat. Add shrimp and stir-fry 2 minutes until pink; push to one side.",
-            "Crack 2 eggs into the empty side, scramble 30 seconds, then combine with shrimp.",
-            "Add drained noodles and the sauce; toss constantly 2-3 minutes until noodles absorb the sauce.",
-            "Add 1 cup bean sprouts and sliced green onion; toss 1 minute.",
-            "Plate and top with 3 tbsp crushed peanuts and remaining lime wedges."
+            "1. Make tortillas: mix 1.25 cups flour, 0.5 tsp salt, 0.5 tsp baking powder, 1 tbsp olive oil, and 0.5 cup warm water into a dough. Knead 3 min, rest 20 min.",
+            "2. Divide into 2 balls, roll each thin. Cook in a dry skillet over medium-high 60 seconds per side until puffed and spotted. Set aside.",
+            "3. Season 7 oz chicken breast with 0.25 tsp salt. Cook in 1 tbsp olive oil over medium-high 6 min per side to 165\u00b0F. Rest, slice.",
+            "4. Toss 2 cups chopped romaine with 2 tbsp caesar dressing and 0.25 cup parmesan.",
+            "5. Fill tortillas with salad and sliced chicken, roll tightly, and serve."
           ],
           "macros": {
-            "protein_g": 45,
-            "carbs_g": 72,
-            "fat_g": 26,
-            "calories": 700
+            "protein_g": 58,
+            "carbs_g": 62,
+            "fat_g": 30,
+            "calories": 760
           },
-          "estimated_cost_usd": 5.5,
+          "estimated_cost_usd": 4.2,
           "prep_time_minutes": 22,
           "prep_tasks": [
             {
-              "task": "Thaw shrimp",
-              "prep_day": "Monday",
-              "instructions": "Move 8 oz shrimp from freezer to fridge Monday night for Tuesday lunch. Or cold-water thaw sealed ~15 min Tuesday morning."
+              "task": "Thaw chicken",
+              "prep_day": "Wednesday",
+              "instructions": "Move 7 oz chicken breast from freezer to fridge Wednesday night for Thursday lunch. Or cold-water thaw Thursday morning (~40 min, sealed, water changed every 30 min)."
+            },
+            {
+              "task": "Make tortilla dough",
+              "prep_day": "Wednesday",
+              "instructions": "Optional time-saver: mix the tortilla dough Wednesday night (1.25 cups flour, 0.5 tsp salt, 0.5 tsp baking powder, 1 tbsp oil, 0.5 cup warm water), wrap tightly, refrigerate. Pull out 20 min before rolling Thursday."
             }
           ]
         },
         {
           "meal_type": "dinner",
-          "recipe_name": "Beef Bibimbap",
+          "recipe_name": "Bison Burgers with Sweet Potato Wedges",
           "ingredients": [
             {
-              "item": "ground beef 90/10",
+              "item": "ground bison",
               "quantity": "8",
               "unit": "oz"
             },
             {
-              "item": "cooked white rice",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "spinach",
-              "quantity": "2",
-              "unit": "cups"
-            },
-            {
-              "item": "carrot",
+              "item": "homemade burger buns",
               "quantity": "1",
+              "unit": "bun"
+            },
+            {
+              "item": "sweet potato",
+              "quantity": "2",
               "unit": "medium"
             },
             {
-              "item": "egg",
+              "item": "cheddar cheese",
               "quantity": "1",
-              "unit": "large"
+              "unit": "oz"
             },
             {
-              "item": "gochujang",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "soy sauce",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "sesame oil",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "garlic",
-              "quantity": "2",
-              "unit": "cloves"
-            },
-            {
-              "item": "sesame seeds",
+              "item": "lettuce",
               "quantity": "1",
+              "unit": "leaf"
+            },
+            {
+              "item": "tomato",
+              "quantity": "2",
+              "unit": "slices"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "paprika",
+              "quantity": "0.5",
+              "unit": "tsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.75",
               "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Heat 1 tbsp sesame oil in a skillet over medium-high. Add ground beef and minced garlic; brown 6 minutes. Add 2 tbsp soy sauce and cook 1 minute; set aside.",
-            "In the same pan, saute julienned carrot 2 minutes; remove. Add spinach and wilt 1 minute; remove.",
-            "Fry 1 egg sunny-side up in remaining oil, 2-3 minutes.",
-            "Arrange 1.5 cups warm rice in a bowl, top with beef, carrot, and spinach in sections.",
-            "Add the fried egg, 2 tbsp gochujang, drizzle 1 tbsp sesame oil, and sprinkle sesame seeds. Mix before eating."
+            "1. Preheat oven to 425\u00b0F. Cut 2 sweet potatoes into wedges, toss with 1 tbsp olive oil, 0.5 tsp paprika, 0.25 tsp salt. Roast 25 min, flipping halfway.",
+            "2. Form 8 oz ground bison into 1 patty, season both sides with 0.5 tsp salt.",
+            "3. Heat 1 tbsp olive oil in a skillet over medium-high. Cook patty 4 min per side to 155\u00b0F.",
+            "4. Top patty with 1 oz cheddar in the last minute to melt.",
+            "5. Toast 1 homemade bun. Assemble with lettuce, 2 tomato slices, and the patty.",
+            "6. Serve burger with sweet potato wedges."
           ],
           "macros": {
-            "protein_g": 46,
-            "carbs_g": 70,
+            "protein_g": 50,
+            "carbs_g": 66,
             "fat_g": 34,
-            "calories": 760
+            "calories": 800
           },
-          "estimated_cost_usd": 4.5,
-          "prep_time_minutes": 22,
+          "estimated_cost_usd": 6.8,
+          "prep_time_minutes": 20,
           "prep_tasks": [
             {
-              "task": "Thaw beef",
-              "prep_day": "Monday",
-              "instructions": "Move 8 oz ground beef from freezer to fridge Monday night for Tuesday dinner (~24 hr)."
+              "task": "Thaw bison",
+              "prep_day": "Wednesday",
+              "instructions": "Move 8 oz ground bison from freezer to fridge Wednesday night for Thursday dinner. Or cold-water thaw Thursday afternoon (~40 min, sealed, water changed every 30 min)."
+            },
+            {
+              "task": "Bake burger buns",
+              "prep_day": "Tuesday",
+              "instructions": "Make-and-freeze: mix 3 cups bread flour, 1 cup warm milk, 1 egg, 3 tbsp sugar, 2.25 tsp yeast, 3 tbsp butter, 1 tsp salt. Knead 8 min, rise 1 hr, shape 8 buns, bake at 375\u00b0F for 15 min Tuesday. Cool, freeze in a bag. Thaw one bun at room temp Thursday morning (~1 hr)."
             }
           ]
         },
         {
           "meal_type": "snack_1",
-          "recipe_name": "Tuna Avocado Rice Cakes",
+          "recipe_name": "Cottage Cheese Toast with Honey and Berries",
           "ingredients": [
             {
-              "item": "canned tuna in water",
-              "quantity": "1",
-              "unit": "can (5 oz)"
+              "item": "cottage cheese (2%)",
+              "quantity": "0.75",
+              "unit": "cup"
             },
             {
-              "item": "avocado",
-              "quantity": "1/2",
-              "unit": "medium"
-            },
-            {
-              "item": "rice cakes",
-              "quantity": "3",
-              "unit": "each"
-            },
-            {
-              "item": "greek yogurt",
+              "item": "homemade sandwich bread",
               "quantity": "2",
-              "unit": "tbsp"
+              "unit": "slices"
             },
             {
-              "item": "lemon juice",
+              "item": "mixed berries",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "honey",
               "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "salt",
-              "quantity": "1/4",
-              "unit": "tsp"
+              "unit": "tbsp"
             }
           ],
           "recipe_steps": [
-            "Drain tuna and mix with 2 tbsp Greek yogurt, 1 tsp lemon juice, and 1/4 tsp salt.",
-            "Mash 1/2 avocado and spread across 3 rice cakes.",
-            "Top each with the tuna mixture and serve."
+            "1. Toast 2 slices homemade bread until golden.",
+            "2. Spread 0.75 cup cottage cheese evenly over both slices.",
+            "3. Top with 0.5 cup berries and drizzle 1 tbsp honey. Serve."
           ],
           "macros": {
-            "protein_g": 34,
-            "carbs_g": 30,
-            "fat_g": 12,
+            "protein_g": 26,
+            "carbs_g": 48,
+            "fat_g": 6,
             "calories": 360
           },
-          "estimated_cost_usd": 2.25,
+          "estimated_cost_usd": 1.7,
           "prep_time_minutes": 6,
           "prep_tasks": []
         },
         {
           "meal_type": "snack_2",
-          "recipe_name": "Chocolate Oat Protein Shake",
+          "recipe_name": "Chocolate Banana Protein Smoothie",
           "ingredients": [
             {
-              "item": "whey protein powder, chocolate",
+              "item": "chocolate whey protein powder",
               "quantity": "1",
               "unit": "scoop"
             },
@@ -628,9 +1238,9 @@
               "unit": "cups"
             },
             {
-              "item": "oats",
-              "quantity": "1/3",
-              "unit": "cup"
+              "item": "banana",
+              "quantity": "1",
+              "unit": "medium"
             },
             {
               "item": "peanut butter",
@@ -638,45 +1248,50 @@
               "unit": "tbsp"
             },
             {
-              "item": "banana",
+              "item": "oats",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "ice",
               "quantity": "1",
-              "unit": "medium"
+              "unit": "cup"
             }
           ],
           "recipe_steps": [
-            "Combine 1.5 cups milk, 1 scoop chocolate protein, 1/3 cup oats, 1 tbsp peanut butter, and 1 banana in a blender.",
-            "Blend 45 seconds until smooth and serve."
+            "1. Add 1.5 cups milk, 1 scoop chocolate whey, 1 banana, 1 tbsp peanut butter, 0.25 cup oats, and 1 cup ice to a blender.",
+            "2. Blend on high 45 seconds until smooth. Drink immediately."
           ],
           "macros": {
-            "protein_g": 42,
-            "carbs_g": 58,
-            "fat_g": 18,
-            "calories": 590
+            "protein_g": 40,
+            "carbs_g": 50,
+            "fat_g": 16,
+            "calories": 510
           },
-          "estimated_cost_usd": 1.6,
+          "estimated_cost_usd": 1.8,
           "prep_time_minutes": 4,
           "prep_tasks": []
         }
       ],
       "daily_totals": {
-        "protein_g": 209,
-        "carbs_g": 292,
-        "fat_g": 112,
-        "calories": 3020,
-        "estimated_cost_usd": 16.35
+        "protein_g": 220,
+        "carbs_g": 296,
+        "fat_g": 108,
+        "calories": 3090,
+        "estimated_cost_usd": 17.1
       }
     },
     {
-      "day": "Wednesday",
+      "day": "Friday",
       "meals": [
         {
           "meal_type": "breakfast",
-          "recipe_name": "Smoked Salmon & Egg Bagel Stack",
+          "recipe_name": "Smoked Salmon and Egg Bagel Stack",
           "ingredients": [
             {
-              "item": "eggs",
-              "quantity": "3",
-              "unit": "large"
+              "item": "homemade bagel",
+              "quantity": "1",
+              "unit": "whole"
             },
             {
               "item": "smoked salmon",
@@ -684,9 +1299,9 @@
               "unit": "oz"
             },
             {
-              "item": "bagel (homemade)",
-              "quantity": "1",
-              "unit": "each"
+              "item": "eggs",
+              "quantity": "2",
+              "unit": "large"
             },
             {
               "item": "cream cheese",
@@ -701,203 +1316,219 @@
             {
               "item": "red onion",
               "quantity": "2",
-              "unit": "tbsp"
+              "unit": "slices"
             },
             {
               "item": "butter",
               "quantity": "1",
-              "unit": "tbsp"
+              "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Slice and toast the homemade bagel; spread each half with 1 tbsp cream cheese.",
-            "Whisk 3 eggs. Melt 1 tbsp butter in a nonstick skillet over medium-low; softly scramble eggs 3 minutes until just set.",
-            "Layer scrambled eggs on bagel halves, top with 3 oz smoked salmon, 1 tbsp capers, and 2 tbsp thinly sliced red onion. Serve open-faced."
+            "1. Slice and toast 1 homemade bagel.",
+            "2. Scramble 2 eggs in 1 tsp butter over medium heat, folding gently 2 minutes until just set.",
+            "3. Spread 2 tbsp cream cheese on both bagel halves.",
+            "4. Layer 3 oz smoked salmon, scrambled eggs, 2 red onion slices, and 1 tbsp capers.",
+            "5. Close bagel and serve."
           ],
           "macros": {
-            "protein_g": 38,
-            "carbs_g": 48,
-            "fat_g": 28,
-            "calories": 620
+            "protein_g": 42,
+            "carbs_g": 52,
+            "fat_g": 26,
+            "calories": 640
           },
-          "estimated_cost_usd": 3.75,
-          "prep_time_minutes": 15,
+          "estimated_cost_usd": 4.2,
+          "prep_time_minutes": 12,
           "prep_tasks": [
             {
-              "task": "Make and freeze bagels",
-              "prep_day": "Sunday",
-              "instructions": "Mix 3 cups bread flour, 1 tsp yeast, 1.5 tsp salt, 1 tbsp sugar, 1 cup warm water. Knead 10 min, proof 1 hr, shape 4 bagels, boil 30 sec/side in water with 1 tbsp honey, bake 425F 20 min. Cool and freeze extras."
-            },
-            {
-              "task": "Thaw bagel",
+              "task": "Bake bagels",
               "prep_day": "Tuesday",
-              "instructions": "Move 1 bagel from freezer to fridge Tuesday night; toast Wednesday morning."
+              "instructions": "Make-and-freeze: mix 4 cups bread flour, 1.5 cups warm water, 2.25 tsp yeast, 1 tbsp sugar, 2 tsp salt. Knead 10 min, rise 1 hr, shape 8 bagels, boil each 60 sec, bake at 425\u00b0F for 20 min Tuesday. Cool, freeze. Thaw one bagel at room temp Friday morning (~45 min) before toasting."
             }
           ]
         },
         {
           "meal_type": "lunch",
-          "recipe_name": "Turkey Pesto Ciabatta with Sweet Potato Wedges",
+          "recipe_name": "Korean Beef Bibimbap",
           "ingredients": [
             {
-              "item": "ground turkey 93/7",
+              "item": "beef sirloin strips",
               "quantity": "7",
               "unit": "oz"
             },
             {
-              "item": "ciabatta roll (homemade)",
+              "item": "white rice (cooked)",
               "quantity": "1",
-              "unit": "each"
-            },
-            {
-              "item": "pesto",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "mozzarella",
-              "quantity": "1/3",
               "unit": "cup"
             },
             {
-              "item": "tomato",
-              "quantity": "1/2",
+              "item": "spinach",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "carrot",
+              "quantity": "1",
               "unit": "medium"
             },
             {
-              "item": "sweet potato",
+              "item": "egg",
               "quantity": "1",
               "unit": "large"
             },
             {
-              "item": "olive oil",
+              "item": "soy sauce",
               "quantity": "2",
               "unit": "tbsp"
             },
             {
-              "item": "salt",
-              "quantity": "1/2",
+              "item": "sesame oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "gochujang",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "2",
+              "unit": "cloves"
+            },
+            {
+              "item": "sesame seeds",
+              "quantity": "1",
               "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Preheat oven to 425F. Cut sweet potato into wedges, toss with 1 tbsp olive oil and 1/4 tsp salt, roast 25 minutes flipping halfway.",
-            "Season 7 oz ground turkey with 1/4 tsp salt, form into a flat patty. Heat 1 tbsp oil in a skillet over medium-high and cook patty 4 minutes per side to 165F.",
-            "Slice ciabatta, spread 2 tbsp pesto, layer turkey patty, 1/3 cup mozzarella, and sliced tomato.",
-            "Return sandwich to skillet 1 minute per side to melt cheese and toast bread. Serve with wedges."
+            "1. Toss 7 oz beef strips with 2 tbsp soy sauce, 2 minced garlic cloves, and 0.5 tbsp sesame oil.",
+            "2. Julienne 1 carrot. Saut\u00e9 in 0.5 tsp sesame oil over medium 3 min, remove.",
+            "3. Wilt 1 cup spinach in the pan 1 minute, remove.",
+            "4. Raise heat to high, sear the beef 3 minutes until caramelized. Remove.",
+            "5. Fry 1 egg sunny-side up in the same pan, 2 minutes.",
+            "6. Plate 1 cup warm rice, arrange beef, carrot, and spinach in sections, top with the fried egg.",
+            "7. Add 1 tbsp gochujang, drizzle 0.5 tbsp sesame oil, sprinkle 1 tsp sesame seeds. Mix before eating."
           ],
           "macros": {
-            "protein_g": 50,
-            "carbs_g": 66,
-            "fat_g": 32,
-            "calories": 760
+            "protein_g": 52,
+            "carbs_g": 72,
+            "fat_g": 26,
+            "calories": 740
           },
-          "estimated_cost_usd": 4.25,
+          "estimated_cost_usd": 5.4,
           "prep_time_minutes": 20,
           "prep_tasks": [
             {
-              "task": "Thaw turkey",
-              "prep_day": "Tuesday",
-              "instructions": "Move 7 oz ground turkey from freezer to fridge Tuesday night for Wednesday lunch."
-            },
-            {
-              "task": "Make and freeze ciabatta",
-              "prep_day": "Sunday",
-              "instructions": "Mix 3 cups bread flour, 1.25 cups water, 1 tsp yeast, 1.5 tsp salt into a wet dough. Bulk ferment 2 hr with folds, shape 4 rolls, bake 450F 22 min. Cool, freeze; thaw Tuesday night."
+              "task": "Thaw beef",
+              "prep_day": "Thursday",
+              "instructions": "Move 7 oz beef sirloin strips from freezer to fridge Thursday night for Friday lunch. Or cold-water thaw Friday morning (~35 min, sealed, water changed every 30 min)."
             }
           ]
         },
         {
           "meal_type": "dinner",
-          "recipe_name": "Pork Tenderloin with Apple Cider Glaze & Mashed Potatoes",
+          "recipe_name": "Blackened Shrimp Tacos with Homemade Tortillas",
           "ingredients": [
             {
-              "item": "pork tenderloin",
+              "item": "shrimp (peeled, deveined)",
               "quantity": "8",
               "unit": "oz"
             },
             {
-              "item": "russet potatoes",
-              "quantity": "2",
+              "item": "all-purpose flour",
+              "quantity": "1.25",
+              "unit": "cups"
+            },
+            {
+              "item": "cabbage",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "avocado",
+              "quantity": "0.5",
               "unit": "medium"
             },
             {
-              "item": "apple cider",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "dijon mustard",
+              "item": "lime",
               "quantity": "1",
-              "unit": "tbsp"
+              "unit": "whole"
             },
             {
-              "item": "butter",
-              "quantity": "3",
-              "unit": "tbsp"
-            },
-            {
-              "item": "milk",
-              "quantity": "1/4",
+              "item": "Greek yogurt (2%)",
+              "quantity": "0.25",
               "unit": "cup"
             },
             {
-              "item": "green beans",
+              "item": "paprika",
               "quantity": "1",
-              "unit": "cup"
+              "unit": "tsp"
+            },
+            {
+              "item": "cumin",
+              "quantity": "0.5",
+              "unit": "tsp"
+            },
+            {
+              "item": "cayenne",
+              "quantity": "0.25",
+              "unit": "tsp"
             },
             {
               "item": "olive oil",
-              "quantity": "1",
+              "quantity": "2",
               "unit": "tbsp"
             },
             {
               "item": "salt",
-              "quantity": "3/4",
+              "quantity": "0.5",
               "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Peel and cube potatoes; boil in salted water 15 minutes until tender. Drain, mash with 2 tbsp butter, 1/4 cup milk, and 1/2 tsp salt.",
-            "Season pork with 1/4 tsp salt. Heat 1 tbsp olive oil in an oven-safe skillet over high; sear pork 2 minutes per side all around.",
-            "Transfer skillet to 400F oven and roast 12 minutes to 145F internal. Rest 5 minutes.",
-            "In the skillet, simmer 1/2 cup apple cider and 1 tbsp Dijon 4 minutes until syrupy; whisk in 1 tbsp butter.",
-            "Steam green beans 4 minutes. Slice pork, drizzle glaze, and serve with mash and beans."
+            "1. Make tortillas: mix 1.25 cups flour, 0.5 tsp salt, 1 tbsp olive oil, 0.5 cup warm water into a dough. Knead 3 min, rest 20 min. Divide into 3, roll thin, cook in a dry skillet 60 sec per side. Keep warm.",
+            "2. Mix 0.25 cup Greek yogurt with juice of 0.5 lime and pinch of salt for crema.",
+            "3. Pat 8 oz shrimp dry, toss with 1 tsp paprika, 0.5 tsp cumin, 0.25 tsp cayenne, 0.25 tsp salt.",
+            "4. Heat 1 tbsp olive oil over medium-high, cook shrimp 1.5 min per side until blackened and opaque.",
+            "5. Shred 1 cup cabbage, slice 0.5 avocado.",
+            "6. Fill tortillas with shrimp, cabbage, avocado, and crema. Squeeze remaining lime and serve."
           ],
           "macros": {
-            "protein_g": 52,
-            "carbs_g": 62,
-            "fat_g": 30,
+            "protein_g": 48,
+            "carbs_g": 74,
+            "fat_g": 28,
             "calories": 740
           },
-          "estimated_cost_usd": 5.5,
-          "prep_time_minutes": 25,
+          "estimated_cost_usd": 6.2,
+          "prep_time_minutes": 24,
           "prep_tasks": [
             {
-              "task": "Thaw pork",
-              "prep_day": "Tuesday",
-              "instructions": "Move 8 oz pork tenderloin from freezer to fridge Tuesday night for Wednesday dinner (~24 hr)."
+              "task": "Thaw shrimp",
+              "prep_day": "Thursday",
+              "instructions": "Move 8 oz shrimp from freezer to fridge Thursday night for Friday dinner. Or cold-water thaw Friday afternoon (~20 min, sealed, cold water)."
             }
           ]
         },
         {
           "meal_type": "snack_1",
-          "recipe_name": "Cottage Cheese Pineapple Crunch",
+          "recipe_name": "Greek Yogurt Parfait with Granola and Honey",
           "ingredients": [
             {
-              "item": "cottage cheese",
+              "item": "Greek yogurt (2%)",
               "quantity": "1",
               "unit": "cup"
             },
             {
-              "item": "pineapple chunks",
-              "quantity": "3/4",
+              "item": "granola",
+              "quantity": "0.33",
               "unit": "cup"
             },
             {
-              "item": "walnuts",
-              "quantity": "2",
-              "unit": "tbsp"
+              "item": "mixed berries",
+              "quantity": "0.5",
+              "unit": "cup"
             },
             {
               "item": "honey",
@@ -906,25 +1537,26 @@
             }
           ],
           "recipe_steps": [
-            "Spoon 1 cup cottage cheese into a bowl.",
-            "Top with 3/4 cup pineapple, 2 tbsp chopped walnuts, and drizzle 1 tbsp honey. Serve."
+            "1. Layer half the yogurt in a glass, then half the granola and berries.",
+            "2. Repeat layers with remaining yogurt, granola, and berries.",
+            "3. Drizzle 1 tbsp honey on top and serve."
           ],
           "macros": {
-            "protein_g": 28,
-            "carbs_g": 34,
-            "fat_g": 14,
+            "protein_g": 26,
+            "carbs_g": 48,
+            "fat_g": 8,
             "calories": 370
           },
-          "estimated_cost_usd": 1.75,
+          "estimated_cost_usd": 2.1,
           "prep_time_minutes": 4,
           "prep_tasks": []
         },
         {
           "meal_type": "snack_2",
-          "recipe_name": "Vanilla Almond Protein Shake",
+          "recipe_name": "Vanilla Almond Protein Shake with Oats",
           "ingredients": [
             {
-              "item": "whey protein powder, vanilla",
+              "item": "vanilla whey protein powder",
               "quantity": "1",
               "unit": "scoop"
             },
@@ -935,363 +1567,29 @@
             },
             {
               "item": "almond butter",
-              "quantity": "2",
+              "quantity": "1.5",
               "unit": "tbsp"
             },
             {
               "item": "oats",
-              "quantity": "1/3",
+              "quantity": "0.25",
               "unit": "cup"
             },
             {
-              "item": "honey",
+              "item": "ice",
               "quantity": "1",
-              "unit": "tbsp"
+              "unit": "cup"
             }
           ],
           "recipe_steps": [
-            "Blend 1.5 cups milk, 1 scoop vanilla protein, 2 tbsp almond butter, 1/3 cup oats, and 1 tbsp honey 45 seconds. Serve."
+            "1. Add 1.5 cups milk, 1 scoop vanilla whey, 1.5 tbsp almond butter, 0.25 cup oats, and 1 cup ice to a blender.",
+            "2. Blend on high 45 seconds until smooth. Drink immediately."
           ],
           "macros": {
-            "protein_g": 42,
-            "carbs_g": 50,
-            "fat_g": 22,
-            "calories": 600
-          },
-          "estimated_cost_usd": 1.75,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        }
-      ],
-      "daily_totals": {
-        "protein_g": 210,
-        "carbs_g": 260,
-        "fat_g": 126,
-        "calories": 3090,
-        "estimated_cost_usd": 17.0
-      }
-    },
-    {
-      "day": "Thursday",
-      "meals": [
-        {
-          "meal_type": "breakfast",
-          "recipe_name": "Shakshuka with Feta and Toast",
-          "ingredients": [
-            {
-              "item": "eggs",
-              "quantity": "4",
-              "unit": "large"
-            },
-            {
-              "item": "crushed tomatoes",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "bell pepper",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "onion",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "feta cheese",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "cumin",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "paprika",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "bread (homemade)",
-              "quantity": "2",
-              "unit": "slices"
-            }
-          ],
-          "recipe_steps": [
-            "Heat 1 tbsp olive oil in a skillet over medium. Saute diced onion and bell pepper 5 minutes.",
-            "Add 1 tsp cumin and 1 tsp paprika; cook 30 seconds. Add 1 cup crushed tomatoes and simmer 5 minutes.",
-            "Make 4 wells in the sauce and crack in eggs. Cover and cook 6-8 minutes until whites set.",
-            "Crumble 1/4 cup feta over top. Serve with 2 slices toasted homemade bread."
-          ],
-          "macros": {
-            "protein_g": 32,
-            "carbs_g": 46,
-            "fat_g": 30,
-            "calories": 590
-          },
-          "estimated_cost_usd": 3.0,
-          "prep_time_minutes": 20,
-          "prep_tasks": [
-            {
-              "task": "Make and freeze bread",
-              "prep_day": "Sunday",
-              "instructions": "Mix 3.5 cups bread flour, 1.25 cups water, 2 tsp salt, 1 tsp yeast. Knead 10 min, proof 90 min, shape loaf, proof 45 min, bake 450F 35 min. Cool, slice, freeze; toast slices from frozen Thursday."
-            }
-          ]
-        },
-        {
-          "meal_type": "lunch",
-          "recipe_name": "Chicken Shawarma Bowl",
-          "ingredients": [
-            {
-              "item": "chicken thigh, boneless skinless",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "cooked white rice",
-              "quantity": "1.25",
-              "unit": "cups"
-            },
-            {
-              "item": "cucumber",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "tomato",
-              "quantity": "1",
-              "unit": "medium"
-            },
-            {
-              "item": "greek yogurt",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "garlic",
-              "quantity": "1",
-              "unit": "clove"
-            },
-            {
-              "item": "cumin",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "paprika",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "turmeric",
-              "quantity": "1/2",
-              "unit": "tsp"
-            },
-            {
-              "item": "lemon",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "2",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Toss chicken with 1 tbsp olive oil, 1 tsp cumin, 1 tsp paprika, 1/2 tsp turmeric, and lemon juice.",
-            "Heat 1 tbsp oil in a skillet over medium-high; cook chicken 6-7 minutes until charred and 165F. Slice.",
-            "Mix 1/4 cup Greek yogurt with grated garlic clove for sauce.",
-            "Build bowl: 1.25 cups rice, sliced chicken, diced cucumber and tomato, drizzle garlic yogurt sauce."
-          ],
-          "macros": {
-            "protein_g": 50,
-            "carbs_g": 62,
-            "fat_g": 30,
-            "calories": 720
-          },
-          "estimated_cost_usd": 4.0,
-          "prep_time_minutes": 20,
-          "prep_tasks": [
-            {
-              "task": "Thaw + marinate chicken",
-              "prep_day": "Wednesday",
-              "instructions": "Move 8 oz chicken thighs from freezer to fridge Wednesday night; combine with spices/oil/lemon in a bag and marinate overnight (12-16 hr) for Thursday lunch."
-            },
-            {
-              "task": "Cook rice base",
-              "prep_day": "Wednesday",
-              "instructions": "Cook 2 cups rice with 3 cups water Wednesday; refrigerate for Thursday-Friday use."
-            }
-          ]
-        },
-        {
-          "meal_type": "dinner",
-          "recipe_name": "Bison Chili with Cornbread",
-          "ingredients": [
-            {
-              "item": "ground bison",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "kidney beans",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "crushed tomatoes",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "onion",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "chili powder",
-              "quantity": "1.5",
-              "unit": "tbsp"
-            },
-            {
-              "item": "cornmeal",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "flour",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "egg",
-              "quantity": "1",
-              "unit": "large"
-            },
-            {
-              "item": "milk",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "butter",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "baking powder",
-              "quantity": "1",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Preheat oven to 400F. For cornbread, mix 3/4 cup cornmeal, 1/2 cup flour, 1 tsp baking powder, 1 egg, 1/2 cup milk, 2 tbsp melted butter. Pour into greased pan, bake 18 minutes.",
-            "Brown 8 oz bison with diced onion in a pot over medium-high 6 minutes.",
-            "Add 1.5 tbsp chili powder, 1 cup crushed tomatoes, and 1 cup kidney beans. Simmer 12 minutes, stirring.",
-            "Serve chili hot with a wedge of fresh cornbread."
-          ],
-          "macros": {
-            "protein_g": 48,
-            "carbs_g": 74,
-            "fat_g": 34,
-            "calories": 780
-          },
-          "estimated_cost_usd": 6.5,
-          "prep_time_minutes": 25,
-          "prep_tasks": [
-            {
-              "task": "Thaw bison",
-              "prep_day": "Wednesday",
-              "instructions": "Move 8 oz ground bison from freezer to fridge Wednesday night for Thursday dinner (~24 hr)."
-            }
-          ]
-        },
-        {
-          "meal_type": "snack_1",
-          "recipe_name": "Greek Yogurt Honey Nut Bowl",
-          "ingredients": [
-            {
-              "item": "greek yogurt",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "almonds",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "honey",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "banana",
-              "quantity": "1",
-              "unit": "medium"
-            }
-          ],
-          "recipe_steps": [
-            "Add 1.5 cups Greek yogurt to a bowl.",
-            "Top with sliced banana, 2 tbsp almonds, and 1 tbsp honey. Serve."
-          ],
-          "macros": {
-            "protein_g": 30,
-            "carbs_g": 44,
-            "fat_g": 12,
-            "calories": 400
-          },
-          "estimated_cost_usd": 1.75,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        },
-        {
-          "meal_type": "snack_2",
-          "recipe_name": "Berry Protein Smoothie",
-          "ingredients": [
-            {
-              "item": "whey protein powder, vanilla",
-              "quantity": "1",
-              "unit": "scoop"
-            },
-            {
-              "item": "mixed berries",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "whole milk",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "oats",
-              "quantity": "1/3",
-              "unit": "cup"
-            },
-            {
-              "item": "peanut butter",
-              "quantity": "1",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Blend 1.5 cups milk, 1 scoop protein, 1 cup berries, 1/3 cup oats, and 1 tbsp peanut butter 45 seconds. Serve."
-          ],
-          "macros": {
-            "protein_g": 42,
-            "carbs_g": 52,
-            "fat_g": 16,
-            "calories": 560
+            "protein_g": 40,
+            "carbs_g": 42,
+            "fat_g": 20,
+            "calories": 500
           },
           "estimated_cost_usd": 1.9,
           "prep_time_minutes": 4,
@@ -1299,22 +1597,22 @@
         }
       ],
       "daily_totals": {
-        "protein_g": 202,
-        "carbs_g": 278,
-        "fat_g": 122,
-        "calories": 3050,
-        "estimated_cost_usd": 17.15
+        "protein_g": 208,
+        "carbs_g": 288,
+        "fat_g": 108,
+        "calories": 2990,
+        "estimated_cost_usd": 19.8
       }
     },
     {
-      "day": "Friday",
+      "day": "Saturday",
       "meals": [
         {
           "meal_type": "breakfast",
-          "recipe_name": "Steak and Eggs with Hash Browns",
+          "recipe_name": "Steak and Eggs with Home Fries",
           "ingredients": [
             {
-              "item": "sirloin steak",
+              "item": "beef sirloin",
               "quantity": "6",
               "unit": "oz"
             },
@@ -1329,308 +1627,9 @@
               "unit": "large"
             },
             {
-              "item": "butter",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "salt",
-              "quantity": "1/2",
-              "unit": "tsp"
-            },
-            {
-              "item": "black pepper",
-              "quantity": "1/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Grate potato, squeeze out moisture. Heat 1 tbsp oil in a skillet over medium-high, press potato into a patty and cook 4 minutes per side until crisp; season with salt.",
-            "Season steak with salt and pepper. In a hot skillet with 1 tbsp butter, sear 3 minutes per side for medium; rest 5 minutes and slice.",
-            "Fry 3 eggs in 1 tbsp butter to preference. Plate steak, eggs, and hash browns."
-          ],
-          "macros": {
-            "protein_g": 48,
-            "carbs_g": 40,
-            "fat_g": 38,
-            "calories": 700
-          },
-          "estimated_cost_usd": 5.5,
-          "prep_time_minutes": 22,
-          "prep_tasks": [
-            {
-              "task": "Thaw steak",
-              "prep_day": "Thursday",
-              "instructions": "Move 6 oz sirloin from freezer to fridge Thursday night for Friday breakfast (~24 hr)."
-            }
-          ]
-        },
-        {
-          "meal_type": "lunch",
-          "recipe_name": "Spaghetti Aglio e Olio with Shrimp",
-          "ingredients": [
-            {
-              "item": "spaghetti (store-bought)",
-              "quantity": "4",
-              "unit": "oz dry"
-            },
-            {
-              "item": "shrimp, peeled",
-              "quantity": "7",
-              "unit": "oz"
-            },
-            {
-              "item": "garlic",
-              "quantity": "4",
-              "unit": "cloves"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "3",
-              "unit": "tbsp"
-            },
-            {
-              "item": "red pepper flakes",
-              "quantity": "1/2",
-              "unit": "tsp"
-            },
-            {
-              "item": "parsley",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "parmesan",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "lemon",
-              "quantity": "1/2",
-              "unit": "each"
-            }
-          ],
-          "recipe_steps": [
-            "Boil spaghetti in salted water per package (~9 min). Reserve 1/2 cup pasta water; drain.",
-            "Heat 3 tbsp olive oil over medium, add thinly sliced garlic and 1/2 tsp red pepper flakes; cook 2 minutes until fragrant, not browned.",
-            "Add shrimp and cook 3 minutes until pink.",
-            "Add pasta, a splash of pasta water, and toss 1 minute to emulsify. Off heat, add parsley, lemon juice, and 1/4 cup parmesan. Serve."
-          ],
-          "macros": {
-            "protein_g": 46,
-            "carbs_g": 68,
-            "fat_g": 30,
-            "calories": 720
-          },
-          "estimated_cost_usd": 5.25,
-          "prep_time_minutes": 18,
-          "prep_tasks": [
-            {
-              "task": "Thaw shrimp",
-              "prep_day": "Thursday",
-              "instructions": "Move 7 oz shrimp from freezer to fridge Thursday night for Friday lunch. Or cold-water thaw ~15 min Friday morning."
-            }
-          ]
-        },
-        {
-          "meal_type": "dinner",
-          "recipe_name": "Miso-Glazed Salmon with Soba Noodles",
-          "ingredients": [
-            {
-              "item": "salmon fillet",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "soba noodles",
-              "quantity": "4",
-              "unit": "oz dry"
-            },
-            {
-              "item": "white miso",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "mirin",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "soy sauce",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "honey",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "bok choy",
-              "quantity": "2",
-              "unit": "cups"
-            },
-            {
-              "item": "sesame oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "green onion",
-              "quantity": "2",
-              "unit": "stalks"
-            }
-          ],
-          "recipe_steps": [
-            "Preheat broiler. Mix 2 tbsp miso, 1 tbsp mirin, 1 tbsp soy sauce, 1 tbsp honey. Brush over salmon.",
-            "Broil salmon 8-10 minutes on a lined tray until glaze caramelizes and fish flakes.",
-            "Boil soba per package (~5 min), drain, toss with 1 tbsp sesame oil.",
-            "Saute bok choy 3 minutes in a hot pan. Plate soba, salmon, bok choy; garnish with sliced green onion."
-          ],
-          "macros": {
-            "protein_g": 48,
-            "carbs_g": 66,
-            "fat_g": 28,
-            "calories": 720
-          },
-          "estimated_cost_usd": 6.25,
-          "prep_time_minutes": 22,
-          "prep_tasks": [
-            {
-              "task": "Thaw salmon",
-              "prep_day": "Thursday",
-              "instructions": "Move 8 oz salmon from freezer to fridge Thursday night for Friday dinner (~24 hr)."
-            }
-          ]
-        },
-        {
-          "meal_type": "snack_1",
-          "recipe_name": "Cottage Cheese Toast with Tomato",
-          "ingredients": [
-            {
-              "item": "cottage cheese",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "bread (homemade)",
-              "quantity": "2",
-              "unit": "slices"
-            },
-            {
-              "item": "tomato",
-              "quantity": "1",
-              "unit": "small"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "black pepper",
-              "quantity": "1/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Toast 2 slices homemade bread.",
-            "Spread 1 cup cottage cheese over toast, top with sliced tomato, drizzle 1 tbsp olive oil, and season with pepper. Serve."
-          ],
-          "macros": {
-            "protein_g": 30,
-            "carbs_g": 36,
-            "fat_g": 16,
-            "calories": 400
-          },
-          "estimated_cost_usd": 1.5,
-          "prep_time_minutes": 5,
-          "prep_tasks": []
-        },
-        {
-          "meal_type": "snack_2",
-          "recipe_name": "Mocha Protein Shake",
-          "ingredients": [
-            {
-              "item": "whey protein powder, chocolate",
-              "quantity": "1",
-              "unit": "scoop"
-            },
-            {
-              "item": "whole milk",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "cold brew coffee",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "banana",
-              "quantity": "1",
+              "item": "bell pepper",
+              "quantity": "0.5",
               "unit": "medium"
-            },
-            {
-              "item": "peanut butter",
-              "quantity": "1",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Blend 1.5 cups milk, 1/2 cup cold brew, 1 scoop chocolate protein, 1 banana, and 1 tbsp peanut butter 45 seconds. Serve."
-          ],
-          "macros": {
-            "protein_g": 42,
-            "carbs_g": 44,
-            "fat_g": 16,
-            "calories": 540
-          },
-          "estimated_cost_usd": 1.75,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        }
-      ],
-      "daily_totals": {
-        "protein_g": 214,
-        "carbs_g": 254,
-        "fat_g": 128,
-        "calories": 3080,
-        "estimated_cost_usd": 20.25
-      }
-    },
-    {
-      "day": "Saturday",
-      "meals": [
-        {
-          "meal_type": "breakfast",
-          "recipe_name": "Ham, Egg and Cheese Breakfast Sandwich",
-          "ingredients": [
-            {
-              "item": "eggs",
-              "quantity": "3",
-              "unit": "large"
-            },
-            {
-              "item": "ham",
-              "quantity": "3",
-              "unit": "oz"
-            },
-            {
-              "item": "english muffin (homemade)",
-              "quantity": "1",
-              "unit": "each"
-            },
-            {
-              "item": "cheddar",
-              "quantity": "1/3",
-              "unit": "cup"
             },
             {
               "item": "butter",
@@ -1638,478 +1637,209 @@
               "unit": "tbsp"
             },
             {
-              "item": "avocado",
-              "quantity": "1/2",
-              "unit": "medium"
-            }
-          ],
-          "recipe_steps": [
-            "Split and toast the homemade english muffin.",
-            "In a buttered skillet over medium, fry 3 eggs; sear 3 oz ham 1 minute per side.",
-            "Layer eggs, ham, and 1/3 cup cheddar on muffin (residual heat melts cheese); add sliced 1/2 avocado. Serve."
-          ],
-          "macros": {
-            "protein_g": 38,
-            "carbs_g": 34,
-            "fat_g": 34,
-            "calories": 600
-          },
-          "estimated_cost_usd": 3.25,
-          "prep_time_minutes": 15,
-          "prep_tasks": [
-            {
-              "task": "Make and freeze english muffins",
-              "prep_day": "Sunday",
-              "instructions": "Mix 2 cups flour, 1 tsp yeast, 1 tsp salt, 1 tbsp sugar, 3/4 cup warm milk, 1 tbsp butter. Knead 8 min, proof 1 hr, cut rounds, dust with cornmeal, cook on griddle 6 min/side. Cool, freeze; toast from frozen Saturday."
-            }
-          ]
-        },
-        {
-          "meal_type": "lunch",
-          "recipe_name": "Korean Beef Lettuce Wraps with Rice",
-          "ingredients": [
-            {
-              "item": "ground beef 90/10",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "cooked white rice",
-              "quantity": "1.25",
-              "unit": "cups"
-            },
-            {
-              "item": "butter lettuce",
-              "quantity": "6",
-              "unit": "leaves"
-            },
-            {
-              "item": "soy sauce",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "brown sugar",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "garlic",
-              "quantity": "2",
-              "unit": "cloves"
-            },
-            {
-              "item": "ginger",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "sesame oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "gochujang",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "green onion",
-              "quantity": "2",
-              "unit": "stalks"
-            }
-          ],
-          "recipe_steps": [
-            "Heat 1 tbsp sesame oil over medium-high; brown 8 oz beef with minced garlic and 1 tsp ginger 6 minutes.",
-            "Add 2 tbsp soy sauce, 1 tbsp brown sugar, and 1 tbsp gochujang; simmer 2 minutes until glazed.",
-            "Serve beef with 1.25 cups rice and butter lettuce leaves for wrapping; garnish with green onion."
-          ],
-          "macros": {
-            "protein_g": 48,
-            "carbs_g": 62,
-            "fat_g": 30,
-            "calories": 720
-          },
-          "estimated_cost_usd": 4.5,
-          "prep_time_minutes": 18,
-          "prep_tasks": [
-            {
-              "task": "Thaw beef",
-              "prep_day": "Friday",
-              "instructions": "Move 8 oz ground beef from freezer to fridge Friday night for Saturday lunch (~24 hr)."
-            },
-            {
-              "task": "Cook rice base",
-              "prep_day": "Friday",
-              "instructions": "Cook 2 cups rice with 3 cups water Friday; refrigerate for Saturday-Sunday use."
-            }
-          ]
-        },
-        {
-          "meal_type": "dinner",
-          "recipe_name": "Herb-Roasted Chicken Thighs with Couscous and Zucchini",
-          "ingredients": [
-            {
-              "item": "chicken thigh, bone-in",
-              "quantity": "10",
-              "unit": "oz"
-            },
-            {
-              "item": "couscous",
-              "quantity": "3/4",
-              "unit": "cup dry"
-            },
-            {
-              "item": "zucchini",
-              "quantity": "1",
-              "unit": "medium"
-            },
-            {
-              "item": "garlic",
-              "quantity": "2",
-              "unit": "cloves"
-            },
-            {
-              "item": "rosemary",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
               "item": "olive oil",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
-              "item": "lemon",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "salt",
-              "quantity": "3/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Preheat oven to 425F. Rub chicken with 1 tbsp olive oil, minced garlic, 1 tsp rosemary, 1/2 tsp salt.",
-            "Sear chicken skin-side down in an oven-safe skillet 4 minutes, flip, then roast 20 minutes to 175F.",
-            "Boil 3/4 cup water, stir in 3/4 cup couscous off heat, cover 5 minutes, fluff.",
-            "Saute sliced zucchini in 1 tbsp oil 4 minutes with a pinch of salt. Squeeze lemon over chicken and serve with couscous and zucchini."
-          ],
-          "macros": {
-            "protein_g": 50,
-            "carbs_g": 58,
-            "fat_g": 34,
-            "calories": 740
-          },
-          "estimated_cost_usd": 4.75,
-          "prep_time_minutes": 25,
-          "prep_tasks": [
-            {
-              "task": "Thaw chicken",
-              "prep_day": "Friday",
-              "instructions": "Move 10 oz bone-in chicken thighs from freezer to fridge Friday night for Saturday dinner (~24 hr)."
-            }
-          ]
-        },
-        {
-          "meal_type": "snack_1",
-          "recipe_name": "Greek Yogurt Granola Parfait",
-          "ingredients": [
-            {
-              "item": "greek yogurt",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "granola",
-              "quantity": "1/3",
-              "unit": "cup"
-            },
-            {
-              "item": "mixed berries",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "honey",
-              "quantity": "1",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Layer 1.5 cups Greek yogurt, 3/4 cup berries, and 1/3 cup granola in a glass.",
-            "Drizzle 1 tbsp honey and serve."
-          ],
-          "macros": {
-            "protein_g": 30,
-            "carbs_g": 48,
-            "fat_g": 10,
-            "calories": 400
-          },
-          "estimated_cost_usd": 2.0,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        },
-        {
-          "meal_type": "snack_2",
-          "recipe_name": "Strawberry Banana Protein Shake",
-          "ingredients": [
-            {
-              "item": "whey protein powder, vanilla",
-              "quantity": "1",
-              "unit": "scoop"
-            },
-            {
-              "item": "whole milk",
-              "quantity": "1.5",
-              "unit": "cups"
-            },
-            {
-              "item": "strawberries",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "banana",
-              "quantity": "1",
-              "unit": "medium"
-            },
-            {
-              "item": "almond butter",
-              "quantity": "2",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Blend 1.5 cups milk, 1 scoop protein, 1 cup strawberries, 1 banana, and 2 tbsp almond butter 45 seconds. Serve."
-          ],
-          "macros": {
-            "protein_g": 42,
-            "carbs_g": 52,
-            "fat_g": 22,
-            "calories": 620
-          },
-          "estimated_cost_usd": 2.0,
-          "prep_time_minutes": 4,
-          "prep_tasks": []
-        }
-      ],
-      "daily_totals": {
-        "protein_g": 208,
-        "carbs_g": 254,
-        "fat_g": 130,
-        "calories": 3080,
-        "estimated_cost_usd": 16.5
-      }
-    },
-    {
-      "day": "Sunday",
-      "meals": [
-        {
-          "meal_type": "breakfast",
-          "recipe_name": "Savory Oatmeal with Fried Egg and Turkey Bacon",
-          "ingredients": [
-            {
-              "item": "rolled oats",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "eggs",
-              "quantity": "2",
-              "unit": "large"
-            },
-            {
-              "item": "turkey bacon",
-              "quantity": "3",
-              "unit": "strips"
-            },
-            {
-              "item": "cheddar",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "spinach",
-              "quantity": "1",
-              "unit": "cup"
-            },
-            {
-              "item": "butter",
-              "quantity": "1",
-              "unit": "tbsp"
-            },
-            {
-              "item": "salt",
-              "quantity": "1/4",
-              "unit": "tsp"
-            }
-          ],
-          "recipe_steps": [
-            "Cook 3/4 cup oats with 1.5 cups water and 1/4 tsp salt over medium 5 minutes; stir in 1/4 cup cheddar and 1 cup spinach until wilted.",
-            "In a skillet, cook 3 turkey bacon strips 3 minutes per side until crisp.",
-            "Fry 2 eggs in 1 tbsp butter. Top oatmeal with bacon and eggs. Serve."
-          ],
-          "macros": {
-            "protein_g": 34,
-            "carbs_g": 48,
-            "fat_g": 26,
-            "calories": 560
-          },
-          "estimated_cost_usd": 2.5,
-          "prep_time_minutes": 15,
-          "prep_tasks": []
-        },
-        {
-          "meal_type": "lunch",
-          "recipe_name": "Turkey and Bean Quesadilla",
-          "ingredients": [
-            {
-              "item": "ground turkey 93/7",
-              "quantity": "7",
-              "unit": "oz"
-            },
-            {
-              "item": "flour tortilla (homemade)",
-              "quantity": "2",
-              "unit": "10-inch"
-            },
-            {
-              "item": "black beans",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "shredded cheddar",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "salsa",
-              "quantity": "1/4",
-              "unit": "cup"
-            },
-            {
-              "item": "cumin",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "chili powder",
-              "quantity": "1",
-              "unit": "tsp"
-            },
-            {
-              "item": "olive oil",
-              "quantity": "1",
-              "unit": "tbsp"
-            }
-          ],
-          "recipe_steps": [
-            "Cook 7 oz turkey with 1 tbsp oil, 1 tsp cumin, and 1 tsp chili powder over medium-high 6 minutes; stir in 1/2 cup black beans.",
-            "Lay a tortilla in a dry skillet over medium, sprinkle half the cheddar, add turkey-bean mix, remaining cheddar, and top with second tortilla.",
-            "Cook 2-3 minutes per side until golden and cheese melts. Slice into wedges and serve with salsa."
-          ],
-          "macros": {
-            "protein_g": 52,
-            "carbs_g": 66,
-            "fat_g": 34,
-            "calories": 780
-          },
-          "estimated_cost_usd": 4.25,
-          "prep_time_minutes": 18,
-          "prep_tasks": [
-            {
-              "task": "Thaw turkey",
-              "prep_day": "Saturday",
-              "instructions": "Move 7 oz ground turkey from freezer to fridge Saturday night for Sunday lunch (~24 hr)."
-            },
-            {
-              "task": "Roll tortillas",
-              "prep_day": "Saturday",
-              "instructions": "Use reserved tortilla dough from Sunday's earlier batch; roll two 10-inch rounds and cook on dry skillet 45 sec/side Sunday, or use frozen extras."
-            }
-          ]
-        },
-        {
-          "meal_type": "dinner",
-          "recipe_name": "Garlic Butter Shrimp and Grits",
-          "ingredients": [
-            {
-              "item": "shrimp, peeled",
-              "quantity": "8",
-              "unit": "oz"
-            },
-            {
-              "item": "stone-ground grits",
-              "quantity": "3/4",
-              "unit": "cup"
-            },
-            {
-              "item": "cheddar",
-              "quantity": "1/2",
-              "unit": "cup"
-            },
-            {
-              "item": "butter",
-              "quantity": "3",
-              "unit": "tbsp"
-            },
-            {
-              "item": "garlic",
-              "quantity": "3",
-              "unit": "cloves"
-            },
-            {
-              "item": "lemon",
-              "quantity": "1/2",
-              "unit": "each"
-            },
-            {
-              "item": "parsley",
               "quantity": "2",
               "unit": "tbsp"
             },
             {
               "item": "paprika",
-              "quantity": "1/2",
+              "quantity": "0.5",
               "unit": "tsp"
             },
             {
-              "item": "milk",
-              "quantity": "1",
-              "unit": "cup"
+              "item": "salt",
+              "quantity": "0.75",
+              "unit": "tsp"
             }
           ],
           "recipe_steps": [
-            "Bring 1 cup milk and 1.5 cups water to a boil, whisk in 3/4 cup grits, reduce to low, cook 18 minutes stirring often; stir in 1/2 cup cheddar and 1 tbsp butter.",
-            "Melt 2 tbsp butter in a skillet over medium-high, add minced garlic and 1/2 tsp paprika 30 seconds.",
-            "Add shrimp and cook 3 minutes until pink; finish with lemon juice and parsley.",
-            "Spoon grits into a bowl, top with garlic butter shrimp and pan sauce. Serve."
+            "1. Dice 1 potato and 0.5 bell pepper. Heat 1 tbsp olive oil in a skillet over medium-high, add potato, cook 10 min stirring occasionally.",
+            "2. Add bell pepper, 0.5 tsp paprika, 0.25 tsp salt, cook 4 more min until crisp. Remove.",
+            "3. Season 6 oz sirloin with 0.5 tsp salt. Sear in 1 tbsp olive oil over high heat 3 min per side to 130\u00b0F. Rest 5 min, slice.",
+            "4. Fry 3 eggs in 1 tbsp butter over medium, 3 minutes for runny yolks.",
+            "5. Plate steak, eggs, and home fries together."
           ],
           "macros": {
-            "protein_g": 48,
-            "carbs_g": 60,
-            "fat_g": 34,
-            "calories": 740
+            "protein_g": 54,
+            "carbs_g": 42,
+            "fat_g": 38,
+            "calories": 720
           },
-          "estimated_cost_usd": 6.5,
+          "estimated_cost_usd": 5.6,
+          "prep_time_minutes": 22,
+          "prep_tasks": [
+            {
+              "task": "Thaw sirloin",
+              "prep_day": "Friday",
+              "instructions": "Move 6 oz beef sirloin from freezer to fridge Friday night for Saturday breakfast. Or cold-water thaw Saturday morning (~30 min, sealed, water changed every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "lunch",
+          "recipe_name": "Seared Tuna Poke Bowl",
+          "ingredients": [
+            {
+              "item": "ahi tuna steak",
+              "quantity": "7",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "avocado",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "cucumber",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "carrot",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "soy sauce",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "sesame oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "rice vinegar",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "sesame seeds",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "green onion",
+              "quantity": "1",
+              "unit": "stalk"
+            }
+          ],
+          "recipe_steps": [
+            "1. Mix 2 tbsp soy sauce, 0.5 tbsp sesame oil, and 1 tbsp rice vinegar for the sauce.",
+            "2. Pat 7 oz tuna dry. Heat 0.5 tbsp sesame oil in a skillet over high heat until smoking.",
+            "3. Sear tuna 1 minute per side for a rare center. Rest 2 min, slice thin.",
+            "4. Slice 0.5 cucumber, julienne 0.5 carrot, slice 0.5 avocado.",
+            "5. Build bowl: 1 cup warm rice, then cucumber, carrot, avocado, and sliced tuna.",
+            "6. Drizzle sauce, sprinkle 1 tsp sesame seeds and sliced green onion. Serve."
+          ],
+          "macros": {
+            "protein_g": 54,
+            "carbs_g": 66,
+            "fat_g": 22,
+            "calories": 700
+          },
+          "estimated_cost_usd": 7.2,
+          "prep_time_minutes": 18,
+          "prep_tasks": [
+            {
+              "task": "Thaw tuna",
+              "prep_day": "Friday",
+              "instructions": "Move 7 oz ahi tuna steak from freezer to fridge Friday night for Saturday lunch. Or cold-water thaw Saturday morning (~30 min, sealed, cold water)."
+            }
+          ]
+        },
+        {
+          "meal_type": "dinner",
+          "recipe_name": "Chicken Parmesan over Linguine",
+          "ingredients": [
+            {
+              "item": "chicken breast",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "linguine pasta",
+              "quantity": "4",
+              "unit": "oz"
+            },
+            {
+              "item": "marinara sauce",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "mozzarella cheese",
+              "quantity": "2",
+              "unit": "oz"
+            },
+            {
+              "item": "parmesan cheese",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "egg",
+              "quantity": "1",
+              "unit": "large"
+            },
+            {
+              "item": "breadcrumbs",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "flour",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "3",
+              "unit": "tbsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Preheat oven to 400\u00b0F. Boil 4 oz linguine until al dente (~9 min), drain, toss with a splash of marinara.",
+            "2. Butterfly 8 oz chicken breast, season with 0.5 tsp salt. Set up 3 bowls: 0.25 cup flour, 1 beaten egg, 0.5 cup breadcrumbs mixed with 2 tbsp parmesan.",
+            "3. Dredge chicken in flour, egg, then breadcrumbs.",
+            "4. Heat 3 tbsp olive oil in an oven-safe skillet over medium-high. Fry chicken 3 min per side until golden.",
+            "5. Top chicken with 1 cup marinara, 2 oz mozzarella, and remaining parmesan.",
+            "6. Bake 10 minutes until cheese is bubbly and chicken reaches 165\u00b0F.",
+            "7. Serve over linguine."
+          ],
+          "macros": {
+            "protein_g": 68,
+            "carbs_g": 88,
+            "fat_g": 34,
+            "calories": 900
+          },
+          "estimated_cost_usd": 5.8,
           "prep_time_minutes": 25,
           "prep_tasks": [
             {
-              "task": "Thaw shrimp",
-              "prep_day": "Saturday",
-              "instructions": "Move 8 oz shrimp from freezer to fridge Saturday night for Sunday dinner. Or cold-water thaw ~15 min Sunday afternoon."
+              "task": "Thaw chicken",
+              "prep_day": "Friday",
+              "instructions": "Move 8 oz chicken breast from freezer to fridge Friday night for Saturday dinner. Or cold-water thaw Saturday afternoon (~45 min, sealed, water changed every 30 min)."
             }
           ]
         },
         {
           "meal_type": "snack_1",
-          "recipe_name": "Cottage Cheese Peach Bowl",
+          "recipe_name": "Cottage Cheese Bowl with Peaches and Almonds",
           "ingredients": [
             {
-              "item": "cottage cheese",
+              "item": "cottage cheese (2%)",
               "quantity": "1",
               "unit": "cup"
             },
@@ -2119,7 +1849,333 @@
               "unit": "medium"
             },
             {
-              "item": "walnuts",
+              "item": "almonds",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "honey",
+              "quantity": "1",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Spoon 1 cup cottage cheese into a bowl.",
+            "2. Slice 1 peach and add on top with 2 tbsp almonds.",
+            "3. Drizzle 1 tsp honey and serve."
+          ],
+          "macros": {
+            "protein_g": 30,
+            "carbs_g": 28,
+            "fat_g": 12,
+            "calories": 340
+          },
+          "estimated_cost_usd": 1.9,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        },
+        {
+          "meal_type": "snack_2",
+          "recipe_name": "Chocolate Peanut Butter Protein Shake",
+          "ingredients": [
+            {
+              "item": "chocolate whey protein powder",
+              "quantity": "1",
+              "unit": "scoop"
+            },
+            {
+              "item": "whole milk",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "peanut butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "banana",
+              "quantity": "1",
+              "unit": "medium"
+            },
+            {
+              "item": "ice",
+              "quantity": "1",
+              "unit": "cup"
+            }
+          ],
+          "recipe_steps": [
+            "1. Add 1 cup milk, 1 scoop chocolate whey, 1 tbsp peanut butter, 1 banana, and 1 cup ice to a blender.",
+            "2. Blend 45 seconds until smooth. Drink immediately."
+          ],
+          "macros": {
+            "protein_g": 36,
+            "carbs_g": 40,
+            "fat_g": 14,
+            "calories": 430
+          },
+          "estimated_cost_usd": 1.7,
+          "prep_time_minutes": 4,
+          "prep_tasks": []
+        }
+      ],
+      "daily_totals": {
+        "protein_g": 242,
+        "carbs_g": 264,
+        "fat_g": 120,
+        "calories": 3090,
+        "estimated_cost_usd": 22.2
+      }
+    },
+    {
+      "day": "Sunday",
+      "meals": [
+        {
+          "meal_type": "breakfast",
+          "recipe_name": "Loaded Breakfast Burrito with Homemade Tortilla",
+          "ingredients": [
+            {
+              "item": "eggs",
+              "quantity": "3",
+              "unit": "large"
+            },
+            {
+              "item": "ground turkey (93%)",
+              "quantity": "4",
+              "unit": "oz"
+            },
+            {
+              "item": "all-purpose flour",
+              "quantity": "0.75",
+              "unit": "cup"
+            },
+            {
+              "item": "cheddar cheese",
+              "quantity": "1",
+              "unit": "oz"
+            },
+            {
+              "item": "bell pepper",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "avocado",
+              "quantity": "0.5",
+              "unit": "medium"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "cumin",
+              "quantity": "0.5",
+              "unit": "tsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Make 1 large tortilla: mix 0.75 cup flour, 0.25 tsp salt, 1 tbsp oil, 0.3 cup warm water. Knead 3 min, rest 15 min, roll thin, cook in dry skillet 60 sec per side.",
+            "2. Brown 4 oz ground turkey with 0.5 tsp cumin and 0.25 tsp salt in 0.5 tbsp oil over medium-high 5 min. Remove.",
+            "3. Saut\u00e9 0.5 diced bell pepper 2 min. Add 3 beaten eggs, scramble 2 min until set.",
+            "4. Lay tortilla flat, fill with turkey, eggs, peppers, 1 oz cheddar, and 0.5 sliced avocado.",
+            "5. Fold in sides and roll tightly. Sear seam-side down in the skillet 1 min. Serve."
+          ],
+          "macros": {
+            "protein_g": 44,
+            "carbs_g": 52,
+            "fat_g": 32,
+            "calories": 700
+          },
+          "estimated_cost_usd": 3.4,
+          "prep_time_minutes": 20,
+          "prep_tasks": [
+            {
+              "task": "Thaw ground turkey",
+              "prep_day": "Saturday",
+              "instructions": "Move 4 oz ground turkey from freezer to fridge Saturday night for Sunday breakfast. Or cold-water thaw Sunday morning (~25 min, sealed, cold water)."
+            }
+          ]
+        },
+        {
+          "meal_type": "lunch",
+          "recipe_name": "Honey Garlic Glazed Salmon with Jasmine Rice and Bok Choy",
+          "ingredients": [
+            {
+              "item": "salmon fillet",
+              "quantity": "7",
+              "unit": "oz"
+            },
+            {
+              "item": "white rice (cooked)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "bok choy",
+              "quantity": "2",
+              "unit": "cups"
+            },
+            {
+              "item": "honey",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "soy sauce",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "garlic",
+              "quantity": "3",
+              "unit": "cloves"
+            },
+            {
+              "item": "sesame oil",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "rice vinegar",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "sesame seeds",
+              "quantity": "1",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Whisk 2 tbsp honey, 2 tbsp soy sauce, 3 minced garlic cloves, and 1 tbsp rice vinegar for glaze.",
+            "2. Heat 0.5 tbsp sesame oil in a skillet over medium-high. Sear 7 oz salmon skin-side down 4 min, flip, cook 2 min.",
+            "3. Pour glaze over salmon, spoon over the fish, and simmer 2 min until sticky and internal temp reaches 130\u00b0F. Remove.",
+            "4. In the same pan, add 0.5 tbsp sesame oil and 2 cups halved bok choy, stir-fry 3 min until tender-crisp.",
+            "5. Plate 1 cup warm rice, bok choy, and glazed salmon. Sprinkle 1 tsp sesame seeds. Serve."
+          ],
+          "macros": {
+            "protein_g": 46,
+            "carbs_g": 78,
+            "fat_g": 28,
+            "calories": 740
+          },
+          "estimated_cost_usd": 6.5,
+          "prep_time_minutes": 18,
+          "prep_tasks": [
+            {
+              "task": "Thaw salmon",
+              "prep_day": "Saturday",
+              "instructions": "Move 7 oz salmon fillet from freezer to fridge Saturday night for Sunday lunch. Or cold-water thaw Sunday morning (~30 min, sealed, cold water)."
+            }
+          ]
+        },
+        {
+          "meal_type": "dinner",
+          "recipe_name": "Garlic Herb Roast Chicken Thighs with Potatoes and Asparagus",
+          "ingredients": [
+            {
+              "item": "chicken thighs (bone-in)",
+              "quantity": "10",
+              "unit": "oz"
+            },
+            {
+              "item": "baby potatoes",
+              "quantity": "8",
+              "unit": "oz"
+            },
+            {
+              "item": "asparagus",
+              "quantity": "1",
+              "unit": "bunch"
+            },
+            {
+              "item": "garlic",
+              "quantity": "4",
+              "unit": "cloves"
+            },
+            {
+              "item": "rosemary",
+              "quantity": "1",
+              "unit": "tsp"
+            },
+            {
+              "item": "lemon",
+              "quantity": "0.5",
+              "unit": "whole"
+            },
+            {
+              "item": "olive oil",
+              "quantity": "2",
+              "unit": "tbsp"
+            },
+            {
+              "item": "butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "salt",
+              "quantity": "0.75",
+              "unit": "tsp"
+            },
+            {
+              "item": "black pepper",
+              "quantity": "0.5",
+              "unit": "tsp"
+            }
+          ],
+          "recipe_steps": [
+            "1. Preheat oven to 425\u00b0F. Halve 8 oz baby potatoes, toss with 1 tbsp olive oil, 0.25 tsp salt. Spread on a sheet pan, roast 15 min.",
+            "2. Pat 10 oz chicken thighs dry, rub with 1 tbsp olive oil, 1 tsp rosemary, 0.5 tsp salt, 0.5 tsp pepper, 4 minced garlic cloves.",
+            "3. Sear thighs skin-side down in a hot skillet 4 min until crisp.",
+            "4. Add thighs to the sheet pan with potatoes, roast 15 min.",
+            "5. Add trimmed asparagus to the pan, roast 8 more min until chicken reaches 175\u00b0F.",
+            "6. Finish with 1 tbsp butter melted over asparagus and juice of 0.5 lemon. Serve."
+          ],
+          "macros": {
+            "protein_g": 54,
+            "carbs_g": 48,
+            "fat_g": 40,
+            "calories": 800
+          },
+          "estimated_cost_usd": 5.2,
+          "prep_time_minutes": 22,
+          "prep_tasks": [
+            {
+              "task": "Thaw chicken thighs",
+              "prep_day": "Saturday",
+              "instructions": "Move 10 oz bone-in chicken thighs from freezer to fridge Saturday night for Sunday dinner. Or cold-water thaw Sunday afternoon (~50 min, sealed, water changed every 30 min)."
+            }
+          ]
+        },
+        {
+          "meal_type": "snack_1",
+          "recipe_name": "Greek Yogurt Protein Bark Bowl",
+          "ingredients": [
+            {
+              "item": "Greek yogurt (2%)",
+              "quantity": "1",
+              "unit": "cup"
+            },
+            {
+              "item": "vanilla whey protein powder",
+              "quantity": "0.5",
+              "unit": "scoop"
+            },
+            {
+              "item": "mixed berries",
+              "quantity": "0.5",
+              "unit": "cup"
+            },
+            {
+              "item": "almonds",
               "quantity": "2",
               "unit": "tbsp"
             },
@@ -2130,25 +2186,25 @@
             }
           ],
           "recipe_steps": [
-            "Spoon 1 cup cottage cheese into a bowl.",
-            "Top with sliced peach, 2 tbsp walnuts, and 1 tbsp honey. Serve."
+            "1. Whisk 1 cup Greek yogurt with 0.5 scoop vanilla whey until smooth.",
+            "2. Top with 0.5 cup berries, 2 tbsp almonds, and drizzle 1 tbsp honey. Serve."
           ],
           "macros": {
-            "protein_g": 28,
-            "carbs_g": 32,
-            "fat_g": 14,
-            "calories": 360
+            "protein_g": 34,
+            "carbs_g": 38,
+            "fat_g": 12,
+            "calories": 400
           },
-          "estimated_cost_usd": 1.75,
+          "estimated_cost_usd": 2.1,
           "prep_time_minutes": 4,
           "prep_tasks": []
         },
         {
           "meal_type": "snack_2",
-          "recipe_name": "Peanut Butter Chocolate Protein Shake",
+          "recipe_name": "Vanilla Banana Oat Protein Shake",
           "ingredients": [
             {
-              "item": "whey protein powder, chocolate",
+              "item": "vanilla whey protein powder",
               "quantity": "1",
               "unit": "scoop"
             },
@@ -2158,87 +2214,69 @@
               "unit": "cups"
             },
             {
-              "item": "peanut butter",
-              "quantity": "2",
-              "unit": "tbsp"
-            },
-            {
               "item": "banana",
               "quantity": "1",
               "unit": "medium"
             },
             {
               "item": "oats",
-              "quantity": "1/3",
+              "quantity": "0.25",
+              "unit": "cup"
+            },
+            {
+              "item": "peanut butter",
+              "quantity": "1",
+              "unit": "tbsp"
+            },
+            {
+              "item": "ice",
+              "quantity": "1",
               "unit": "cup"
             }
           ],
           "recipe_steps": [
-            "Blend 1.5 cups milk, 1 scoop chocolate protein, 2 tbsp peanut butter, 1 banana, and 1/3 cup oats 45 seconds. Serve."
+            "1. Add 1.5 cups milk, 1 scoop vanilla whey, 1 banana, 0.25 cup oats, 1 tbsp peanut butter, and 1 cup ice to a blender.",
+            "2. Blend 45 seconds until smooth. Drink immediately."
           ],
           "macros": {
-            "protein_g": 44,
-            "carbs_g": 54,
-            "fat_g": 24,
-            "calories": 640
+            "protein_g": 40,
+            "carbs_g": 52,
+            "fat_g": 16,
+            "calories": 520
           },
-          "estimated_cost_usd": 1.75,
+          "estimated_cost_usd": 1.8,
           "prep_time_minutes": 4,
           "prep_tasks": []
         }
       ],
       "daily_totals": {
-        "protein_g": 206,
-        "carbs_g": 260,
-        "fat_g": 132,
-        "calories": 3080,
-        "estimated_cost_usd": 16.75
+        "protein_g": 218,
+        "carbs_g": 268,
+        "fat_g": 128,
+        "calories": 3160,
+        "estimated_cost_usd": 18.9
       }
     }
   ],
   "grocery_list": {
     "proteins": [
       {
-        "item": "chicken thigh, boneless skinless",
-        "quantity": "16",
-        "unit": "oz",
-        "estimated_cost_usd": 5.0
-      },
-      {
-        "item": "chicken thigh, bone-in",
-        "quantity": "10",
-        "unit": "oz",
-        "estimated_cost_usd": 2.5
-      },
-      {
-        "item": "salmon fillet",
-        "quantity": "16",
-        "unit": "oz",
-        "estimated_cost_usd": 12.0
-      },
-      {
-        "item": "smoked salmon",
-        "quantity": "3",
-        "unit": "oz",
-        "estimated_cost_usd": 3.5
-      },
-      {
-        "item": "shrimp, peeled",
+        "item": "chicken breast",
         "quantity": "23",
         "unit": "oz",
-        "estimated_cost_usd": 16.0
+        "estimated_cost_usd": 8.5
       },
       {
-        "item": "ground beef 90/10",
-        "quantity": "16",
+        "item": "chicken thighs (bone-in)",
+        "quantity": "10",
         "unit": "oz",
-        "estimated_cost_usd": 7.0
+        "estimated_cost_usd": 3.0
       },
       {
-        "item": "ground turkey 93/7",
-        "quantity": "14",
+        "item": "beef sirloin (steak + strips)",
+        "quantity": "28",
         "unit": "oz",
-        "estimated_cost_usd": 5.5
+        "estimated_cost_usd": 18.0
       },
       {
         "item": "ground bison",
@@ -2247,138 +2285,168 @@
         "estimated_cost_usd": 5.5
       },
       {
-        "item": "pork tenderloin",
-        "quantity": "8",
-        "unit": "oz",
-        "estimated_cost_usd": 4.0
-      },
-      {
-        "item": "sirloin steak",
-        "quantity": "6",
+        "item": "ground turkey (93%)",
+        "quantity": "12",
         "unit": "oz",
         "estimated_cost_usd": 4.5
       },
       {
-        "item": "ham",
+        "item": "pork tenderloin",
+        "quantity": "8",
+        "unit": "oz",
+        "estimated_cost_usd": 3.5
+      },
+      {
+        "item": "salmon fillet",
+        "quantity": "14",
+        "unit": "oz",
+        "estimated_cost_usd": 13.0
+      },
+      {
+        "item": "smoked salmon",
         "quantity": "3",
         "unit": "oz",
+        "estimated_cost_usd": 4.0
+      },
+      {
+        "item": "ahi tuna steak",
+        "quantity": "7",
+        "unit": "oz",
+        "estimated_cost_usd": 7.0
+      },
+      {
+        "item": "canned tuna",
+        "quantity": "1",
+        "unit": "can (5 oz)",
         "estimated_cost_usd": 1.5
       },
       {
-        "item": "turkey bacon",
-        "quantity": "3",
-        "unit": "strips",
-        "estimated_cost_usd": 1.25
-      },
-      {
-        "item": "canned tuna in water",
-        "quantity": "1",
-        "unit": "can (5 oz)",
-        "estimated_cost_usd": 1.25
+        "item": "shrimp (peeled, deveined)",
+        "quantity": "16",
+        "unit": "oz",
+        "estimated_cost_usd": 11.0
       },
       {
         "item": "eggs",
-        "quantity": "36",
+        "quantity": "24",
         "unit": "large",
-        "estimated_cost_usd": 7.0
+        "estimated_cost_usd": 6.0
       }
     ],
     "produce": [
       {
-        "item": "avocado",
-        "quantity": "3",
-        "unit": "each",
-        "estimated_cost_usd": 3.0
+        "item": "banana",
+        "quantity": "8",
+        "unit": "medium",
+        "estimated_cost_usd": 2.4
       },
       {
         "item": "mixed berries",
+        "quantity": "3.75",
+        "unit": "cups",
+        "estimated_cost_usd": 8.0
+      },
+      {
+        "item": "apple",
+        "quantity": "1",
+        "unit": "medium",
+        "estimated_cost_usd": 0.6
+      },
+      {
+        "item": "peach",
+        "quantity": "1",
+        "unit": "medium",
+        "estimated_cost_usd": 0.8
+      },
+      {
+        "item": "pineapple chunks",
+        "quantity": "0.75",
+        "unit": "cup",
+        "estimated_cost_usd": 1.5
+      },
+      {
+        "item": "avocado",
+        "quantity": "3",
+        "unit": "medium",
+        "estimated_cost_usd": 4.5
+      },
+      {
+        "item": "bell pepper",
+        "quantity": "3",
+        "unit": "medium",
+        "estimated_cost_usd": 3.0
+      },
+      {
+        "item": "spinach",
         "quantity": "3",
         "unit": "cups",
-        "estimated_cost_usd": 6.0
-      },
-      {
-        "item": "strawberries",
-        "quantity": "1",
-        "unit": "cup",
-        "estimated_cost_usd": 2.0
-      },
-      {
-        "item": "banana",
-        "quantity": "8",
-        "unit": "each",
         "estimated_cost_usd": 2.5
       },
       {
         "item": "broccoli",
-        "quantity": "1",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
+        "quantity": "3.5",
+        "unit": "cups",
+        "estimated_cost_usd": 3.5
       },
       {
-        "item": "asparagus",
-        "quantity": "1",
-        "unit": "cup",
-        "estimated_cost_usd": 2.0
+        "item": "green beans",
+        "quantity": "1.5",
+        "unit": "cups",
+        "estimated_cost_usd": 1.8
       },
       {
-        "item": "spinach",
-        "quantity": "4",
+        "item": "sweet potato",
+        "quantity": "6",
+        "unit": "medium",
+        "estimated_cost_usd": 4.0
+      },
+      {
+        "item": "russet potato",
+        "quantity": "1",
+        "unit": "large",
+        "estimated_cost_usd": 0.8
+      },
+      {
+        "item": "baby potatoes",
+        "quantity": "8",
+        "unit": "oz",
+        "estimated_cost_usd": 1.5
+      },
+      {
+        "item": "cherry tomatoes",
+        "quantity": "1.5",
         "unit": "cups",
         "estimated_cost_usd": 3.0
       },
       {
-        "item": "carrot",
-        "quantity": "2",
-        "unit": "each",
-        "estimated_cost_usd": 0.75
+        "item": "tomato",
+        "quantity": "1",
+        "unit": "medium",
+        "estimated_cost_usd": 0.7
       },
       {
-        "item": "bean sprouts",
+        "item": "romaine lettuce",
+        "quantity": "1",
+        "unit": "head",
+        "estimated_cost_usd": 2.0
+      },
+      {
+        "item": "cabbage",
         "quantity": "1",
         "unit": "cup",
         "estimated_cost_usd": 1.0
       },
       {
-        "item": "green onion",
-        "quantity": "1",
-        "unit": "bunch",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "bell pepper",
-        "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "onion",
+        "item": "carrot",
         "quantity": "2",
-        "unit": "each",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "tomato",
-        "quantity": "5",
-        "unit": "each",
-        "estimated_cost_usd": 3.5
+        "unit": "medium",
+        "estimated_cost_usd": 0.8
       },
       {
         "item": "cucumber",
-        "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 0.75
-      },
-      {
-        "item": "zucchini",
-        "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "green beans",
-        "quantity": "1",
-        "unit": "cup",
-        "estimated_cost_usd": 1.5
+        "quantity": "0.5",
+        "unit": "medium",
+        "estimated_cost_usd": 0.6
       },
       {
         "item": "bok choy",
@@ -2387,58 +2455,46 @@
         "estimated_cost_usd": 2.0
       },
       {
-        "item": "butter lettuce",
+        "item": "asparagus",
         "quantity": "1",
-        "unit": "head",
-        "estimated_cost_usd": 2.0
+        "unit": "bunch",
+        "estimated_cost_usd": 3.0
       },
       {
-        "item": "sweet potato",
+        "item": "red onion",
         "quantity": "1",
-        "unit": "large",
-        "estimated_cost_usd": 1.0
+        "unit": "small",
+        "estimated_cost_usd": 0.7
       },
       {
-        "item": "russet potato",
-        "quantity": "3",
-        "unit": "medium",
-        "estimated_cost_usd": 2.0
-      },
-      {
-        "item": "peach",
+        "item": "green onion",
         "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "pineapple chunks",
-        "quantity": "3/4",
-        "unit": "cup",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "lemon",
-        "quantity": "4",
-        "unit": "each",
-        "estimated_cost_usd": 2.0
-      },
-      {
-        "item": "lime",
-        "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 0.5
+        "unit": "bunch",
+        "estimated_cost_usd": 0.9
       },
       {
         "item": "garlic",
         "quantity": "2",
         "unit": "heads",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 1.2
       },
       {
-        "item": "ginger",
+        "item": "fresh ginger",
         "quantity": "1",
-        "unit": "knob",
-        "estimated_cost_usd": 1.0
+        "unit": "small piece",
+        "estimated_cost_usd": 0.8
+      },
+      {
+        "item": "lemon",
+        "quantity": "3",
+        "unit": "whole",
+        "estimated_cost_usd": 1.8
+      },
+      {
+        "item": "lime",
+        "quantity": "3",
+        "unit": "whole",
+        "estimated_cost_usd": 1.5
       },
       {
         "item": "parsley",
@@ -2447,60 +2503,54 @@
         "estimated_cost_usd": 1.0
       },
       {
-        "item": "red onion",
+        "item": "rosemary",
         "quantity": "1",
-        "unit": "each",
-        "estimated_cost_usd": 0.75
+        "unit": "sprig pack",
+        "estimated_cost_usd": 1.5
       }
     ],
     "dairy": [
       {
-        "item": "greek yogurt, plain 2%",
-        "quantity": "6.5",
-        "unit": "cups",
-        "estimated_cost_usd": 7.0
-      },
-      {
-        "item": "cottage cheese",
-        "quantity": "5",
-        "unit": "cups",
-        "estimated_cost_usd": 6.5
-      },
-      {
         "item": "whole milk",
-        "quantity": "1",
+        "quantity": "1.5",
         "unit": "gallon",
-        "estimated_cost_usd": 4.0
+        "estimated_cost_usd": 6.0
       },
       {
-        "item": "shredded cheddar",
-        "quantity": "3",
+        "item": "plain Greek yogurt (2%)",
+        "quantity": "7",
+        "unit": "cups",
+        "estimated_cost_usd": 8.0
+      },
+      {
+        "item": "cottage cheese (2%)",
+        "quantity": "3.75",
         "unit": "cups",
         "estimated_cost_usd": 5.0
       },
       {
-        "item": "mozzarella",
-        "quantity": "1/3",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
+        "item": "cheddar cheese",
+        "quantity": "6",
+        "unit": "oz",
+        "estimated_cost_usd": 3.5
       },
       {
-        "item": "parmesan",
-        "quantity": "1/4",
-        "unit": "cup",
+        "item": "mozzarella cheese",
+        "quantity": "2",
+        "unit": "oz",
         "estimated_cost_usd": 1.5
       },
       {
-        "item": "feta cheese",
-        "quantity": "1/4",
+        "item": "parmesan cheese",
+        "quantity": "0.75",
         "unit": "cup",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 3.0
       },
       {
         "item": "cream cheese",
         "quantity": "2",
         "unit": "tbsp",
-        "estimated_cost_usd": 0.5
+        "estimated_cost_usd": 0.6
       },
       {
         "item": "butter",
@@ -2511,192 +2561,84 @@
     ],
     "grains": [
       {
-        "item": "white rice",
-        "quantity": "6",
-        "unit": "cups dry",
-        "estimated_cost_usd": 3.0
-      },
-      {
-        "item": "quinoa",
-        "quantity": "3/4",
-        "unit": "cup",
-        "estimated_cost_usd": 1.5
-      },
-      {
         "item": "rolled oats",
-        "quantity": "4",
+        "quantity": "3",
         "unit": "cups",
-        "estimated_cost_usd": 2.5
-      },
-      {
-        "item": "rice noodles",
-        "quantity": "4",
-        "unit": "oz",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "soba noodles",
-        "quantity": "4",
-        "unit": "oz",
         "estimated_cost_usd": 2.0
       },
       {
-        "item": "spaghetti",
+        "item": "white rice (dry)",
         "quantity": "4",
+        "unit": "cups",
+        "estimated_cost_usd": 3.0
+      },
+      {
+        "item": "linguine pasta",
+        "quantity": "8",
         "unit": "oz",
-        "estimated_cost_usd": 0.75
-      },
-      {
-        "item": "couscous",
-        "quantity": "3/4",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "stone-ground grits",
-        "quantity": "3/4",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "cornmeal",
-        "quantity": "3/4",
-        "unit": "cup",
-        "estimated_cost_usd": 0.75
+        "estimated_cost_usd": 1.5
       },
       {
         "item": "bread flour",
-        "quantity": "10",
+        "quantity": "11",
         "unit": "cups",
-        "estimated_cost_usd": 4.0
+        "estimated_cost_usd": 4.5
       },
       {
         "item": "all-purpose flour",
-        "quantity": "3",
+        "quantity": "4",
         "unit": "cups",
-        "estimated_cost_usd": 1.5
+        "estimated_cost_usd": 1.8
+      },
+      {
+        "item": "breadcrumbs",
+        "quantity": "0.5",
+        "unit": "cup",
+        "estimated_cost_usd": 0.8
       },
       {
         "item": "granola",
         "quantity": "1",
         "unit": "cup",
-        "estimated_cost_usd": 2.0
-      },
-      {
-        "item": "rice cakes",
-        "quantity": "3",
-        "unit": "each",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 2.5
       }
     ],
     "pantry": [
       {
-        "item": "whey protein powder, vanilla",
-        "quantity": "4",
+        "item": "vanilla whey protein powder",
+        "quantity": "6",
         "unit": "scoops",
-        "estimated_cost_usd": 6.0
+        "estimated_cost_usd": 9.0
       },
       {
-        "item": "whey protein powder, chocolate",
-        "quantity": "3",
+        "item": "chocolate whey protein powder",
+        "quantity": "4.5",
         "unit": "scoops",
-        "estimated_cost_usd": 4.5
+        "estimated_cost_usd": 7.0
       },
       {
-        "item": "peanut butter",
+        "item": "natural peanut butter",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 3.5
+        "estimated_cost_usd": 4.0
       },
       {
         "item": "almond butter",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 5.0
-      },
-      {
-        "item": "soy sauce",
-        "quantity": "1",
-        "unit": "bottle",
-        "estimated_cost_usd": 2.5
-      },
-      {
-        "item": "mirin",
-        "quantity": "1",
-        "unit": "bottle",
-        "estimated_cost_usd": 3.0
-      },
-      {
-        "item": "fish sauce",
-        "quantity": "1",
-        "unit": "bottle",
-        "estimated_cost_usd": 2.5
-      },
-      {
-        "item": "tamarind paste",
-        "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 3.0
-      },
-      {
-        "item": "white miso",
-        "quantity": "1",
-        "unit": "tub",
-        "estimated_cost_usd": 3.5
-      },
-      {
-        "item": "gochujang",
-        "quantity": "1",
-        "unit": "tub",
-        "estimated_cost_usd": 3.5
-      },
-      {
-        "item": "pesto",
-        "quantity": "2",
-        "unit": "tbsp",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "salsa",
-        "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 2.5
-      },
-      {
-        "item": "crushed tomatoes",
-        "quantity": "2",
-        "unit": "cups",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "black beans",
-        "quantity": "1",
-        "unit": "can",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "kidney beans",
-        "quantity": "1",
-        "unit": "can",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 6.0
       },
       {
         "item": "honey",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 4.0
+        "estimated_cost_usd": 5.0
       },
       {
         "item": "maple syrup",
         "quantity": "1",
-        "unit": "bottle",
+        "unit": "small bottle",
         "estimated_cost_usd": 4.0
-      },
-      {
-        "item": "brown sugar",
-        "quantity": "1",
-        "unit": "bag",
-        "estimated_cost_usd": 1.5
       },
       {
         "item": "olive oil",
@@ -2711,147 +2653,159 @@
         "estimated_cost_usd": 3.5
       },
       {
-        "item": "vegetable oil",
+        "item": "soy sauce",
         "quantity": "1",
         "unit": "bottle",
         "estimated_cost_usd": 3.0
       },
       {
-        "item": "peanuts",
-        "quantity": "3",
-        "unit": "tbsp",
-        "estimated_cost_usd": 0.75
+        "item": "rice vinegar",
+        "quantity": "1",
+        "unit": "bottle",
+        "estimated_cost_usd": 2.5
+      },
+      {
+        "item": "gochujang",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 4.0
+      },
+      {
+        "item": "marinara sauce",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 2.5
+      },
+      {
+        "item": "caesar dressing",
+        "quantity": "1",
+        "unit": "bottle",
+        "estimated_cost_usd": 3.0
+      },
+      {
+        "item": "mayonnaise",
+        "quantity": "1",
+        "unit": "small jar",
+        "estimated_cost_usd": 2.5
+      },
+      {
+        "item": "black beans",
+        "quantity": "1.25",
+        "unit": "cups (1 can)",
+        "estimated_cost_usd": 1.2
+      },
+      {
+        "item": "corn kernels",
+        "quantity": "1",
+        "unit": "cup (1 can)",
+        "estimated_cost_usd": 1.0
       },
       {
         "item": "walnuts",
-        "quantity": "4",
-        "unit": "tbsp",
-        "estimated_cost_usd": 1.5
+        "quantity": "0.5",
+        "unit": "cup",
+        "estimated_cost_usd": 2.5
       },
       {
         "item": "almonds",
-        "quantity": "2",
-        "unit": "tbsp",
-        "estimated_cost_usd": 0.75
-      },
-      {
-        "item": "chia seeds",
-        "quantity": "1",
-        "unit": "tbsp",
-        "estimated_cost_usd": 0.5
+        "quantity": "0.75",
+        "unit": "cup",
+        "estimated_cost_usd": 3.0
       },
       {
         "item": "sesame seeds",
         "quantity": "1",
-        "unit": "tbsp",
-        "estimated_cost_usd": 0.5
+        "unit": "small jar",
+        "estimated_cost_usd": 2.0
       },
       {
         "item": "capers",
         "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 2.0
+        "unit": "small jar",
+        "estimated_cost_usd": 2.5
       },
       {
-        "item": "dijon mustard",
+        "item": "cornstarch",
         "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 2.0
-      },
-      {
-        "item": "apple cider",
-        "quantity": "1/2",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "cold brew coffee",
-        "quantity": "1/2",
-        "unit": "cup",
-        "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "yeast",
-        "quantity": "1",
-        "unit": "jar",
+        "unit": "small box",
         "estimated_cost_usd": 1.5
+      },
+      {
+        "item": "instant yeast",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 3.0
       },
       {
         "item": "baking powder",
         "quantity": "1",
         "unit": "can",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 1.5
+      },
+      {
+        "item": "sugar",
+        "quantity": "1",
+        "unit": "small bag",
+        "estimated_cost_usd": 2.0
+      },
+      {
+        "item": "cocoa powder",
+        "quantity": "1",
+        "unit": "small box",
+        "estimated_cost_usd": 2.5
       },
       {
         "item": "cumin",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "paprika",
-        "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "turmeric",
-        "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 1.5
+        "estimated_cost_usd": 2.0
       },
       {
         "item": "chili powder",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 1.5
+        "estimated_cost_usd": 2.0
+      },
+      {
+        "item": "paprika",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 2.0
+      },
+      {
+        "item": "cayenne",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 2.0
+      },
+      {
+        "item": "cinnamon",
+        "quantity": "1",
+        "unit": "jar",
+        "estimated_cost_usd": 2.0
       },
       {
         "item": "red pepper flakes",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 1.0
+        "estimated_cost_usd": 2.0
       },
       {
-        "item": "rosemary",
+        "item": "black pepper",
         "quantity": "1",
         "unit": "jar",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "vanilla extract",
-        "quantity": "1",
-        "unit": "bottle",
-        "estimated_cost_usd": 3.0
+        "estimated_cost_usd": 2.0
       },
       {
         "item": "salt",
         "quantity": "1",
         "unit": "box",
         "estimated_cost_usd": 1.0
-      },
-      {
-        "item": "black pepper",
-        "quantity": "1",
-        "unit": "jar",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "sugar",
-        "quantity": "1",
-        "unit": "bag",
-        "estimated_cost_usd": 1.5
-      },
-      {
-        "item": "lard/oil for tortillas",
-        "quantity": "3",
-        "unit": "tbsp",
-        "estimated_cost_usd": 0.5
       }
     ],
     "frozen": [],
     "other": []
   },
   "used_from_inventory": [],
-  "estimated_weekly_cost_usd": 320.0
+  "estimated_weekly_cost_usd": 128.2
 }
