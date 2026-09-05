@@ -5,13 +5,13 @@
       "source": "nateherkai/AIS-OS",
       "sourceType": "github",
       "skillPath": ".claude/skills/audit/SKILL.md",
-      "computedHash": "6c6cbdde6d71269ecd7e7f542a5ee6db3e62eb8e6602b759ea0327d31fd31d6b"
+      "computedHash": "6c3a9af7196e66abb4baf281d86337a0f8e8c3eeefc01d9ef901a2c4c47f9ae0"
     },
     "frontend-design": {
       "source": "anthropics/claude-code",
       "sourceType": "github",
       "skillPath": "plugins/frontend-design/skills/frontend-design/SKILL.md",
-      "computedHash": "1608ea77fbb6fc30d13a97d12cfa8ebf31358d40f0dd97beed24829d6b3f45dd"
+      "computedHash": "b8c8329ad9b98fa57f4a279e37bdf4a0d55743140e54bb7da3e340d754d75b43"
     },
     "gws-calendar": {
       "source": "googleworkspace/cli",
