@@ -1,180 +1,96 @@
 ---
 name: audit
-description: Use when someone asks for an AIOS audit, asks to score their setup against the Four Cs, or says "is my AIOS working" / "audit my setup" / "find gaps in my AIOS". Produces a Four-Cs scoreboard with top-3 fixes ranked by leverage.
+description: Use when someone asks to audit their AIOS, score the Four Cs, find stale paths or unlinked projects, compare AGENTS.md and CLAUDE.md, check Claude/Codex skill compatibility, or assess migration readiness. Automatically saves dated reports and tracks evidence-backed improvements across runs.
 ---
 
-## What this skill does
+# AIOS Audit
 
-Runs the **Four Cs Audit** on the current Claude Code project. Reads (never writes) the project's operating manual, memory, skills, agents, MCPs, decisions, and references. Scores each of the Four Cs out of 25. Surfaces strengths and the top 3 leverage-weighted gaps with concrete next-step commands.
+Check whether this AIOS can find the right information and do useful work reliably, and identify changes that would make the user's work easier. Score **Context, Connections, Capabilities, and Cadence out of 25 each**, using [rubric.md](rubric.md). This is rubric **v2**. Label the number **verified operational reliability**, not overall usefulness or percentage of work the AIOS can do. A folder, installed skill, API key, or confident claim is not proof of a working system.
 
-**Scope is structural — "is the AIOS built right?"** It is NOT a capability planner. Capability gaps ("you could build a daily brief if you connected calendar") belong to `/level-up`. The audit answers: are the files, folders, registries, and connections in good shape?
+Run locally in the current project. Do not launch subagents unless the user requests them. Audit first; `/link` repairs a route, and `/level-up` helps close one meaningful gap. Never inflate or deliberately depress a score to encourage another run. Improvement comes from better evidence and behavior.
 
-First run is the baseline. Re-run weekly to watch the score climb. That's the compounding hook.
+**Every audit automatically saves its report in the audited project's `audits/` folder.** Read [history.md](history.md) for prior-report selection, finding transitions, comparison rules, and safe persistence. Saving the local audit record is part of this skill, not a separate approval step. An explicit user request not to save overrides this default. The inspected system remains unchanged.
 
-## Today's context
+## 1. Establish scope and evidence
 
-- **Date:** !`date +%Y-%m-%d`
-- **Project root:** the current working directory
+- Get the current date and project root. Read applicable `AGENTS.md`, `CLAUDE.md`, and local overrides; follow the runtime's instruction hierarchy. Read both manuals when both exist. Check for conflicting routing and promised synchronization, without assuming distinct runtime instructions must be identical.
+- Load the relevant prior AIOS report and carried finding ledger using [history.md](history.md), before selecting probes. Recheck important prior findings alongside current priorities; do not assume earlier results remain true. Identify the comparison baseline and scope changes before scoring.
+- Use the manual's routing rules first. Read its project and knowledge indexes before listing their immediate child folders. Inspect only relevant scoped manuals. Skip dependencies, caches, generated output, and archives unless a route points there or an archived/current ambiguity needs checking.
+- Identify the user's role, main objective, current priorities, and up to three important workflows from actual context. Unfilled template placeholders do not count. Do not require business revenue data from someone whose work has no revenue function.
+- Inspect the supported skill/agent registries, connection references, and actual scheduler configuration/run evidence. Accept scripts, MCPs, exports, local data, and equivalent mechanisms equally. Count inventories for orientation only.
+- Record each finding as **verified**, **documented but unverified**, **missing**, **stale**, or **conflicting**, with a file/line, source URL, or dated run reference. File modification times and last-checked labels alone do not prove a successful refresh or execution.
+- Start with targeted reads. If a time budget or local page limit prevents verification, mark it unverified and state coverage. Never award full points because there was no time to check. Do not claim an exhaustive audit from a sample.
 
-## The Four Cs (scored 25 each = 100 total)
+## 2. Test routing and context retrieval
 
-| Layer | Test |
-|---|---|
-| **Context** | Knows the business — identity, team, voice, decisions, references |
-| **Connections** | Reaches the user's stuff — MCPs, integrations, data sources |
-| **Capabilities** | Knows how to do work — skills + agents |
-| **Cadence** | Runs without being asked — schedules, hooks, recurring rituals |
+Make a compact map: **user need → manual/index → specific source → freshness rule**. Include applicable business context, people, priorities/commitments, original records, project deliverables, specialist knowledge bases, media/assets, and external systems. A generic folder or provider name is insufficient when it leaves the relevant source unclear.
 
-## Execution
+Compare the maps with immediate folders to find important unindexed projects, outdated counts, broken paths, ambiguous aliases, duplicate sources of truth, and retired material presented as active. Distinguish confirmed gaps from folders whose relevance is unknown. Check whether supplied routes work from the current checkout, including references inside skills and generated mirrors where that runtime uses them.
 
-### Step 1: Discover the project shape
+Follow the declared routes for these five questions, adapted to the user's real work:
 
-The audit looks for **patterns and intent**, not exact paths. File names vary. Use Glob and Read to check:
+1. What does this person/business do, for whom, and what matters now?
+2. Where is the authoritative current priority, commitment, or status, and how would I verify it?
+3. Where is the latest deliverable and next step for an important active project?
+4. Where is a previous decision, lesson, or subject-specific knowledge item and its supporting source?
+5. Where is one commonly needed external record, asset, or original document, and how is it accessed?
 
-**Operating manual:** `CLAUDE.md` (root), `CLAUDE.local.md` (gitignored).
-**Memory:** `MEMORY.md` (root), `~/.claude/projects/<id>/memory/MEMORY.md`, or `memory/` folder.
-**Skills:** `.claude/skills/*/SKILL.md` — count + frontmatter.
-**Agents:** `.claude/agents/*.md` — count + frontmatter.
-**Connection mechanisms** (any of these = "reachable"):
-- MCPs: `.mcp.json`, `.claude/settings.json` (mcpServers key), `.claude/settings.local.json`
-- API scripts: `scripts/*.py|.js|.ts` documented in CLAUDE.md
-- Export pipelines: `data/`, `imports/`, `exports/` with refresh script + last-run timestamp
-- API keys + reference guide: `.env` entries + corresponding `references/{tool}-api.md`
+Select relevant examples before searching for answers. If a category does not apply, record why and substitute a different real retrieval need, keeping five probes. For each, show the question, route attempted, source, result, and whether it was found directly, only by fallback search, or not found. A broad search can recover an answer, but it does not prove the declared route works. Mark external access unverified if not checked; a documented access path earns only documentation credit. Score only the evidence actually observed.
 
-**Connections registry:** `connections.md` (anywhere).
-**Reference guides:** `references/{tool}-api.md`, `references/*-reference.md`, or equivalent.
-**Decisions:** `decisions/log.md`, `decisions.md`, or any append-only decisions file.
-**References / SOPs:** `references/`, `docs/`, `sops/` folders.
-**Templates:** `templates/`, `.claude/templates/`.
-**Hooks / scheduled jobs:** `.claude/settings.json` hooks key, or skill names matching `morning-*`, `weekly-*`, `daily-*`, `monthly-*`, `standup`.
+**Check freshness and authority explicitly:**
 
-Don't penalize for non-canonical names if equivalent intent is captured elsewhere.
+- An optional `_hot.md`, briefing, or cache earns no points just for existing. Do not recommend creating one by default. Check whether it duplicates canonical pages, has a real refresh mechanism, and presents stale numbers or past deadlines as current. A recently edited header does not refresh every fact inside it.
+- If a cache adds duplication without reliable upkeep, recommend bypassing it in retrieval and using the relevant index/source directly. Never automatically remove it. No cache is a valid architecture.
+- Stable context can live in a wiki; current metrics and task status should resolve to the appropriate live system or dated export. Exact terms should resolve to original records. Check source dates and flag conflicts rather than treating the wiki as automatically authoritative for every type of fact.
+- Check whether a fresh session could understand the user, resume the selected project, and find evidence without depending on this conversation. Praise compact, accurate routing; do not reward manual length, exhaustive root catalogs, or reading every wiki page.
 
-### Step 2: Score each C (25 points each)
+## 3. Verify the other three Cs
 
-#### Context (25 pts)
+First run the required [routing and cross-runtime compatibility checks](compatibility.md). This covers stale/broken paths, important unlinked work, differences between operating manuals, and skill availability across the runtimes in use or targeted for migration. Compare shared behavior and required resources, not raw file equality alone. Record expected runtime differences separately from defects. The protocol also defines the mandatory compatibility table, evidence labels, and calibration cases.
 
-| Criterion | Points | How to detect |
-|---|---|---|
-| Operating manual exists and is substantive (>200 words) | 5 | Read CLAUDE.md, count words |
-| Identity / role / voice captured | 5 | CLAUDE.md mentions who the user is + role/mission, OR `.claude/rules/*.md` exists |
-| Persistent memory exists with multiple entries | 5 | MEMORY.md exists with >3 entries, OR `memory/` has >3 files |
-| Reference docs exist | 5 | `references/`, `docs/`, or `sops/` has ≥1 file |
-| Decisions captured | 5 | `decisions/log.md` or equivalent has ≥1 entry |
+**Connections:** Identify applicable domains: finances, customer interactions, calendar, communication, tasks, meetings, and knowledge/files; add content or specialist domains when material. Record each domain's relevance, mechanism, specific access route, successful-read evidence, date, and limitations. One tool may cover multiple domains only when each has evidence. A configured MCP or `.env` key does not establish authentication. Use narrow, safe read-only checks when available, or dated successful-run evidence within the source's expected refresh interval. With no documented interval, use 30 days and explain why highly volatile data may require a fresh read. Do not print secret values or bulk private records. Do not run unknown scripts before checking their side effects.
 
-#### Connections (25 pts) — domain-aware, mechanism-agnostic
+**Capabilities:** Select up to three workflows tied to the identified priorities, not merely the most polished demos. Examine triggers, inputs, output destination, examples of actual usable outputs, verification, failure handling, and repeated use. Missing workflows remain gaps. Check discoverability, needed supporting files, and canonical/mirror consistency after documented transforms. Agents are optional; quantity, complexity, and custom naming earn no bonus. Use existing outputs or safe bounded checks; do not start paid generation or substantive work just to audit it.
 
-A "reachable" connection counts via ANY mechanism: MCP, script, export pipeline, or `.env` key + `references/{tool}-api.md`. The kit is API-first; the audit doesn't prefer MCPs.
+**Cadence:** Inspect actual enabled schedules, event triggers, hooks, or explicitly defined human-run rituals and their execution records. Identify the host/runtime, trigger, expected output, last due execution, success/failure evidence, and stop/recovery controls. A skill named `daily-*`, a template, or recently edited files does not establish cadence. A useful manual ritual gets limited credit; label it manual. Do not call a local job unattended or laptop-independent without evidence for that environment. Judge monthly or quarterly routines against their real due dates rather than a fixed weekly window.
 
-**The 7 Tier-1 Universal Data Domains:**
+## 4. Score and prioritize
 
-| # | Domain | Examples |
-|---|---|---|
-| 1 | Revenue / Financials | Stripe, Skool, GoHighLevel, QuickBooks, Looker |
-| 2 | Customer interactions | HubSpot, Salesforce, Gmail-as-CRM, Skool DMs |
-| 3 | Calendar | Google Cal, Outlook, Calendly |
-| 4 | Communication | Gmail, Outlook, Slack, Teams |
-| 5 | Project / task tracking | ClickUp, Asana, Linear, Notion DB, Jira |
-| 6 | Meeting intelligence | Granola, Otter, Fireflies, Gong, Zoom |
-| 7 | Knowledge / files | Notion, Drive, Dropbox, Confluence, SharePoint |
+Read the complete [rubric.md](rubric.md). Assign all 20 criterion scores, then apply its caps. Show the four subtotals, raw sum, any cap and reason, final score, and stage. Missing evidence earns no verified credit, but distinguish **unverified** from **known broken**. Record excluded domains with reasons; do not exclude a domain merely because it is disconnected.
 
-**Tier-2 (bonus):** AI service API keys (OpenRouter, Anthropic, OpenAI), decisions/history, content/publishing.
+Rank gaps by likely effect on the user's work, with wrong/stale answers and missing source access ahead of cosmetic tidiness. Give up to three concrete fixes with an exact affected route/workflow, supporting evidence, and a clear completion check. Do not invent three faults in a healthy system. Distinguish a repair from a check needed to resolve uncertainty.
 
-| Criterion | Points | How to detect |
-|---|---|---|
-| Tier-1 domain coverage | 10 | 1.4 pts per tier-1 domain reachable. Round to nearest 0.5. Cap 10. |
-| Reference guide presence | 5 | -1 per connected tool with no `references/{tool}-api.md`. Floor 0. |
-| Auth / pipeline freshness | 5 | -1 per connection in `needs-auth`/`expired` state, or script with no run within 30 days. Floor 0. |
-| Documentation in `connections.md` | 3 | 0 if missing; 1 sparse; 2 most; 3 covers all reachable. |
-| Read-AND-write balance | 2 | At least one connection can WRITE (send email, post update, etc.). 0 if all read-only — the AIOS is a viewer not an OS. |
+Group findings into **confirmed defects**, **verification gaps**, and **improvement opportunities**; list intentional differences separately. Keep severity distinct from confidence. Assign each underlying issue a stable ID and reuse it across sections. Do not count one missing mirror or bad route as multiple independent defects. State which existing rubric criteria it affects; do not introduce a migration score or change the v2 anchors. Explain score limitations, including manual-cadence limits when relevant. Unchecked evidence is not proof of failure, and optional enhancements are not defects merely because they are absent.
 
-#### Capabilities (25 pts)
+## 5. Return a concise, reviewable report
 
-| Criterion | Points | How to detect |
-|---|---|---|
-| 3+ skills installed | 10 | Count `.claude/skills/*/SKILL.md` |
-| 1+ user-built skill | 10 | Skill names not in: `onboard`, `audit`, `level-up`, `skill-creator`, `skill-builder`, `decision`, `connect`, `connect-check`, `memory-prune`, `scaffold-skill`, `scaffold-agent`, `draft`, `standup` (canonical AIS-OS + Anthropic shipped skills) |
-| 1+ agent defined | 5 | Count `.claude/agents/*.md` ≥ 1 |
+Use this structure, keeping the evidence ledger compact:
 
-#### Cadence (25 pts)
+1. **AIOS Audit: date, project, rubric v2.** Scope, runtimes, verification limits, and a plain-language conclusion. Lead with what works and the most consequential mismatch. Report unique finding counts by class, not as an exhaustive total outside the inspected scope.
+2. **AGENTS.md / CLAUDE.md findings:** always include the dedicated section specified below, even when no issues are found. Do not bury operating-manual findings in the general fixes or routing table.
+3. **Routing and migration compatibility:** the coverage/matrix and actionable findings from [compatibility.md](compatibility.md), including confirmed defects, verification gaps, intentional differences, and improvement opportunities. Reference existing finding IDs instead of repeating full manual findings. State whether sampled migration is blocked, needs verification, or passed the inspected checks; do not imply the whole system is portable from a sample.
+4. **Routing check:** five probe results, including source references and direct/fallback/unresolved status.
+5. **What works:** up to three evidence-backed strengths.
+6. **Verified operational reliability:** four rows, each `/25`; raw total, caps, final `/100`, and stage. Include criterion IDs and awarded points so arithmetic is reproducible. Explain separately how confirmed defects and unverified evidence limited credit. This is not an overall usefulness grade.
+7. **Top improvements:** up to three ranked actions, each labeled repair, verify, or optional improvement, with evidence, exact next action, expected practical benefit, and what would prove it complete. Refer to finding IDs instead of repeating them in full.
+8. **Progress since the previous audit:** link the baseline, show finding transitions and evidence from [history.md](history.md), and explain any comparable score change. Separate actual repairs, newly verified evidence, regressions, and coverage/rubric changes. No prior comparable report means a new baseline, not an invented improvement.
+9. **Next run:** a ready-to-use `/level-up` prompt carrying the highest-value gap, evidence, and acceptance check; use `/link <target> <purpose>` for a routing-only fix. Recommend these commands only if installed; otherwise give the equivalent plain-language task. `/grill-me`, if available, is useful for genuinely missing context, not for facts already stored elsewhere.
+10. **Saved record:** write and read back the complete report using [templates/report.md](templates/report.md). Link the actual saved file in the final reply. The chat can be concise; the saved record must retain the score breakdown, evidence, compatibility checks, and carried finding ledger. Never say saved without confirming it.
 
-| Criterion | Points | How to detect |
-|---|---|---|
-| 1+ recurring/scheduled trigger | 10 | `.claude/settings.json` hooks, OR skill name matches `morning-*` / `daily-*` / `weekly-*` / `monthly-*` / `standup` |
-| Recent activity / usage signal | 10 | Files in `.claude/skills/` modified within 30 days, OR `decisions/log.md` has entry within 30 days |
-| Templates folder populated | 5 | `templates/` or `.claude/templates/` has ≥1 file |
+### Required section: AGENTS.md / CLAUDE.md findings
 
-### Step 3: Identify top 3 gaps by leverage
+Start by naming the exact root manuals inspected and the scoped manuals sampled. Mark each root manual **checked**, **missing**, or **not checked**, with a reason where needed. State whether their shared guidance agrees, conflicts, or intentionally differs. Do not imply that inspecting one file verifies the other; a setup with only one applicable manual does not need a duplicate merely to pass.
 
-For each criterion that lost points: leverage = (points lost) × (impact multiplier).
+Then show a compact findings table:
 
-**Impact multipliers:**
-- 0 tier-1 domains reachable: **4x** (AIOS is blind to the business)
-- Operating manual missing or thin: **3x** (foundation)
-- ≤2 tier-1 domains reachable: **3x** (Connections is the gateway to live data)
-- 0 skills: **2x** (no Capabilities = no AIOS)
-- No recurring trigger: **2x** (no Cadence = no autonomy)
-- All connections read-only: **2x** (viewer, not an OS)
-- 0 reference guides for connected tools: **1.5x** (every future skill re-researches the same APIs)
-- No decisions log: **1.5x**
-- All others: **1x**
+| File and section/line | Rule or missing route | Finding and practical effect | Recommended change |
+|---|---|---|---|
+| Exact clickable file reference | Short quote or precise paraphrase; label omissions explicitly | What was verified, stale, conflicting, broken, or unverified, and how that affects finding or using information | Specific edit or verification step |
 
-Sort gaps by leverage descending. Take top 3. For each, write a one-line concrete next step:
-- **Need a new skill?** Recommend `skill-creator` (Anthropic) or `skill-builder` (if local), or "write SKILL.md at `.claude/skills/<name>/SKILL.md` with YAML frontmatter."
-- **Need to log a decision?** "Append to `decisions/log.md`."
-- **Need to reach a tier-1 domain?** Prefer API+script (write `scripts/{tool}_api.py` + save `references/{tool}-api.md`). Recommend `claude mcp add` only if no API path exists.
-- **Connected tool missing a reference guide?** "Research the API once, save endpoints + auth + common queries to `references/{tool}-api.md`."
-- **Need a recurring trigger?** "Add a hook to `.claude/settings.json`, or write a skill named `daily-*` you run each morning."
+Separate **problems in the manual itself** from **problems in files it routes to**. For example, a stale target index is a downstream maintenance gap unless the manual also directs readers to the wrong index. Name the downstream file and the route that reaches it. Include one brief statement about what the manuals already do well. If no issues are found, explicitly say "No operating-manual issues found in the inspected scope" and state any coverage limits; do not invent findings to fill the table.
 
-### Step 4: Output the report
+Finish the section with whether any manuals were changed. In a standard read-only audit, say **"No operating manuals were changed."** These findings inform the existing Four-Cs criteria and caps; do not add a fifth score or double-count deductions. Apply this section to both chat reports and saved reports.
 
-Print directly in chat (Markdown). Format:
+Recommend rerunning `/audit` after the selected fix and weekly during active setup, then at a sensible maintenance interval. Compare with a previous saved report only when scope and rubric match; v1 scores need a new baseline. Scores can decrease when evidence becomes stale. Do not promise a higher score from another run alone.
 
-```
-# AIOS Audit — {date}
-**Score: {total}/100** ({stage})
-
-Stage thresholds:
-- 0-39 → Stage 0: Foundation
-- 40-69 → Stage 1: Built
-- 70-89 → Stage 2: Compounding
-- 90-100 → Stage 3: Autonomous
-
-## Scoreboard
-
-Context        {bar}  {n}/25  {label}
-Connections    {bar}  {n}/25  {label}
-Capabilities   {bar}  {n}/25  {label}
-Cadence        {bar}  {n}/25  {label}
-
-(bar = ## per 5pts; label = "Strong" ≥20, "Solid" 15-19, "Thin" 8-14, "Missing" <8)
-
-## Strengths
-- {1-3 short bullets from highest-scoring criteria}
-
-## Top 3 Gaps (ranked by leverage)
-1. **{gap name}** (-{points} × {multiplier})
-   → {concrete next-step}
-2. **{gap name}** (-{points} × {multiplier})
-   → {concrete next-step}
-3. **{gap name}** (-{points} × {multiplier})
-   → {concrete next-step}
-
-## Suggested next: {single most leveraged action}
-
----
-Structural gaps only. To explore CAPABILITY gaps (what your AIOS could DO that it can't yet), run /level-up after this audit.
-```
-
-### Step 5: Offer to save the report
-
-After printing, ask: "Save this audit to `audits/audit-{date}.md` so you can track score over time?" If yes, write it (creating `audits/` folder if needed). This is the only writable side effect.
-
-## Notes
-
-- **Read-only by default.** Never modify CLAUDE.md, memory, skills, or any project files. Only optional write is the audit report.
-- **Be flexible about file names.** Don't penalize for using non-canonical names if intent is captured.
-- **Be honest, not generous.** A 95/100 is a flex. Most setups land 40-70.
-- **Don't suggest skills that don't exist.** Point at what's actually available.
-- **Speed matters.** Report in under 60 seconds wall-clock. Read targeted files, count skill folders without reading each fully (frontmatter only).
-- **Cadence detection is fuzzy.** Infer from skill names if hooks/cron data isn't cleanly available.
+The audit is read-only toward inspected systems: no repairs, file moves, installation, scheduler changes, messages, or external writes. Its sole default write is a new local audit report under `audits/` (create the directory if needed). Preserve earlier reports, redact secrets and unnecessary private records, and do not update business memory or source-of-truth files from audit observations. On an incomplete run, save a clearly marked partial report when possible; do not present it as a completed audit or fabricate a score. If saving fails, report that explicitly and return the report in chat.
